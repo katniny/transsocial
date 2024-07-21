@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>TransSocial | Terms of Service</title>
+        <link rel="stylesheet" href="/assets/css/mainSite.css">
+        <link rel="shortcut icon" href="/assets/imgs/favicon.png" type="image/png">
+        <script src="https://kit.fontawesome.com/be7c331826.js" crossorigin="anonymous"></script>
+        <script src="/assets/js/twemoji.js" crossorigin="anonymous"></script>
+    </head>
+    
+    <body onload="loadEverything()">
+        <!-- If someone tries to use TransSocial with JavaScript -->
+        <noscript>
+            <div class="noJavaScript">
+
+            </div>
+        </noscript>
+        
+        <!-- This loads the website -->
+        <div class="loader" id="loader">
+            <p style="position: fixed; left: 0; top: 0; color: var(--text-semi-transparent); transform: translateY(0px);">&copy; Katniny Studios 2024</p>
+            <p style="position: fixed; left: 0; top: 17px; color: var(--text-semi-transparent); transform: translateY(0px);">Katniny Online Services</p>
+            <p style="position: fixed; left: 0; top: 35px; color: var(--text-semi-transparent); transform: translateY(0px);">TransSocial v0.0.7_indev</p>
+            <img src="/assets/imgs/favicon.png" alt="TransSocial logo" draggable="false" />
+            <h3 id="loaderQuote" style="position: absolute; margin-top: 180px;"></h3>
+        </div>
+
+        <!-- Header -->
+        <div class="header" id="header">
+            <div class="left">
+                <button id="hamburgerMenu"><i class="fa-solid fa-bars"></i></button> <a href="/"><img class="headerLogo" id="transsocialHeaderLogo" src="/assets/imgs/All_transparent.png" draggable="false" /></a>
+            </div>
+
+            <div class="right">
+                <a href="/download"><button style="margin-right: 20px; transform: translateY(-23px);" id="headerGetApp">Get App</button></a> <a href="/notifications"><i class="fa-solid fa-bell fa-lg"></i></a> <a href="/achievements"><i class="fa-solid fa-trophy fa-lg" style="margin-right: 0px;"></i></a> <img src="" alt="Your profile picture" draggable="false" id="userPfp-header" onclick="accountManager()" />
+            </div>
+            <div class="accountManager" id="accountManager" style="display: none;">
+                <h3 id="greetingManager">Hello, {user}</h3>
+                <a href="/settings"><button><i class="fa-solid fa-gear"></i> Settings</button></a>
+                <a href="/achievements"><button><i class="fa-solid fa-award"></i> Achievements</button></a>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <header class="sidebar" id="sidebar">
+            <!-- Navigation Buttons -->
+            <a href="/"><button style="margin-top: 15px;"><i class="fa-solid fa-house"></i> Home</button></a>
+            <a href="/notifications" id="notificationsSidebar"><button><i class="fa-solid fa-bell"></i> Notifications (0)</button></a>
+            <!--<a href="/search"><button><i class="fa-solid fa-magnifying-glass"></i> Explore</button></a>-->
+            <a href="/messages" id="messagesSidebar"><button><i class="fa-solid fa-envelope"></i> Messages (0)</button></a>
+            <!--<a href="/help" id="enchantedSidebar"><button><i class="fa-solid fa-wand-sparkles"></i> Get Enchanted</button></a>-->
+            <a href="/settings" id="settingsSidebar"><button class="settings"><i class="fa-solid fa-gear"></i> Settings</button></a>
+            <a href="/updates"><button><i class="fa-solid fa-wrench"></i> Updates</button></a>
+            <a href="/contributors"><button><i class="fa-solid fa-face-smile-beam"></i> Contributors</button></a>
+            <a href="/achievements" id="achievementsSidebar"><button><i class="fa-solid fa-award"></i> Achievements</button></a>
+            <a href="/" id="linkToAcc"><button><i class="fa-solid fa-user"></i> Your Profile</button></a>
+            <button onclick="createNotePopup()" class="createNote-sidebar" id="createNote-sidebar"><i class="fa-solid fa-pen-to-square"></i> Create</button>
+
+            <br />
+            <br />
+            <br />
+            <br />
+
+            <div class="sidebarPolicies">
+                <a href="/policies/terms">Terms of Service</a>, <a href="/policies/privacy">Privacy Policy</a>, <a href="/policies/child-safety">Child Safety</a>, <a href="/policies/cookies">Cookies</a>, <a href="/policies/copyright">Copyright</a>, <a href="/policies/guidelines">Community Guidelines</a>
+            </div>
+
+            <!-- Social Icons & Links -->
+            <div class="bottom">
+                <!-- Socials -->
+                <a href="https://discord.gg/SmhATjRxvc" target="_blank"><i class="fa-brands fa-discord fa-lg"></i></a>
+                <a href="https://twitter.com/transs_ocial" target="_blank"><i class="fa-brands fa-twitter fa-lg"></i></a>
+                <a href="https://tiktok.com/@transs_ocial" target="_blank"><i class="fa-brands fa-tiktok fa-lg"></i></a>
+                <a href="https://github.com/transsocial" target="_blank"><i class="fa-brands fa-github fa-lg"></i></a>
+            
+                <!-- Profile -->
+                <div class="profileContainer" >
+                    <div class="profile" id="profile" style="display: none;">
+                        <a href="/settings"><button><i class="fa-solid fa-gear"></i> Settings</button></a>
+                        <button onclick="signOut()"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sign Out</button>
+                    </div>
+
+                    <strong><p id="notSignedIn">Create an account to explore!</p></strong>
+                    <img class="userPfp-sidebar" id="userPfp-sidebar" src="" draggable="false" /><p id="displayName-sidebar">Display Name</p>
+                    <p id="username-pronouns-sidebar">@username</p>
+                </div>
+            </div>
+       </header>
+
+       <!-- Note successfully sent -->
+       <div id="successfullySent" style="display: none;"><p>Note successfully sent!</p></div>
+
+        <!-- New Note Alert -->
+        <!--<div class="notesAlert" id="notesAlert">
+            <p>New Notes</p>
+        </div>-->
+
+        <!-- Notes -->
+        <div class="notes" id="notes">
+            <div class="newNotesAdded" id="newNotesAdded">
+                <!-- Notes go here. This content is user-generated, no default HTML should be here. -->
+            </div>
+            
+            <div class="noteFilter">
+                <!--<p class="version-notice">TransSocial is currently in the InDev stage (version 0.0.1). A lot of features are missing and will be added with updates. <a href="/indev">Learn more</a>.</p>-->
+                <!--<button class="active" style="border-right: 1px solid gray;">All Notes</button><button>Following</button>-->
+
+               <div class="blogStyle" style="margin: 15px;">
+                  <h1>Terms of Service</h1>
+                  <p style="color: var(--text-semi-transparent);">Last Updated: 4/17/2024</p>
+
+                  <br />
+
+                  <h2>Introduction</h2>
+                  <li>Welcome to TransSocial, a social platform dedicated to providing a safe and welcoming environment for everyone. These Terms of Service ("Terms") govern your use of TransSocial's website, mobile applications, and any related services (collectively, the "Service").</li>
+                  <li>By accessing or using our Service, you signify your agreement to these Terms. If you do not agree, you may not use the Service.</li>
+
+                  <br />
+
+                  <h2>1. Eligibility</h2>
+                  <li>You must be at least 13 years old to use TransSocial. In certain regions, the minimum age may be higher. It is your responsibility to comply with the age restrictions in your jurisdiction.</li>
+                  <li>You represent and warrant that you have the legal right and capacity to enter into this agreement.</li>
+
+                  <br />
+
+                  <h2>2. Account Creation</h2>
+                  <li>You must provide accurate and complete information when creating an account.</li>
+                  <li>You are responsible for maintaining the security of your account credientials and are fully responsible for activities occuring under your account.</li>
+                  <li>You must immediately notify TransSocial of any unauthorized use of your account.</li>
+
+                  <br />
+
+                  <h2>3. User Conduct</h2>
+                  <li><b>Respectful Community:</b> TransSocial aims to be a safe and inclusive place. Conduct that is hateful, discriminatory, threatening, or that promotes illegal activities is strictly prohibited.</li>
+                  <li><b>NSFW Content:</b> Content of a sexually explicit nature is permitted but MUST be clearly marked as NSFW (Not Safe for Work). Failure to do so may result in content removal or account suspension.</li>
+                  <li><b>Sensitive Content:</b> Certain sensitive topics may be allowed but MUST be clearly marked as "sensitive". This helps users make informed choices about the content they engage with.</li>
+                  <li><b>Responsibility:</b> You are solely responsible for your content and interactions on TransSocial. The views and opinions you express are your own.</li>
+                  <li><b>Prohibited Actions:</b> You may not:</li>
+                     <li style="list-style: inside; list-style-type: circle; color: var(--text-semi-transparent); transform: translateX(10px);">Post unlawful content, or content that violates intellectual property rights</li>
+                     <li style="list-style: inside; list-style-type: circle; color: var(--text-semi-transparent); transform: translateX(10px);">Spam, harass, or stalk other users</li>
+                     <li style="list-style: inside; list-style-type: circle; color: var(--text-semi-transparent); transform: translateX(10px);">Use TransSocial for any commercial purpose without our express consent</li>
+                     <li style="list-style: inside; list-style-type: circle; color: var(--text-semi-transparent); transform: translateX(10px);">Attempt to circumvent any of our security features or technical measures</li>
+
+                  <br />
+
+                  <h2>4. Content Ownership</h2>
+                  <li>You retain ownership of the content you post on TransSocial. However, by posting content, you grant TransSocial a non-exclusive, worldwide, royalty-free license to use, copy, reproduce, adapt, and display your content in connection with the operation of the Service.</li>
+
+                  <br />
+
+                  <h2>5. Privacy</h2>
+                  <li>Our <a href="/policies/privacy" style="color: var(--main-color)">Privacy Policy</a> details how your personal information is collected, used, or shared. Please review it carefully.</li>
+
+                  <br />
+
+                  <h2>6. Intellectual Property</h2>
+                  <li>TransSocial's name, logo, and other trademarks are our property. You may not use them without our written permission.</li>
+                  <li>We respect the intellectual property right of others. If you believe your copyright has been infringed, please contact us.</li>
+
+                  <br />
+
+                  <h2>7. Disclaimer of Warranties</h2>
+                  <li>The Service is provided on an "AS IS" basis without warranties of any kind. We make no guarantee regarding the uptime, security, or availability of TransSocial.</li>
+
+                  <br />
+
+                  <h2>8. Limitation of Liability</h2>
+                  <li>To the maximum extent permitted by law, TransSocial shall not be liable for any damages arising from your use of the Service.</li>
+
+                  <br />
+
+                  <h2>9. Termination</h2>
+                  <li>We reserve the right to suspend or terminate your account at any time, with or without notice, if you violate these Terms.</li>
+                  <li>Upon termination or suspension, your right to use the Service will immediately cease.</li>
+
+                  <br />
+
+                  <h2>10. Dispute Resolution</h2>
+                  <li>These Terms will be governed by the laws of South Dakota. Any disputes shall be resolved through binding arbitration in South Dakota.</li>
+
+                  <br />
+
+                  <h2>11. Modification to Terms</h2>
+                  <li>We may modify these Terms at any time. We'll notify you of significant changes by posting a notice on the Service or via email. Your continued use signifies acceptance of the modified Terms.</li>
+
+                  <br />
+               </div>
+            </div>
+
+            <!-- Please Donate -->
+            <!--<div class="pleaseDonate" id="pleaseDonate">
+                <p>Hey, please don't skip this read. We need your support to keep TransSocial thriving. <a href="https://patreon.com/katniny" target="_blank">My Patreon</a> is the heartbeat of TransSocial, and right now, TransSocial is running on passion but could use some funds (aka funds). Join the Patreon for perks, behind the scenes content, and most importantly - helping TransSocial. Let's make TransSocial better together - your contribution makes a huge difference!</p>
+                <a href="https://patreon.com/katniny" target="_blank"><button>Help TransSocial</button></a>
+                <button onclick="closeHelpPrompt()">Maybe Later</button>
+            </div>-->
+        </div>
+
+        <!-- TransSocial Accounts -->
+        <div class="transsocialAccounts">
+            <h3>TransSocial Accounts</h3>
+            <p>Follow accounts associated with TransSocial.</p>
+
+            <div class="katniny">
+                <!-- Me :3 -->
+                <div class="katniny">
+                    <img class="recommendAcc-pfp" src="" id="katninyPfp" draggable="false" /> <p id="katninyDisplay"></p>
+                    <br /> <a href="/" id="followBtn-1"><button class="followBtn">Follow</button></a>
+                    <p id="katninyUser-pronouns"></p>
+                </div>
+
+                <br />
+
+                <!-- TransSocial -->
+                <div class="transsocial">
+                    <img class="recommendAcc-pfp" src="" id="transsocialPfp" draggable="false" /> <p id="transsocialDisplay"></p>
+                    <br /> <a href="/" id="followBtn-2"><button class="followBtn">Follow</button></a>
+                    <p id="transsocialUser-pronouns"></p>
+                </div>
+
+                <br />
+
+                <!-- Katniny Studios -->
+                <div class="katninystudios">
+                    <img class="recommendAcc-pfp" src="" id="katninystudiosPfp" draggable="false" /> <p id="katninystudiosDisplay"></p>
+                    <br /> <a href="/" id="followBtn-3"><button class="followBtn">Follow</button></a>
+                    <p id="katninystudiosUser-pronouns"></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="policies">
+            <a href="/policies/terms">Terms of Service</a>, <a href="/policies/privacy">Privacy Policy</a>, <a href="/policies/child-safety">Child Safety</a>, <a href="/policies/cookies">Cookies</a>, <a href="/policies/copyright">Copyright</a>, <a href="/policies/guidelines">Community Guidelines</a> 
+        </div>
+
+        <div id="notSignedIn-banner">
+            <p>Join the fun on TransSocial!</p>
+            <a href="/auth/login"><button>Login</button></a>
+            <a href="/auth/register"><button>Create an account</button></a>
+        </div>
+
+        <!-- Achievement Unlock -->
+        <div id="achievementUnlock" class="achievementUnlock" style="display: none;">
+            <div id="achievementIcon"><i class="fa-solid fa-pencil"></i></div> <p id="achievementName">Achievement Name</p>
+        </div>
+
+        <dialog id="showAchievementUnlock">
+            <h2 id="titleAndIcon">title and stuff</h2>
+            <p id="unlockReason">because you did</p>
+            <p id="unlockDate">m/d/y (the objectively correct way)</p>
+            <button onclick="document.getElementById('showAchievementUnlock').close();">Okay!</button>
+        </dialog>
+
+        <!-- Modals -->
+        <dialog id="createNote-popup">
+            <div class="creatingStuff">
+                <!-- Display above everything else when a note is sending -->
+                <div class="coverCreateANote" id="coverCreateANote" style="display: none;"></div>
+
+                <!-- Main Tab -->
+                <div class="mainTab-noteCreation" id="mainTab-noteCreation">
+                    <h2 style="float: right; opacity: 0; cursor: default;" id="replyingOrCreating">Create a Note!</h2> <i class="fa-regular fa-circle-xmark fa-lg" style="float: left; margin-top: 10px;" onclick="closeCreateNotePopup()"></i>
+                    <textarea rows="0" placeholder="What's on your mind?" id="noteContent-textarea"></textarea>
+                    <p id="characterLimit_note" style="color: var(--text-semi-transparent)">0/1,250</p>
+                    <br />
+                    <p id="uploadingImage" style="color: var(--success-color); display: none;">Uploading image...</p>
+                    <button onclick="publishNote()" class="publishNoteBtn"><i class="fa-solid fa-pen-to-square"></i> Create!</button>
+                    <br />
+                    <img id="imgToBeUploaded" draggable="false" />
+                    <video id="vidToBeUploaded" draggable="false" autoplay="true" muted="true" controls style="display: none;"></video>
+                    <br />
+                    <div id="quotingNote">
+                        <div class="quoteContainer">
+                            <img src="" alt="Quote user pfp" class="quotePfp" id="notePopupQuotePfp">
+                            <div class="quoteContent">
+                                <div class="quoteHeader">
+                                    <span class="quoteDisplay" id="notePopupQuoteDisplay"></span>
+                                    <span class="quoteUsername" id="notePopupQuoteUsername"></span>
+                                </div>
+                                <span class="quoteText" id="notePopupQuoteText"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <p style="font-size: small; color: var(--text-semi-transparent); display: none; transform: translateY(-10px);" id="hasntBeenUploadedNotice">Image hasn't been uploaded to TransSocial's server yet. This is just a preview.</p>
+                    <a href="javascript:void(0);" style="display: none; float: left; max-width: auto; transform: translateY(-10px);" id="removeUploadedImage" onclick="removeImage()">Remove Image</a> <a href="javascript:void(0);" style="display: none; float: left; max-width: auto; transform: translateY(-10px); margin-left: 7px;" id="addAltTextToImage" onclick="addAltText()">Add Alt Text</a>
+                    <p id="noteError"></p>
+                </div>
+
+                <!-- Settings Tab -->
+                <div class="settingsStuff hidden" id="settingStuff">
+                    <i class="fa-solid fa-arrow-left fa-lg" style="float: left; margin-top: 10px;" onclick="swapNoteTab()"></i>
+
+                    <br />
+
+                    <h2 style="margin-top: 10px;">Add a content warning</h2> 
+                    <p style="font-size: 14px; color: var(--text-semi-transparent);">Add a content warning to this note by selecting a category. This helps people see only the content they want to on TransSocial.</p>
+
+                    <!-- NSFW Checkbox -->
+                    <input type="checkbox" id="isNsfw" /> <span class="noteContainsNsfwContent">Note contains NSFW content.</span> 
+                    <p class="optionAlt">This may include nudity, intercourse, intense violence, etc.</p>
+
+                    <!-- Content Warning Checkbox -->
+                    <input type="checkbox" id="isSensitive" /> Note contains sensitive content.
+                    <p class="optionAlt">Select this if your note has potentionally triggering content.</p>
+
+                    <!-- Political Checkbox -->
+                    <input type="checkbox" id="isPolitical" /> Note contains political content.
+                    <p class="optionAlt">Select this if your note has political content.</p>
+
+                    <br />
+                </div>
+
+                <!-- Settings -->
+                <div class="settingsIcons-noteCreation">
+                    <div class="icons">
+                        <i class="fa-solid fa-flag fa-lg" onclick="swapNoteTab()"></i> <i class="fa-solid fa-image fa-lg" onclick="uploadImage()"><input type="file" id="imageUploadInput" accept="image/png, image/jpeg, image/webp, video/mp4, image/gif" style="display: none;"></i>
+                    </div>
+                </div>
+            </div>
+        </dialog>
+
+        <dialog id="signInPrompt">
+            <img src="/assets/imgs/All_transparent.png" draggable="false" style="width: 450px; height: 100px; margin-left: 17%; margin-right: 15%;" />
+            <h2>You must be signed in.</h2>
+            <p>To perform this action, you need to be signed into TransSocial!</p>
+            <br />
+            <a href="/auth/login"><button>Login</button></a>
+            <div style="margin-top: 5px;"></div>
+            <a href="/auth/register"><button>Register</button></a>
+        </dialog>
+
+        <dialog id="addAltText">
+            <h2>Add Alt Text</h2>
+            <p>Help those with visual impairments or low vision understand what your note is.</p>
+
+            <textarea id="altText_input" placeholder="A fluffy orange cat sitting on a windowsill, licking its paw and grooming itself"></textarea>
+
+            <br />
+
+            <button onclick="addAltText_finish()">Finish</button>
+        </dialog>
+
+        <dialog id="verifyEmail">
+            <h2><i class="fa-solid fa-envelope-circle-check"></i> Please verify your email</h2>
+            <p>We need to ensure your account is using an actual email address. This is for your security and to help us drive away bots.</p>
+            <p style="font-size: 14px; color: var(--text-semi-transparent);">If you're seeing this, you registered for an account before v0.0.5_indev and have not verified your email address yet. Starting v0.0.5_indev, you will need to be able to verify your email when creating new accounts.</p>
+
+            <br />
+
+            <button onclick="getVerificationEmail()" style="width: 100%;"><i class="fa-solid fa-check-to-slot"></i> Verify Email</button>
+        </dialog>
+
+        <dialog id="emailSent_emailVer">
+            <h2><i class="fa-solid fa-envelope-circle-check"></i> Email sent!</h2>
+            <p>Once you verify your email, please click the button below to verify, then we won't bug you again!</p>
+            <p style="font-size: 14px; color: var(--text-semi-transparent);">If you're seeing this, you registered for an account before v0.0.5_indev and have not verified your email address yet. Starting v0.0.5_indev, you will need to be able to verify your email when creating new accounts.</p>
+
+            <br />
+
+            <button onclick="window.location.reload()">Check Verification Status</button>
+        </dialog>
+
+        <dialog id="editWhatPartofNote">
+            <h2>Note Settings</h2>
+            <p>Typo? Need to delete this note? Here's your own personal control panel!</p>
+
+            <br />
+
+            <button onclick="editNoteContent()" style="width: 100%;"><i class="fa-solid fa-pen"></i> Edit Note Content</button>
+            <button onclick="deleteNote()" style="width: 100%;"><i class="fa-solid fa-trash"></i> Delete Note</button>
+
+            <br />
+            <br />
+            
+            <button onclick="document.getElementById('editWhatPartofNote').close()">Nevermind</button>
+        </dialog>
+
+        <dialog id="checkIfNoteDeletion">
+            <h2>Delete this note?</h2>
+            <p>Are you sure? This action can't be reverted!</p>
+
+            <br />
+
+            <button onclick="deleteNote_fully()" style="width: 100%;"><i class="fa-solid fa-trash"></i> Yes, delete</button>
+            <button onclick="deleteNote_nevermind()" style="width: 100%;"><i class="fa-solid fa-xmark"></i> Nevermind, I change my mind</button>
+        </dialog>
+
+        <dialog id="noteDeleted">
+            <h2>Note Deleted</h2>
+            <p>Note was successfully deleted.</p>
+
+            <br />
+
+            <button onclick="window.location.reload()">Okay</button>
+        </dialog>
+
+        <dialog id="editNoteContent">
+            <!-- Display above everything else when a note is updating -->
+            <div class="coverUpdatingNote" id="coverUpdatingNote" style="display: none;"></div>
+
+            <h2>Edit Note Content</h2>
+            <p>Removing images is currently not supported at this time.</p>
+
+            <textarea id="newTextContent" placeholder="What do you want your note to say now?"></textarea>
+            <p id="newTextContent-characterLimit" style="color: var(--text-semi-transparent)">0/1,250</p>
+
+            <br />
+            <br />
+
+            <button onclick="applyEdits()">Apply</button> <button onclick="dontApplyEdits()">Nevermind</button>
+        </dialog>
+
+        <dialog id="noteUpdated">
+            <h2>Note Updated</h2>
+            <p>Note was successfully updated.</p>
+
+            <br />
+
+            <button onclick="window.location.reload()">Okay</button>
+        </dialog>
+    </body>
+
+    <!-- Core Firebase Scripts (MUST BE FIRST) -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-storage.js"></script>
+
+    <!-- Scripts -->
+    <script src="/assets/js/ts_fas_acih.js"></script>
+    <script src="/assets/js/pageLoader.js"></script>
+    <script src="/assets/js/sidebarOpen.js"></script>
+    <script src="/assets/js/twemoji.js"></script>
+</html>

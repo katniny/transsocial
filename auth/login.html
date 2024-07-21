@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Login | TransSocial</title>
+        <link rel="stylesheet" href="/assets/css/loginPage.css">
+        <link rel="shortcut icon" href="/assets/imgs/favicon.png" type="image/png">
+    </head>
+    
+    <body onload="hideErrorByDefault() + signedInCheck()">
+        <div class="loader">
+            <p id="loaderQuote" style="display: none;"></p>
+        </div>
+
+        <div class="login-form">
+            <!-- Logo -->
+            <div class="login-form__logo-container">
+                <img class="login-form__logo" src="/assets/imgs/All_transparent.png" alt="the transsocial logo">
+            </div>
+            <!-- Form Content -->
+            <div class="login-form__content">
+                <div class="login-form__header"><h3>Login to your TransSocial account </h3><p></p></div>
+                <input type="email" name="kat_email" id="email" class="login-form__input" placeholder="Enter your email address.">
+                <input type="password" name="unsaved_data" id="password" class="login-form__input" placeholder="Enter your password.">
+                <p style="margin-bottom: 15px; font-size: 0.9em;" id="errorTxt">No error detected.</p>
+                <button class="login-form__button" onclick="login()">Login</button>
+                <div class="login-form__links">
+                    <a href="https://patreon.com/katniny" target="_blank" class="login-form__link">Support the Development</a>
+                </div>
+            </div>
+        </div>
+    </body>
+
+    <!-- Core Firebase Scripts (MUST BE FIRST) -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-storage.js"></script>
+
+    <!-- Scripts -->
+    <script src="/assets/js/ts_fas_acih.js"></script>
+    <script src="/assets/js/pageLoader.js"></script>
+</html>

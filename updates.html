@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>TransSocial | All Updates</title>
+        <link rel="stylesheet" href="/assets/css/mainSite.css">
+        <link rel="shortcut icon" href="/assets/imgs/favicon.png" type="image/png">
+        <script src="https://kit.fontawesome.com/be7c331826.js" crossorigin="anonymous"></script>
+        <script src="/assets/js/twemoji.js" crossorigin="anonymous"></script>
+    </head>
+    
+    <body onload="loadEverything()">
+        <!-- If someone tries to use TransSocial with JavaScript -->
+        <noscript>
+            <div class="noJavaScript">
+
+            </div>
+        </noscript>
+        
+        <!-- This loads the website -->
+        <div class="loader" id="loader">
+            <p style="position: fixed; left: 0; top: 0; color: var(--text-semi-transparent); transform: translateY(0px);">&copy; Katniny Studios 2024</p>
+            <p style="position: fixed; left: 0; top: 17px; color: var(--text-semi-transparent); transform: translateY(0px);">Katniny Online Services</p>
+            <p style="position: fixed; left: 0; top: 35px; color: var(--text-semi-transparent); transform: translateY(0px);">TransSocial v0.0.7_indev</p>
+            <img src="/assets/imgs/favicon.png" alt="TransSocial logo" draggable="false" />
+            <h3 id="loaderQuote" style="position: absolute; margin-top: 180px;"></h3>
+        </div>
+
+        <!-- Header -->
+        <div class="header" id="header">
+            <div class="left">
+                <button id="hamburgerMenu"><i class="fa-solid fa-bars"></i></button> <a href="/"><img class="headerLogo" id="transsocialHeaderLogo" src="/assets/imgs/All_transparent.png" draggable="false" /></a>
+            </div>
+
+            <div class="right">
+                <a href="/download"><button style="margin-right: 20px; transform: translateY(-23px);" id="headerGetApp">Get App</button></a> <a href="/notifications"><i class="fa-solid fa-bell fa-lg"></i></a> <a href="/achievements"><i class="fa-solid fa-trophy fa-lg" style="margin-right: 0px;"></i></a> <img src="" alt="Your profile picture" draggable="false" id="userPfp-header" onclick="accountManager()" />
+            </div>
+            <div class="accountManager" id="accountManager" style="display: none;">
+                <h3 id="greetingManager">Hello, {user}</h3>
+                <a href="/settings"><button><i class="fa-solid fa-gear"></i> Settings</button></a>
+                <a href="/achievements"><button><i class="fa-solid fa-award"></i> Achievements</button></a>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <header class="sidebar" id="sidebar">
+            <!-- Navigation Buttons -->
+            <a href="/"><button style="margin-top: 15px;"><i class="fa-solid fa-house"></i> Home</button></a>
+            <a href="/notifications" id="notificationsSidebar"><button><i class="fa-solid fa-bell"></i> Notifications (0)</button></a>
+            <!--<a href="/search"><button><i class="fa-solid fa-magnifying-glass"></i> Explore</button></a>-->
+            <a href="/messages" id="messagesSidebar"><button><i class="fa-solid fa-envelope"></i> Messages (0)</button></a>
+            <!--<a href="/help" id="enchantedSidebar"><button><i class="fa-solid fa-wand-sparkles"></i> Get Enchanted</button></a>-->
+            <a href="/settings" id="settingsSidebar"><button class="settings"><i class="fa-solid fa-gear"></i> Settings</button></a>
+            <a href="/updates"><button class="active"><i class="fa-solid fa-wrench"></i> Updates</button></a>
+            <a href="/contributors"><button><i class="fa-solid fa-face-smile-beam"></i> Contributors</button></a>
+            <a href="/achievements" id="achievementsSidebar"><button><i class="fa-solid fa-award"></i> Achievements</button></a>
+            <a href="/" id="linkToAcc"><button><i class="fa-solid fa-user"></i> Your Profile</button></a>
+            <button onclick="createNotePopup()" class="createNote-sidebar" id="createNote-sidebar"><i class="fa-solid fa-pen-to-square"></i> Create</button>
+
+            <br />
+            <br />
+            <br />
+            <br />
+
+            <div class="sidebarPolicies">
+                <a href="/policies/terms">Terms of Service</a>, <a href="/policies/privacy">Privacy Policy</a>, <a href="/policies/child-safety">Child Safety</a>, <a href="/policies/cookies">Cookies</a>, <a href="/policies/copyright">Copyright</a>, <a href="/policies/guidelines">Community Guidelines</a>
+            </div>
+
+            <!-- Social Icons & Links -->
+            <div class="bottom">
+                <!-- Socials -->
+                <a href="https://discord.gg/SmhATjRxvc" target="_blank"><i class="fa-brands fa-discord fa-lg"></i></a>
+                <a href="https://twitter.com/transs_ocial" target="_blank"><i class="fa-brands fa-twitter fa-lg"></i></a>
+                <a href="https://tiktok.com/@transs_ocial" target="_blank"><i class="fa-brands fa-tiktok fa-lg"></i></a>
+                <a href="https://github.com/transsocial" target="_blank"><i class="fa-brands fa-github fa-lg"></i></a>
+            
+                <!-- Profile -->
+                <div class="profileContainer" >
+                    <div class="profile" id="profile" style="display: none;">
+                        <a href="/settings"><button><i class="fa-solid fa-gear"></i> Settings</button></a>
+                        <button onclick="signOut()"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sign Out</button>
+                    </div>
+
+                    <strong><p id="notSignedIn">Create an account to explore!</p></strong>
+                    <img class="userPfp-sidebar" id="userPfp-sidebar" src="" draggable="false" /><p id="displayName-sidebar">Display Name</p>
+                    <p id="username-pronouns-sidebar">@username</p>
+                </div>
+            </div>
+        </header>
+
+       <!-- Note successfully sent -->
+       <div id="successfullySent" style="display: none;"><p>Note successfully sent!</p></div>
+
+        <!-- New Note Alert -->
+        <!--<div class="notesAlert" id="notesAlert">
+            <p>New Notes</p>
+        </div>-->
+
+        <!-- Notes -->
+        <div class="notes" id="notes">
+            <div class="newNotesAdded" id="newNotesAdded">
+                <!-- Notes go here. This content is user-generated, no default HTML should be here. -->
+            </div>
+            
+            <div class="noteFilter">
+                <!--<p class="version-notice">TransSocial is currently in the InDev stage (version 0.0.1). A lot of features are missing and will be added with updates. <a href="/indev">Learn more</a>.</p>-->
+                <!--<button class="active" style="border-right: 1px solid gray;">All Notes</button><button>Following</button>-->
+
+                <div class="blogStyle" style="margin: 15px;">
+                    <h3>Filter Version:</h3>
+                    <button onclick="filterInDev()">Indev</button> <button onclick="filterPreAlpha()">Pre-Alpha</button> <button onclick="filterAlpha()">Alpha</button> <button onclick="filterBeta()">Beta</button> <button onclick="filterRelease()">Release</button>
+
+                    <br />
+                    <br />
+
+                    <h1 style="text-decoration: underline; margin-bottom: 5px;">Indev Versions</h1>
+
+                    <div class="update">
+                        <h2>v0.0.7_indev</h2>
+                        <h3 style="color: var(--text-semi-transparent);">Released: June 28, 2024</h3>
+                            <h3>New to TransSocial:</h3>
+                                <li>Added <a href="https://github.com/twitter/twemoji" target="_blank" style="color: var(--main-color)">Twemoji</a></li>
+                                <li>Added TransSocial subscriptions (EXPERIMENTAL! DOES NOT PROPERLY WORK YET!)</li>
+                                <li>Added font size setting</li>
+                                <li>Added dropdown for language preference (currently only "English (United States)" is available)</li>
+                                <li>Added option to toggle autoplay on or off</li>
+                                <li>Added alt text</li>
+                            <h3>Bug Fixes:</h3>
+                                <li>Fixed images/videos stretching in the note view</li>
+                                <li>Fixed "Nevermind, I don't want to interact" appearing at the bottom of the page</li>
+                            <h3>UI Improvements:</h3>
+                                <li>Removed 14 popups for alternative interaction methods</li>
+                                <li>Redesigned the downloads page</li>
+                                <li>Popups are now 20% smaller</li>
+                                <li>Redesigner loader</li>
+                                <li>Redesigned the Settings page</li>
+                    </div>
+
+                    <br />
+
+                    <div class="update">
+                        <h2>v0.0.6_indev</h2>
+                        <h3 style="color: var(--text-semi-transparent)">Released: June 6, 2024</h3>
+                            <h3>New to TransSocial:</h3>
+                            <li>Added quote noting</li>
+                            <li>Added <a href="/achievements" style="color: var(--main-color)">achievements</a> (Part of Katniny Services)</li>
+                            <li>Added option to create note directly from your timeline</li>
+                            <li>Added date when note was created</li>
+                            <li>Added political content warning (<a href="https://blog.katniny.com/blog/transsocial-political-filter-notice" target="_blank" style="color: var(--main-color)">See notice</a>)</li>
+                            <li>Added flag to show what flag was applied to a note when not hidden</li>
+                            <li>Moved registration page and redesigned the login page</li>
+                            <li>Added new download options (including Android app)</li>
+                            <li>Added content to header</li>
+                            <h3>Bug Fixes:</h3>
+                            <li>Fixed bug where if you renoted a note in the note view, it wouldn't show up on your profile</li>
+                            <li>Fixed bug where the popup would not close after choosing a NSFW/Sensitive/Political content preference</li>
+                            <li>Fixed bug where when you deleted a note, it would still appear on the timeline</li>
+                            <li>Fixed bug where notes would have an offset NSFW/Sensitive/Political content warning when a file was attached</li>
+                            <li>Fixed bug where notes would check if a signed out user has loved/renoted a note (which failed)</li>
+                            <li>Fixed bug where the "Your Profile" button on the sidebar would try to check if a signed out user is the same as the current user they are viewing</li>
+                            <li>Fixed bug where the "Newest Updates" popup would try to show, even if it wasn't on the page you're on</li>
+                    </div>
+
+                    <br />
+
+                    <div class="update">
+                        <h2>v0.0.5.2_indev</h2>
+                        <h3 style="color: var(--text-semi-transparent)">Released: June 2, 2024</h3>
+                            <h3>New to TransSocial:</h3>
+                            <li>Added ability to turn off pride flag logo for accessibility</li>
+                    </div>
+
+                    <br />
+
+                    <div class="update">
+                        <h2>v0.0.5.1_indev</h2>
+                        <h3 style="color: var(--text-semi-transparent)">Released: June 2, 2024</h3>
+                            <h3>New to TransSocial:</h3>
+                            <li>Added pride logo and added functionality to have it appear every June</li>
+                    </div>
+
+                    <br />
+
+                    <div class="update">
+                        <h2>v0.0.5_indev</h2>
+                        <h3 style="color: var(--text-semi-transparent)">Released: May 22, 2024</h3>
+                            <h3>New to TransSocial:</h3>
+                            <li>Added <a href="/download" style="color: var(--main-color)">download page</a></li>
+                            <li>Added release date for each update on updates page</li>
+                            <li>Added Good morning, good afternoon, and good evening greetings</li>
+                            <li>Added email verification, which is also required</li>
+                            <li>Re-enabled hyperlinks</li>
+                            <li>If you visit a reply directly, it will now redirect you to the note it was replying to instead of giving you an error</li>
+                            <li>"Remove Image" and "Image hasn't been uploaded yet" now says File</li>
+                            <li>Renotes will now show up on a user's profile</li>
+                            <li>Reorganized the note creation popup</li>
+                            <li>Scroll bar now matches your theme</li>
+                            <li>Notes will no longer take 100% of the free space</li>
+                            <li>Note View/User Profiles will no longer take 100% of the free space</li>
+                            <li>Redesigned updates page</li>
+                            <li>Redesigned notifications</li>
+                            <h3>Bug Fixes:</h3>
+                            <li>Fixed bug where the overlay for creating notes didn't fit the width and height of the popup</li>
+                            <li>Fixed bug where notes were randomly sorted, they are now properly sorted from newest to oldest</li>
+                            <li>Fixed bug where notes wouldn't show up if you were signed out</li>
+                            <li>Fixed bug where you couldn't see if you loved/renoted a note on any page, it will now show properly</li>
+                            <li>Note NSFW/Sensitive Content warning is no longer offset</li>
+                            <li>Fixed bug where you could embed HTML code with hyperlinks</li>
+                    </div>
+
+                        <br />
+
+                        <div class="update">
+                            <h2>v0.0.4_indev</h2>
+                            <h3 style="color: var(--text-semi-transparent)">Released: May 5, 2024</h3>
+                            <p>(This update is fairly small, I'm sorry 🙁)</p>
+                                <h3>New to TransSocial:</h3>
+                                <li>Added video support (at the moment, only .mp4 files can be uploaded)</li>
+                                <li>TransSocial's logos will now match your theme</li>
+                                <li>Added account verification</li>
+                                <li>Added a sign out button in Settings and in your account area</li>
+                                <li>Added Account Area (click on your profile in the sidebar)</li>
+                                <li>Added direct_messaging-2024-04 experiment</li>
+                                <li>"Renotes do not show up on user profiles" no longer says it'll be fixed "by next update"</li>
+                                <h3>Bug Fixes:</h3>
+                                <li>Fixed bug where you would not get notifications if your note was liked/renoted in the note view</li>
+                        </div>
+
+                        <br />
+
+                        <div class="update">
+                            <h2>v0.0.3_indev</h2>
+                            <h3 style="color: var(--text-semi-transparent)">Released: April 28, 2024</h3>
+                                <h3>New to TransSocial:</h3>
+                                <li>Added 4 new themes: High Contrast, Midnight Purple, Darker, TransSocial Classic</li>
+                                <li>Added user reporting</li>
+                                <li>Added note editing</li>
+                                <li>Added note deleting</li>
+                                <li>Remaining Characters will now display for display names, usernames, bios, and notes</li>
+                                <li>In the note view, the display name, username, pronouns, and profile picture will now link to the user's profile</li>
+                                <li>Added visual feedback when a note is being created</li>
+                                <li>TransSocial will now let you know when your note is successfully created</li>
+                                <li>On mobile, the menu is now properly in the header</li>
+                                <li>Policies are now accessible in the menu for mobile users</li>
+                                <li>Added higher character limits (Notes: 1,250 - Bios: 500)</li>
+                                <li>Added notifications when someone loves your note, renotes your note, or replies</li>
+                                <h3>Bug Fixes:</h3>
+                                <li>Notes will no longer display if a user is suspended</li>
+                                <li>Fixed bug when a user is suspended, the suspension page would infinitely refresh making you unable to see your reason and unsuspension date, if applicable</li>
+                                <li>InDev notice now accurately displays the version, instead of displaying "0.0.1"</li>
+                                <li>When on your profile, the "Your Profile" button in the sidebar will now be active.</li>
+                                <li>Fixed bug where version notice would crop into the sidebar on smaller screens</li>
+                        </div>
+                        
+                        <br />
+                  
+                        <div class="update">
+                            <h2>v0.0.2_indev</h1>
+                                <h3 style="color: var(--text-semi-transparent)">Released: April 21, 2024</h3>
+                                    <h3>New to TransSocial:</h3>
+                                    <li>Notifications are now sorted from newest to oldest</li>
+                                    <li>Added themes (Light, Mint (Light), and Mint (Dark))</li>
+                                    <li>Added css_themes-2024-04 experiment</li>
+                                    <li>Implemented UI changes created by <a href="/u?id=backhdlp" style="color: var(--main-color)">Lunya</a></li>
+                                    <li>Added 404 page</li>
+                                    <li>Added the <a href="/updates" style="color: var(--main-color)">updates page</a></li>
+                                    <li>Added popup to show users about new updates</li>
+                                    <li>Added password reset in settings</li>
+                                    <li>Added policies</li>
+                                    <li>Added <a href="/contributors" style="color: var(--main-color)">contributor list</a></li>
+                                    <li>Added character limits to display names, usernames, pronouns, and bios</li>
+                                    <li>Profile pictures will now display next to who triggered a notification</li>
+                                    <h3>Bug Fixes:</h3>
+                                    <li>Fixed a bug where you could not remove images once added to a note</li>
+                                    <li>Fixed a bug where the "NSFW" and/or "Sensitive" checkboxes would not be unchecked after publishing a note or closing the "Create a Note" modal</li>
+                        </div>
+
+                        <br />
+
+                        <div class="update">
+                            <h2>v0.0.1_indev</h1>
+                                <h3 style="color: var(--text-semi-transparent)">Released: April 11, 2024</h3>
+                                    <li>Initial Release</li>
+                        </div>
+                    <br />
+               </div> 
+            </div>
+
+            <!-- Please Donate -->
+            <!--<div class="pleaseDonate" id="pleaseDonate">
+                <p>Hey, please don't skip this read. We need your support to keep TransSocial thriving. <a href="https://patreon.com/katniny" target="_blank">My Patreon</a> is the heartbeat of TransSocial, and right now, TransSocial is running on passion but could use some funds (aka funds). Join the Patreon for perks, behind the scenes content, and most importantly - helping TransSocial. Let's make TransSocial better together - your contribution makes a huge difference!</p>
+                <a href="https://patreon.com/katniny" target="_blank"><button>Help TransSocial</button></a>
+                <button onclick="closeHelpPrompt()">Maybe Later</button>
+            </div>-->
+        </div>
+
+        <!-- TransSocial Accounts -->
+        <div class="transsocialAccounts">
+            <h3>TransSocial Accounts</h3>
+            <p>Follow accounts associated with TransSocial.</p>
+
+            <div class="katniny">
+                <!-- Me :3 -->
+                <div class="katniny">
+                    <img class="recommendAcc-pfp" src="" id="katninyPfp" draggable="false" /> <p id="katninyDisplay"></p>
+                    <br /> <a href="/" id="followBtn-1"><button class="followBtn">Follow</button></a>
+                    <p id="katninyUser-pronouns"></p>
+                </div>
+
+                <br />
+
+                <!-- TransSocial -->
+                <div class="transsocial">
+                    <img class="recommendAcc-pfp" src="" id="transsocialPfp" draggable="false" /> <p id="transsocialDisplay"></p>
+                    <br /> <a href="/" id="followBtn-2"><button class="followBtn">Follow</button></a>
+                    <p id="transsocialUser-pronouns"></p>
+                </div>
+
+                <br />
+
+                <!-- Katniny Studios -->
+                <div class="katninystudios">
+                    <img class="recommendAcc-pfp" src="" id="katninystudiosPfp" draggable="false" /> <p id="katninystudiosDisplay"></p>
+                    <br /> <a href="/" id="followBtn-3"><button class="followBtn">Follow</button></a>
+                    <p id="katninystudiosUser-pronouns"></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="policies">
+            <a href="/policies/terms">Terms of Service</a>, <a href="/policies/privacy">Privacy Policy</a>, <a href="/policies/child-safety">Child Safety</a>, <a href="/policies/cookies">Cookies</a>, <a href="/policies/copyright">Copyright</a>, <a href="/policies/guidelines">Community Guidelines</a> 
+        </div>
+
+        <div id="notSignedIn-banner">
+            <p>Join the fun on TransSocial!</p>
+            <a href="/auth/login"><button>Login</button></a>
+            <a href="/auth/register"><button>Create an account</button></a>
+        </div>
+
+        <!-- Achievement Unlock -->
+        <div id="achievementUnlock" class="achievementUnlock" style="display: none;">
+            <div id="achievementIcon"><i class="fa-solid fa-pencil"></i></div> <p id="achievementName">Achievement Name</p>
+        </div>
+
+        <dialog id="showAchievementUnlock">
+            <h2 id="titleAndIcon">title and stuff</h2>
+            <p id="unlockReason">because you did</p>
+            <p id="unlockDate">m/d/y (the objectively correct way)</p>
+            <button onclick="document.getElementById('showAchievementUnlock').close();">Okay!</button>
+        </dialog>
+
+        <!-- Modals -->
+        <dialog id="createNote-popup">
+            <div class="creatingStuff">
+                <!-- Display above everything else when a note is sending -->
+                <div class="coverCreateANote" id="coverCreateANote" style="display: none;"></div>
+
+                <!-- Main Tab -->
+                <div class="mainTab-noteCreation" id="mainTab-noteCreation">
+                    <h2 style="float: right; opacity: 0; cursor: default;" id="replyingOrCreating">Create a Note!</h2> <i class="fa-regular fa-circle-xmark fa-lg" style="float: left; margin-top: 10px;" onclick="closeCreateNotePopup()"></i>
+                    <textarea rows="0" placeholder="What's on your mind?" id="noteContent-textarea"></textarea>
+                    <p id="characterLimit_note" style="color: var(--text-semi-transparent)">0/1,250</p>
+                    <br />
+                    <p id="uploadingImage" style="color: var(--success-color); display: none;">Uploading image...</p>
+                    <button onclick="publishNote()" class="publishNoteBtn"><i class="fa-solid fa-pen-to-square"></i> Create!</button>
+                    <br />
+                    <img id="imgToBeUploaded" draggable="false" />
+                    <video id="vidToBeUploaded" draggable="false" autoplay="true" muted="true" controls style="display: none;"></video>
+                    <br />
+                    <div id="quotingNote">
+                        <div class="quoteContainer">
+                            <img src="" alt="Quote user pfp" class="quotePfp" id="notePopupQuotePfp">
+                            <div class="quoteContent">
+                                <div class="quoteHeader">
+                                    <span class="quoteDisplay" id="notePopupQuoteDisplay"></span>
+                                    <span class="quoteUsername" id="notePopupQuoteUsername"></span>
+                                </div>
+                                <span class="quoteText" id="notePopupQuoteText"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <p style="font-size: small; color: var(--text-semi-transparent); display: none; transform: translateY(-10px);" id="hasntBeenUploadedNotice">Image hasn't been uploaded to TransSocial's server yet. This is just a preview.</p>
+                    <a href="javascript:void(0);" style="display: none; float: left; max-width: auto; transform: translateY(-10px);" id="removeUploadedImage" onclick="removeImage()">Remove Image</a> <a href="javascript:void(0);" style="display: none; float: left; max-width: auto; transform: translateY(-10px); margin-left: 7px;" id="addAltTextToImage" onclick="addAltText()">Add Alt Text</a>
+                    <p id="noteError"></p>
+                </div>
+
+                <!-- Settings Tab -->
+                <div class="settingsStuff hidden" id="settingStuff">
+                    <i class="fa-solid fa-arrow-left fa-lg" style="float: left; margin-top: 10px;" onclick="swapNoteTab()"></i>
+
+                    <br />
+
+                    <h2 style="margin-top: 10px;">Add a content warning</h2> 
+                    <p style="font-size: 14px; color: var(--text-semi-transparent);">Add a content warning to this note by selecting a category. This helps people see only the content they want to on TransSocial.</p>
+
+                    <!-- NSFW Checkbox -->
+                    <input type="checkbox" id="isNsfw" /> <span class="noteContainsNsfwContent">Note contains NSFW content.</span> 
+                    <p class="optionAlt">This may include nudity, intercourse, intense violence, etc.</p>
+
+                    <!-- Content Warning Checkbox -->
+                    <input type="checkbox" id="isSensitive" /> Note contains sensitive content.
+                    <p class="optionAlt">Select this if your note has potentionally triggering content.</p>
+
+                    <!-- Political Checkbox -->
+                    <input type="checkbox" id="isPolitical" /> Note contains political content.
+                    <p class="optionAlt">Select this if your note has political content.</p>
+
+                    <br />
+                </div>
+
+                <!-- Settings -->
+                <div class="settingsIcons-noteCreation">
+                    <div class="icons">
+                        <i class="fa-solid fa-flag fa-lg" onclick="swapNoteTab()"></i> <i class="fa-solid fa-image fa-lg" onclick="uploadImage()"><input type="file" id="imageUploadInput" accept="image/png, image/jpeg, image/webp, video/mp4, image/gif" style="display: none;"></i>
+                    </div>
+                </div>
+            </div>
+        </dialog>
+
+        <dialog id="signInPrompt">
+            <img src="/assets/imgs/All_transparent.png" draggable="false" style="width: 450px; height: 100px; margin-left: 17%; margin-right: 15%;" />
+            <h2>You must be signed in.</h2>
+            <p>To perform this action, you need to be signed into TransSocial!</p>
+            <br />
+            <a href="/auth/login"><button>Login</button></a>
+            <div style="margin-top: 5px;"></div>
+            <a href="/auth/register"><button>Register</button></a>
+        </dialog>
+
+        <dialog id="addAltText">
+            <h2>Add Alt Text</h2>
+            <p>Help those with visual impairments or low vision understand what your note is.</p>
+
+            <textarea id="altText_input" placeholder="A fluffy orange cat sitting on a windowsill, licking its paw and grooming itself"></textarea>
+
+            <br />
+
+            <button onclick="addAltText_finish()">Finish</button>
+        </dialog>
+
+        <dialog id="verifyEmail">
+            <h2><i class="fa-solid fa-envelope-circle-check"></i> Please verify your email</h2>
+            <p>We need to ensure your account is using an actual email address. This is for your security and to help us drive away bots.</p>
+            <p style="font-size: 14px; color: var(--text-semi-transparent);">If you're seeing this, you registered for an account before v0.0.5_indev and have not verified your email address yet. Starting v0.0.5_indev, you will need to be able to verify your email when creating new accounts.</p>
+
+            <br />
+
+            <button onclick="getVerificationEmail()" style="width: 100%;"><i class="fa-solid fa-check-to-slot"></i> Verify Email</button>
+        </dialog>
+
+        <dialog id="emailSent_emailVer">
+            <h2><i class="fa-solid fa-envelope-circle-check"></i> Email sent!</h2>
+            <p>Once you verify your email, please click the button below to verify, then we won't bug you again!</p>
+            <p style="font-size: 14px; color: var(--text-semi-transparent);">If you're seeing this, you registered for an account before v0.0.5_indev and have not verified your email address yet. Starting v0.0.5_indev, you will need to be able to verify your email when creating new accounts.</p>
+
+            <br />
+
+            <button onclick="window.location.reload()">Check Verification Status</button>
+        </dialog>
+
+        <dialog id="editWhatPartofNote">
+            <h2>Note Settings</h2>
+            <p>Typo? Need to delete this note? Here's your own personal control panel!</p>
+
+            <br />
+
+            <button onclick="editNoteContent()" style="width: 100%;"><i class="fa-solid fa-pen"></i> Edit Note Content</button>
+            <button onclick="deleteNote()" style="width: 100%;"><i class="fa-solid fa-trash"></i> Delete Note</button>
+
+            <br />
+            <br />
+            
+            <button onclick="document.getElementById('editWhatPartofNote').close()">Nevermind</button>
+        </dialog>
+
+        <dialog id="checkIfNoteDeletion">
+            <h2>Delete this note?</h2>
+            <p>Are you sure? This action can't be reverted!</p>
+
+            <br />
+
+            <button onclick="deleteNote_fully()" style="width: 100%;"><i class="fa-solid fa-trash"></i> Yes, delete</button>
+            <button onclick="deleteNote_nevermind()" style="width: 100%;"><i class="fa-solid fa-xmark"></i> Nevermind, I change my mind</button>
+        </dialog>
+
+        <dialog id="noteDeleted">
+            <h2>Note Deleted</h2>
+            <p>Note was successfully deleted.</p>
+
+            <br />
+
+            <button onclick="window.location.reload()">Okay</button>
+        </dialog>
+
+        <dialog id="editNoteContent">
+            <!-- Display above everything else when a note is updating -->
+            <div class="coverUpdatingNote" id="coverUpdatingNote" style="display: none;"></div>
+
+            <h2>Edit Note Content</h2>
+            <p>Removing images is currently not supported at this time.</p>
+
+            <textarea id="newTextContent" placeholder="What do you want your note to say now?"></textarea>
+            <p id="newTextContent-characterLimit" style="color: var(--text-semi-transparent)">0/1,250</p>
+
+            <br />
+            <br />
+
+            <button onclick="applyEdits()">Apply</button> <button onclick="dontApplyEdits()">Nevermind</button>
+        </dialog>
+
+        <dialog id="noteUpdated">
+            <h2>Note Updated</h2>
+            <p>Note was successfully updated.</p>
+
+            <br />
+
+            <button onclick="window.location.reload()">Okay</button>
+        </dialog>
+    </body>
+
+    <!-- Core Firebase Scripts (MUST BE FIRST) -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-storage.js"></script>
+
+    <!-- Scripts -->
+    <script src="/assets/js/ts_fas_acih.js"></script>
+    <script src="/assets/js/pageLoader.js"></script>
+    <script src="/assets/js/sidebarOpen.js"></script>
+    <script src="/assets/js/twemoji.js"></script>
+</html>

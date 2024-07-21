@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>TransSocial | Settings</title>
+        <link rel="stylesheet" href="/assets/css/mainSite.css">
+        <link rel="shortcut icon" href="/assets/imgs/favicon.png" type="image/png">
+        <script src="https://kit.fontawesome.com/be7c331826.js" crossorigin="anonymous"></script>
+        <script src="/assets/js/twemoji.js" crossorigin="anonymous"></script>
+    </head>
+    
+    <body onload="loadEverything() + signedOutCheck()">
+        <!-- If someone tries to use TransSocial with JavaScript -->
+        <noscript>
+            <div class="noJavaScript">
+
+            </div>
+        </noscript>
+
+        <!-- Overlay when attempting to link -->
+        <div id="linkingPatreonAccount" style="display: none;"></div>
+        <p id="linkingUpdater" style="display: none;">Linking Patreon account... Please wait.</p>
+        
+        <!-- This loads the website -->
+        <div class="loader" id="loader">
+            <p style="position: fixed; left: 0; top: 0; color: var(--text-semi-transparent); transform: translateY(0px);">&copy; Katniny Studios 2024</p>
+            <p style="position: fixed; left: 0; top: 17px; color: var(--text-semi-transparent); transform: translateY(0px);">Katniny Online Services</p>
+            <p style="position: fixed; left: 0; top: 35px; color: var(--text-semi-transparent); transform: translateY(0px);">TransSocial v0.0.7_indev</p>
+            <img src="/assets/imgs/favicon.png" alt="TransSocial logo" draggable="false" />
+            <h3 id="loaderQuote" style="position: absolute; margin-top: 180px;"></h3>
+        </div>
+
+        <!-- Header -->
+        <div class="header" id="header">
+            <div class="left">
+                <button id="hamburgerMenu"><i class="fa-solid fa-bars"></i></button> <a href="/"><img class="headerLogo" id="transsocialHeaderLogo" src="/assets/imgs/All_transparent.png" draggable="false" /></a>
+            </div>
+
+            <div class="right">
+                <a href="/download"><button style="margin-right: 20px; transform: translateY(-23px);" id="headerGetApp">Get App</button></a> <a href="/notifications"><i class="fa-solid fa-bell fa-lg"></i></a> <a href="/achievements"><i class="fa-solid fa-trophy fa-lg" style="margin-right: 0px;"></i></a> <img src="" alt="Your profile picture" draggable="false" id="userPfp-header" onclick="accountManager()" />
+            </div>
+            <div class="accountManager" id="accountManager" style="display: none;">
+                <h3 id="greetingManager">Hello, {user}</h3>
+                <a href="/settings"><button><i class="fa-solid fa-gear"></i> Settings</button></a>
+                <a href="/achievements"><button><i class="fa-solid fa-award"></i> Achievements</button></a>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <header class="sidebar" id="sidebar">
+            <!-- Navigation Buttons -->
+            <a href="/"><button style="margin-top: 15px;"><i class="fa-solid fa-house"></i> Home</button></a>
+            <a href="/notifications" id="notificationsSidebar"><button><i class="fa-solid fa-bell"></i> Notifications (0)</button></a>
+            <!--<a href="/search"><button><i class="fa-solid fa-magnifying-glass"></i> Explore</button></a>-->
+            <a href="/messages" id="messagesSidebar"><button><i class="fa-solid fa-envelope"></i> Messages (0)</button></a>
+            <!--<a href="/help" id="enchantedSidebar"><button><i class="fa-solid fa-wand-sparkles"></i> Get Enchanted</button></a>-->
+            <a href="/settings" id="settingsSidebar"><button class="settings active"><i class="fa-solid fa-gear"></i> Settings</button></a>
+            <a href="/updates"><button><i class="fa-solid fa-wrench"></i> Updates</button></a>
+            <a href="/contributors"><button><i class="fa-solid fa-face-smile-beam"></i> Contributors</button></a>
+            <a href="/achievements" id="achievementsSidebar"><button><i class="fa-solid fa-award"></i> Achievements</button></a>
+            <a href="/" id="linkToAcc"><button><i class="fa-solid fa-user"></i> Your Profile</button></a>
+            <button onclick="createNotePopup()" class="createNote-sidebar" id="createNote-sidebar"><i class="fa-solid fa-pen-to-square"></i> Create</button>
+
+            <br />
+            <br />
+            <br />
+            <br />
+
+            <div class="sidebarPolicies">
+                <a href="/policies/terms">Terms of Service</a>, <a href="/policies/privacy">Privacy Policy</a>, <a href="/policies/child-safety">Child Safety</a>, <a href="/policies/cookies">Cookies</a>, <a href="/policies/copyright">Copyright</a>, <a href="/policies/guidelines">Community Guidelines</a>
+            </div>
+
+            <!-- Social Icons & Links -->
+            <div class="bottom">
+                <!-- Socials -->
+                <a href="https://discord.gg/SmhATjRxvc" target="_blank"><i class="fa-brands fa-discord fa-lg"></i></a>
+                <a href="https://twitter.com/transs_ocial" target="_blank"><i class="fa-brands fa-twitter fa-lg"></i></a>
+                <a href="https://tiktok.com/@transs_ocial" target="_blank"><i class="fa-brands fa-tiktok fa-lg"></i></a>
+                <a href="https://github.com/transsocial" target="_blank"><i class="fa-brands fa-github fa-lg"></i></a>
+            
+                <!-- Profile -->
+                <div class="profileContainer" >
+                    <div class="profile" id="profile" style="display: none;">
+                        <a href="/settings"><button><i class="fa-solid fa-gear"></i> Settings</button></a>
+                        <button onclick="signOut()"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sign Out</button>
+                    </div>
+
+                    <strong><p id="notSignedIn">Create an account to explore!</p></strong>
+                    <img class="userPfp-sidebar" id="userPfp-sidebar" src="" draggable="false" /><p id="displayName-sidebar">Display Name</p>
+                    <p id="username-pronouns-sidebar">@username</p>
+                </div>
+            </div>
+       </header>
+
+       <!-- Note successfully sent -->
+       <div id="successfullySent" style="display: none;"><p>Note successfully sent!</p></div>
+
+        <!-- New Note Alert -->
+        <!--<div class="notesAlert" id="notesAlert">
+            <p>New Notes</p>
+        </div>-->
+
+        <!-- Notes -->
+        <div class="notes" id="notes">
+            <div class="newNotesAdded" id="newNotesAdded">
+                <!-- Notes go here. This content is user-generated, no default HTML should be here. -->
+            </div>
+            
+            <div class="noteFilter">
+                <!--<p class="version-notice">TransSocial is currently in the InDev stage (version 0.0.1). A lot of features are missing and will be added with updates. <a href="/indev">Learn more</a>.</p>-->
+                <!--<button class="active" style="border-right: 1px solid gray;">All Notes</button><button>Following</button>-->
+
+                <div class="blogStyle" style="margin: 15px;">
+                    <h1>Settings</h1>
+                    <!-- Tabs -->
+                    <div class="settingsTabs"><a href="javascript:void(0);" id="profileTab" onclick="profileTab()" class="active">Profile</a> <a href="javascript:void(1);" id="accountTab" onclick="accountTab()">Account</a> <a href="javascript:void(2);" id="personalizationTab" onclick="personalizationTab()">Personalization</a> <a href="javascript:void(3);" id="subscriptionTab" onclick="subscriptionTab()">Subscription</a></div>
+
+                    <!-- Tab #1 (Profile) -->
+                    <br />
+
+                    <div id="profileTab-display">
+                        <h2>Profile Information</h2>
+                        <p style="color: var(--text-semi-transparent); font-size: 14.5px;">How you'll appear across TransSocial and other Katniny products.</p>
+
+                        <br />
+
+                        <p>Profile Picture</p>
+                        <img src="" draggable="false" alt="Your Katniny profile picture" id="profilePicture_settings" class="profilePicture" /> <button onclick="changePfp()" style="transform: translateY(-20px); margin-left: 5px;" id="changePfp">Change Picture</button>
+                        <input type="file" id="fileInput" accept="image/png, image/jpeg, image/webp" style="display: none;" />
+                        <p id="errorUploadingPfp" style="color: var(--error-text); display: none;"></p>
+
+                        <br />
+                        <br />
+
+                        <p>Display Name</p>
+                        <input type="text" placeholder="Enter a fun display name!" style="font-size: 15px; margin-top: 3px;" id="displayName-text" class="displayName-text" />
+                        <p id="errorUsingDisplay" style="color: var(--error-text); font-size: 14px; display: none;"></p>
+                        <p id="characterLimit_display" style="color: var(--text-semi-transparent); font-size: 14px; margin-top: 1px;">0/25</p>
+                        <button onclick="setDisplayName()" id="saveDisplay" style="display: none;">Save</button>
+
+                        <br />
+
+                        <p>Username</p>
+                        <input type="text" placeholder="Enter a unique username!" style="font-size: 15px; margin-top: 3px;" id="username-text" oninput="usernameCharacters()" class="username-text" />
+                        <p id="characterLimit_username" style="color: var(--text-semi-transparent); font-size: 14px; margin-top: 1px;">0/20</p>
+                        <p id="errorTakingUsername" style="color: var(--error-text); font-size: 14px; display: none;"></p>
+                        <p id="usernameNotice" style="color: var(--error-text); font-size: 14px; display: none;">Changing your username will immediately make your old one available to take!</p>
+                        <button onclick="setUsername()" id="saveUsername" style="display: none;">Save</button>
+
+                        <br />
+
+                        <p>Pronouns</p>
+                        <input type="text" placeholder="What do you preferred to be called? (Field can be empty)" style="font-size: 15px; margin-top: 3px;" id="pronouns-text" class="pronouns-text" />
+                        <p id="characterLimit_pronouns" style="color: var(--text-semi-transparent); font-size: 14px; margin-top: 1px;">0/15</p>
+                        <button onclick="setPronouns()" id="savePronouns" style="display: none;">Save</button>
+
+                        <br />
+
+                        <p>Bio</p>
+                        <textarea id="bioText" class="bioText borderBlack" style="font-size: 14px;"></textarea>
+                        <p id="characterLimit_bio" style="color: var(--text-semi-transparent);">0/500</p>
+                        <button onclick="setBio()" id="saveBio" style="display: none;">Save</button>
+                    </div>
+                </div> 
+
+                <!-- Tab #2 (Account) -->
+                <div id="profileTab-account" style="display: none;">
+                    <h2>Personal Info</h2>
+                    <p style="color: var(--text-semi-transparent); font-size: 14.5px;">Your personal information for Katniny Services.</p>
+
+                    <br />
+
+                    <p>Email Address</p>
+                    <input type="text" placeholder="Enter a new email address" style="font-size: 15px; margin-top: 3px;" id="email-address" class="email-address" />
+                    <p id="errorUsingEmail" style="color: var(--error-text); font-size: 14px; display: none;"></p>
+                    <button onclick="setEmail()" id="saveEmail" style="display: none;" class="saveEmail">Save</button>
+
+                    <br />
+                    <br />
+
+                    <p>Password</p>
+                    <p id="passwordResetSent" style="color: var(--success-color); font-size: 14px; display: none;"></p>
+                    <button onclick="sendPasswordResetEmail()" id="sendPasswordReset">Send Password Reset Email</button>
+
+                    <br />
+                    <br />
+
+                    <p>Language Preference</p>
+                    <select id="languagePreference">
+                        <option value="English (United States)">English (United States)</option>
+                        <!--<option value="Lolcat">Lolcat</option>-->
+                    </select> <i class="fa-solid fa-caret-down"></i>
+
+                    <!--<br />
+                    <br />
+
+                    Re-add at some point in time
+                    <p>Verification</p>
+                    <button onclick="verificationRequest()">Get Verified</button>
+                    -->
+                </div>
+
+                <!-- Tab #3 (Personalization) -->
+                <div id="profileTab-personalization" style="display: none;">
+                    <h2>Personalization</h2>
+                    <p style="color: var(--text-semi-transparent); font-size: 14.5px;">Personalize your TransSocial experience. Transfers between web, desktop and mobile.</p>
+
+                    <br />
+
+                    <p>Theme</p>
+                    <button onclick="selectTheme()">Select Theme</button>
+
+                    <br />
+                    <br />
+
+                    <p>Show Mature Content (NSFW Content)</p>
+                    <p id="updatedMatureContentPref" style="display: none; font-size: 14px; color: var(--success-color);">Updated preference to "" successfully!</p>
+                    <button onclick="hideMatureContent()">Hide</button> <button onclick="blurMatureContent()">Blur</button> <button onclick="showMatureContent()">Show</button>
+
+                    <br />
+                    <br />
+
+                    <p>Show Sensitive Content</p>
+                    <p id="updatedSensitiveContentPref" style="display: none; font-size: 14px; color: var(--success-color);">Updated preference to "" successfully!</p>
+                    <button onclick="hideSensitiveContent()">Hide</button> <button onclick="blurSensitiveContent()">Blur</button> <button onclick="showSensitiveContent()">Show</button>
+
+                    <br />
+                    <br />
+
+                    <p>Show Political Content</p>
+                    <p style="font-size: 14px; color: var(--text-semi-transparent);">TransSocial does not define what considers a note "political". <a href="https://blog.katniny.com/blog/transsocial-political-filter-notice" target="_blank" style="color: var(--main-color)">See notice</a>.</p>
+                    <p id="updatedPoliticalContentPref" style="display: none; font-size: 14px; color: var(--success-color);">Updated preference to "" successfully!</p>
+                    <button onclick="hidePoliticalContent()">Hide</button> <button onclick="blurPoliticalContent()">Blur</button> <button onclick="showPoliticalContent()">Show</button>
+
+                    <br />
+                    <br />
+
+                    <p>Show Pride Logo During Pride Month</p>
+                    <p id="updatedPrideFlagContentPref" style="display: none; font-size: 14px; color: var(--success-color);">Updated preference to "" successful!</p>
+                    <button onclick="hidePrideFlag()">Use Theme Logo</button> <button onclick="showPrideFlag()">Use Pride Logo</button>
+
+                    <br />
+                    <br />
+
+                    <p>Font Scale</p>
+                    <p id="updatedFontScaleContentPref" style="display: none; font-size: 14px; color: var(--success-color);">Updated preference to "" successful!</p>
+                    <p style="font-size: 14px; color: var(--text-semi-transparent);">Please note that "Normal" is recommended.</p>
+                    <button onclick="normalFontScale()">Normal</button> <button onclick="largeFontScale()">Large</button>
+
+                    <br />
+                    <br />
+
+                    <p>Autoplay Videos</p>
+                    <p id="updatedAutoplayContentPref" style="display: none; font-size: 14px; color: var(--success-color);">Updated preference to "" successful!</p>
+                    <button onclick="doAutoplay()">Enable Autoplay</button> <button onclick="doNotAutoplay()">Disable Autoplay</button>
+
+                    <br />
+                    <br />
+
+                    <p>Experiments</p>
+                    <p style="font-size: 14px; color: var(--error-text);">Experiments are work-in-progress features and are likely buggy. Experiments will be removed in TransSocial Beta.</p>
+                    <button onclick="showExperiments()">See Experiments</button>
+                </div>
+
+                <!-- Tab #4 (Subscription) -->
+                <div id="profileTab-subscription" style="display: none;">
+                    <h2>Subscription</h2>
+                    <p style="color: var(--text-semi-transparent); font-size: 14.5px;">Help us keep the lights on! When you subscribe, we'll show our appreciation by giving you exclusive perks!</p>
+                    <p style="color: var(--error-text); font-size: 14px;">Subscriptions are experimental and currently does not work as intended.</p>
+
+                    <br />
+
+                    <p>Subscription Tier: <strong><span id="subscriptionTier">Free</span></strong></p>
+                    <p id="patreonLinkingError" style="color: var(--error-text); font-size: 14px;">You haven't linked your Patreon account! In order to get your perks, please link your Patreon account. (<a href="/policies/privacy" style="color: var(--main-color);">Privacy Policy</a>)</p>
+                    <button onclick="linkPatreonAccount()" id="linkPatreonButton">Link Patreon Account</button>
+
+                    <br />
+
+                    <div id="thanksForSubscribing" style="display: none;">
+                        <h3>Thank you for subscribing!</h3>
+                        <p>Enjoy your perks!</p>
+                        <li>More profile customization! (See more under "Profile")</li>
+                        <li>Get an exclusive badge!</li>
+                        <li>TBD</li>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Please Donate -->
+            <!--<div class="pleaseDonate" id="pleaseDonate">
+                <p>Hey, please don't skip this read. We need your support to keep TransSocial thriving. <a href="https://patreon.com/katniny" target="_blank">My Patreon</a> is the heartbeat of TransSocial, and right now, TransSocial is running on passion but could use some funds (aka funds). Join the Patreon for perks, behind the scenes content, and most importantly - helping TransSocial. Let's make TransSocial better together - your contribution makes a huge difference!</p>
+                <a href="https://patreon.com/katniny" target="_blank"><button>Help TransSocial</button></a>
+                <button onclick="closeHelpPrompt()">Maybe Later</button>
+            </div>-->
+        </div>
+
+        <!-- TransSocial Accounts -->
+        <div class="transsocialAccounts">
+            <h3>TransSocial Accounts</h3>
+            <p>Follow accounts associated with TransSocial.</p>
+
+            <div class="katniny">
+                <!-- Me :3 -->
+                <div class="katniny">
+                    <img class="recommendAcc-pfp" src="" id="katninyPfp" draggable="false" /> <p id="katninyDisplay"></p>
+                    <br /> <a href="/" id="followBtn-1"><button class="followBtn">Follow</button></a>
+                    <p id="katninyUser-pronouns"></p>
+                </div>
+
+                <br />
+
+                <!-- TransSocial -->
+                <div class="transsocial">
+                    <img class="recommendAcc-pfp" src="" id="transsocialPfp" draggable="false" /> <p id="transsocialDisplay"></p>
+                    <br /> <a href="/" id="followBtn-2"><button class="followBtn">Follow</button></a>
+                    <p id="transsocialUser-pronouns"></p>
+                </div>
+
+                <br />
+
+                <!-- Katniny Studios -->
+                <div class="katninystudios">
+                    <img class="recommendAcc-pfp" src="" id="katninystudiosPfp" draggable="false" /> <p id="katninystudiosDisplay"></p>
+                    <br /> <a href="/" id="followBtn-3"><button class="followBtn">Follow</button></a>
+                    <p id="katninystudiosUser-pronouns"></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="policies">
+            <a href="/policies/terms">Terms of Service</a>, <a href="/policies/privacy">Privacy Policy</a>, <a href="/policies/child-safety">Child Safety</a>, <a href="/policies/cookies">Cookies</a>, <a href="/policies/copyright">Copyright</a>, <a href="/policies/guidelines">Community Guidelines</a> 
+        </div>
+
+        <div id="notSignedIn-banner">
+            <p>Join the fun on TransSocial!</p>
+            <a href="/auth/login"><button>Login</button></a>
+            <a href="/auth/register"><button>Create an account</button></a>
+        </div>
+
+        <!-- Achievement Unlock -->
+        <div id="achievementUnlock" class="achievementUnlock" style="display: none;">
+            <div id="achievementIcon"><i class="fa-solid fa-pencil"></i></div> <p id="achievementName">Achievement Name</p>
+        </div>
+
+        <dialog id="showAchievementUnlock">
+            <h2 id="titleAndIcon">title and stuff</h2>
+            <p id="unlockReason">because you did</p>
+            <p id="unlockDate">m/d/y (the objectively correct way)</p>
+            <button onclick="document.getElementById('showAchievementUnlock').close();">Okay!</button>
+        </dialog>
+
+        <!-- Achievement Unlock -->
+        <div id="achievementUnlock" class="achievementUnlock" style="display: none;">
+            <div id="achievementIcon"><i class="fa-solid fa-pencil"></i></div> <p id="achievementName">Achievement Name</p>
+        </div>
+
+        <dialog id="showAchievementUnlock">
+            <h2 id="titleAndIcon">title and stuff</h2>
+            <p id="unlockReason">because you did</p>
+            <p id="unlockDate">m/d/y (the objectively correct way)</p>
+            <button onclick="document.getElementById('showAchievementUnlock').close();">Okay!</button>
+        </dialog>
+
+        <!-- Modals -->
+        <dialog id="themeSelect">
+            <h2>Pick a theme!</h2>
+            <p style="color: var(--text-semi-transparent);">Customize your TransSocial experience exactly to your liking.</p>
+            <button onclick="document.getElementById('themeSelect').close();">Nevermind</button>
+
+            <br />
+            <br />
+
+            <!-- Default -->
+            <div class="themeContainer" onclick="themeDark()">
+                <img src="/assets/imgs/ThemeDark.png" alt="Dark theme on the home page" class="themeImage" />
+                <div class="themeText">Dark</div>
+                <div class="themeDescription">TransSocial's default theme: sleek and clean.</div>
+            </div>
+
+            <!-- Mint Dark -->
+            <div class="themeContainer" onclick="themeMintDark()">
+                <img src="/assets/imgs/ThemeMintDark.png" alt="Mint (Dark) theme on the home page" class="themeImage" />
+                <div class="themeText">Mint (Dark)</div>
+                <div class="themeDescription">A refreshing blend of minty dark hues.</div>
+            </div>
+
+            <!-- High Contrast -->
+            <div class="themeContainer" onclick="themeHighContrast()">
+                <img src="/assets/imgs/ThemeHighContrast.png" alt="High Contrast on the home page" class="themeImage" />
+                <div class="themeText">High Contrast</div>
+                <div class="themeDescription">Bold and impactful, emphasizing sharp clarity and visibility.</div>
+            </div>
+
+            <!-- Midnight Purple -->
+            <div class="themeContainer" onclick="themeMidnightPurple()">
+                <img src="/assets/imgs/ThemeMidnightPurple.png" alt="Midnight Purple on the home page" class="themeImage" />
+                <div class="themeText">Midnight Purple</div>
+                <div class="themeDescription">A calming shade of purple.</div>
+            </div>
+
+            <!-- Darker -->
+            <div class="themeContainer" onclick="themeDarker()">
+                <img src="/assets/imgs/ThemeDarker.png" alt="Darker on the home page" class="themeImage" />
+                <div class="themeText">Darker</div>
+                <div class="themeDescription">A deeper shade, providing a more subdued and shadowed appearance.</div>
+            </div>
+
+            <!-- Light -->
+            <div class="themeContainer" onclick="themeLight()">
+                <img src="/assets/imgs/ThemeLight.png" alt="Light on the home page" class="themeImage" />
+                <div class="themeText">Light</div>
+                <div class="themeDescription">A gentle and luminous theme, designed for clarity and ease.</div>
+            </div>
+
+            <!-- Mint Light -->
+            <div class="themeContainer" onclick="themeMintLight()">
+                <img src="/assets/imgs/ThemeMintLight.png" alt="Mint (Light) on the home page" class="themeImage" />
+                <div class="themeText">Mint (Light)</div>
+                <div class="themeDescription">A fresh and airy theme, blending minty hues with a light, refreshing touch. (This theme has poor accessibility)</div>
+            </div>
+
+            <!-- Classic -->
+            <div class="themeContainer" onclick="themeClassic()">
+                <img src="/assets/imgs/ThemeClassic.png" alt="TransSocial Classic on the home page" class="themeImage" />
+                <div class="themeText">TransSocial Classic</div>
+                <div class="themeDescription">The timeless and familiar theme that started it all. (This theme has poor accessibility)</div>
+            </div>
+
+            <!-- DEBUG (FOR REWRITING SETTINGS PAGE) -->
+
+            <br />
+            <br />
+
+            <button onclick="document.getElementById('themeSelect').close();">Nevermind</button>
+        </dialog>
+
+        <dialog id="experimentSelect">
+            <h2>Try an experiment!</h2>
+            <p style="color: var(--error-text);">Experiments are work-in-progress features and are likely buggy.</p>
+            <button onclick="document.getElementById('experimentSelect').close();">Nevermind</button>
+
+            <br />
+            <br />
+
+            <!-- Direct Messaging -->
+            <div class="themeContainer" onclick="toggleDMExperimentDetails()">
+                <img src="/assets/imgs/dm_experiment.png" alt="Two users talking to each other through Direct Messages" class="themeImage" />
+                <div class="themeText">Direct Messages</div>
+            </div>
+            <div id="dm_details" style="display: none;">
+                <p style="color: var(--text-semi-transparent);">Message other users on TransSocial. (VERY EARLY WORK IN PROGRESS)</p>
+                <p style="color: var(--text-semi-transparent); font-size: 14px;">Last Updated: July 15, 2024</p>
+                <button onclick="enableDms()" id="enableDms">Enable</button> <button onclick="disableDms()" id="disableDms">Disable</button>
+            </div>
+
+            <br />
+            <br />
+
+            <button onclick="document.getElementById('experimentSelect').close();">Nevermind</button>
+        </dialog>
+
+        <dialog id="createNote-popup">
+            <div class="creatingStuff">
+                <!-- Display above everything else when a note is sending -->
+                <div class="coverCreateANote" id="coverCreateANote" style="display: none;"></div>
+
+                <!-- Main Tab -->
+                <div class="mainTab-noteCreation" id="mainTab-noteCreation">
+                    <h2 style="float: right; opacity: 0; cursor: default;" id="replyingOrCreating">Create a Note!</h2> <i class="fa-regular fa-circle-xmark fa-lg" style="float: left; margin-top: 10px;" onclick="closeCreateNotePopup()"></i>
+                    <textarea rows="0" placeholder="What's on your mind?" id="noteContent-textarea"></textarea>
+                    <p id="characterLimit_note" style="color: var(--text-semi-transparent)">0/1,250</p>
+                    <br />
+                    <p id="uploadingImage" style="color: var(--success-color); display: none;">Uploading image...</p>
+                    <button onclick="publishNote()" class="publishNoteBtn"><i class="fa-solid fa-pen-to-square"></i> Create!</button>
+                    <br />
+                    <img id="imgToBeUploaded" draggable="false" />
+                    <video id="vidToBeUploaded" draggable="false" autoplay="true" muted="true" controls style="display: none;"></video>
+                    <br />
+                    <div id="quotingNote">
+                        <div class="quoteContainer">
+                            <img src="" alt="Quote user pfp" class="quotePfp" id="notePopupQuotePfp">
+                            <div class="quoteContent">
+                                <div class="quoteHeader">
+                                    <span class="quoteDisplay" id="notePopupQuoteDisplay"></span>
+                                    <span class="quoteUsername" id="notePopupQuoteUsername"></span>
+                                </div>
+                                <span class="quoteText" id="notePopupQuoteText"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <p style="font-size: small; color: var(--text-semi-transparent); display: none; transform: translateY(-10px);" id="hasntBeenUploadedNotice">Image hasn't been uploaded to TransSocial's server yet. This is just a preview.</p>
+                    <a href="javascript:void(0);" style="display: none; float: left; max-width: auto; transform: translateY(-10px);" id="removeUploadedImage" onclick="removeImage()">Remove Image</a> <a href="javascript:void(0);" style="display: none; float: left; max-width: auto; transform: translateY(-10px); margin-left: 7px;" id="addAltTextToImage" onclick="addAltText()">Add Alt Text</a>
+                    <p id="noteError"></p>
+                </div>
+
+                <!-- Settings Tab -->
+                <div class="settingsStuff hidden" id="settingStuff">
+                    <i class="fa-solid fa-arrow-left fa-lg" style="float: left; margin-top: 10px;" onclick="swapNoteTab()"></i>
+
+                    <br />
+
+                    <h2 style="margin-top: 10px;">Add a content warning</h2> 
+                    <p style="font-size: 14px; color: var(--text-semi-transparent);">Add a content warning to this note by selecting a category. This helps people see only the content they want to on TransSocial.</p>
+
+                    <!-- NSFW Checkbox -->
+                    <input type="checkbox" id="isNsfw" /> <span class="noteContainsNsfwContent">Note contains NSFW content.</span> 
+                    <p class="optionAlt">This may include nudity, intercourse, intense violence, etc.</p>
+
+                    <!-- Content Warning Checkbox -->
+                    <input type="checkbox" id="isSensitive" /> Note contains sensitive content.
+                    <p class="optionAlt">Select this if your note has potentionally triggering content.</p>
+
+                    <!-- Political Checkbox -->
+                    <input type="checkbox" id="isPolitical" /> Note contains political content.
+                    <p class="optionAlt">Select this if your note has political content.</p>
+
+                    <br />
+                </div>
+
+                <!-- Settings -->
+                <div class="settingsIcons-noteCreation">
+                    <div class="icons">
+                        <i class="fa-solid fa-flag fa-lg" onclick="swapNoteTab()"></i> <i class="fa-solid fa-image fa-lg" onclick="uploadImage()"><input type="file" id="imageUploadInput" accept="image/png, image/jpeg, image/webp, video/mp4, image/gif" style="display: none;"></i>
+                    </div>
+                </div>
+            </div>
+        </dialog>
+
+        <dialog id="prideFlagModal">
+            <h2>Show pride flag logo during pride month?</h2>
+            <p>You can turn this off if you find it hard to read, prefer your theme's logo, etc.</p>
+
+            <br />
+
+            <button onclick="prideFlagHide()" style="text-align: center; width: 100%;">Use Theme Logo (Hide)</button>
+            
+            <br />
+
+            <button onclick="prideFlagShow()" style="text-align: center; width: 100%;">Use Pride Logo (Show)</button>
+            
+            <br />
+            <br />
+
+            <button onclick="document.getElementById('prideFlagModal').close();">Finish</button>
+        </dialog>
+
+        <dialog id="signInPrompt">
+            <img src="/assets/imgs/All_transparent.png" draggable="false" style="width: 450px; height: 100px; margin-left: 17%; margin-right: 15%;" />
+            <h2>You must be signed in.</h2>
+            <p>To perform this action, you need to be signed into TransSocial!</p>
+            <br />
+            <a href="/auth/login"><button>Login</button></a>
+            <div style="margin-top: 5px;"></div>
+            <a href="/auth/register"><button>Register</button></a>
+        </dialog>
+
+        <dialog id="addAltText">
+            <h2>Add Alt Text</h2>
+            <p>Help those with visual impairments or low vision understand what your note is.</p>
+
+            <textarea id="altText_input" placeholder="A fluffy orange cat sitting on a windowsill, licking its paw and grooming itself"></textarea>
+
+            <br />
+
+            <button onclick="addAltText_finish()">Finish</button>
+        </dialog>
+
+        <dialog id="addAltText">
+            <h2>Add Alt Text</h2>
+            <p>Help those with visual impairments or low vision understand what your note is.</p>
+
+            <textarea id="altText_input" placeholder="A fluffy orange cat sitting on a windowsill, licking its paw and grooming itself"></textarea>
+
+            <br />
+
+            <button onclick="addAltText_finish()">Finish</button>
+        </dialog>
+
+        <dialog id="renoteOrQuote">
+            <h2>Renote Option</h2>
+            <p>Would you like to just renote or quote renote?</p>
+            <p style="font-size: 14px; color: var(--text-semi-transparent);">This won't be in a popup forever, this is just for testing. Remember, you are using an In Development product afterall.</p>
+
+            <br />
+
+            <button onclick="renoteNormally()"><i class="fa-solid fa-retweet"></i> Renote without Quoting</button>
+            <br />
+            <button onclick="quoteRenote()"><i class="fa-solid fa-quote-left"></i> Quote Renote</button>
+
+            <br />
+            <br />
+
+            <button onclick="closeRenotePopup()">Nevermind, I don't want to interact</button>
+        </dialog>
+
+        <dialog id="verifyEmail">
+            <h2><i class="fa-solid fa-envelope-circle-check"></i> Please verify your email</h2>
+            <p>We need to ensure your account is using an actual email address. This is for your security and to help us drive away bots.</p>
+            <p style="font-size: 14px; color: var(--text-semi-transparent);">If you're seeing this, you likely changed your email or did not yet verify your email.</p>
+
+            <br />
+
+            <button onclick="getVerificationEmail()" style="width: 100%;"><i class="fa-solid fa-check-to-slot"></i> Verify Email</button>
+        </dialog>
+
+        <dialog id="emailSent_emailVer">
+            <h2><i class="fa-solid fa-envelope-circle-check"></i> Email sent!</h2>
+            <p>Once you verify your email, please click the button below to verify, then we won't bug you again!</p>
+            <p style="font-size: 14px; color: var(--text-semi-transparent);">If you're seeing this, you likely changed your email or did not yet verify your email.</p>
+
+            <br />
+
+            <button onclick="window.location.reload()">Check Verification Status</button>
+        </dialog>
+
+        <dialog id="editWhatPartofNote">
+            <h2>Note Settings</h2>
+            <p>Typo? Need to delete this note? Here's your own personal control panel!</p>
+
+            <br />
+
+            <button onclick="editNoteContent()" style="width: 100%;"><i class="fa-solid fa-pen"></i> Edit Note Content</button>
+            <button onclick="deleteNote()" style="width: 100%;"><i class="fa-solid fa-trash"></i> Delete Note</button>
+
+            <br />
+            <br />
+            
+            <button onclick="document.getElementById('editWhatPartofNote').close()">Nevermind</button>
+        </dialog>
+
+        <dialog id="checkIfNoteDeletion">
+            <h2>Delete this note?</h2>
+            <p>Are you sure? This action can't be reverted!</p>
+
+            <br />
+
+            <button onclick="deleteNote_fully()" style="width: 100%;"><i class="fa-solid fa-trash"></i> Yes, delete</button>
+            <button onclick="deleteNote_nevermind()" style="width: 100%;"><i class="fa-solid fa-xmark"></i> Nevermind, I change my mind</button>
+        </dialog>
+
+        <dialog id="noteDeleted">
+            <h2>Note Deleted</h2>
+            <p>Note was successfully deleted.</p>
+
+            <br />
+
+            <button onclick="window.location.reload()">Okay</button>
+        </dialog>
+
+        <dialog id="editNoteContent">
+            <!-- Display above everything else when a note is updating -->
+            <div class="coverUpdatingNote" id="coverUpdatingNote" style="display: none;"></div>
+
+            <h2>Edit Note Content</h2>
+            <p>Removing images is currently not supported at this time.</p>
+
+            <textarea id="newTextContent" placeholder="What do you want your note to say now?"></textarea>
+            <p id="newTextContent-characterLimit" style="color: var(--text-semi-transparent)">0/1,250</p>
+
+            <br />
+            <br />
+
+            <button onclick="applyEdits()">Apply</button> <button onclick="dontApplyEdits()">Nevermind</button>
+        </dialog>
+
+        <dialog id="noteUpdated">
+            <h2>Note Updated</h2>
+            <p>Note was successfully updated.</p>
+
+            <br />
+
+            <button onclick="window.location.reload()">Okay</button>
+        </dialog>
+
+        <dialog id="editDisplayName">
+            <h2>Edit Display Name</h2>
+            <p>What's your new online alias?</p>
+
+            <br />
+
+            <input type="text" placeholder="Enter a new display name!" />
+            
+
+            <br />
+            <br />
+
+            <button onclick="confirmDisplayChange()">Apply</button> <button onclick="document.getElementById('editDisplayName').close(); document.getElementById('displayName-text').value = ''">Nevermind</button>
+            
+        </dialog>
+
+        <dialog id="editUsername">
+            <h2>Edit Username</h2>
+            <p>Change your username! <span style="color: var(--error-text)">Warning: Your previous username will be up for grabs!</span></p>
+
+            <br />
+
+            <input type="text"  placeholder="Enter a new username!" oninput="usernameCharacters()" />
+            <p id="characterLimit_username" style="color: var(--text-semi-transparent)">0/20</p>
+            <p style="color: var(--error-text); display: none; margin-top: 5px;" id="errorTaken"></p>
+
+            <br />
+            <br />
+
+            <button onclick="confirmUsernameChange()">Apply</button> <button onclick="document.getElementById('editUsername').close(); document.getElementById('username-text').value = ''">Nevermind</button>
+            
+        </dialog>
+
+        <dialog id="editPronouns">
+            <h2>Edit Pronouns</h2>
+            <p>Help create a welcoming space by adding your pronouns!</p>
+
+            <br />
+
+            <input type="text" placeholder="Enter your new pronouns!" />
+            
+
+            <br />
+            <br />
+
+            <button onclick="confirmPronounsChange()">Apply</button> <button onclick="document.getElementById('editPronouns').close(); document.getElementById('pronouns-text').value = ''">Nevermind</button>
+            
+        </dialog>
+
+        <dialog id="editEmail">
+            <h2>Sensitive Action</h2>
+            <p>To change your account's email address, please confirm your identity.</p>
+            <input type="password" id="password_reauth_email" placeholder="Enter your password" />
+            <p style="font-size: 14.5px; color: var(--error-text); display: none;" id="errorWithReauthenticating_email"></p>
+
+            <br />
+            <br />
+
+            <button onclick="changeEmail_reauth()" id="verifyEmail_verification">Verify</button> <button onclick='document.getElementById("editEmail").close()' id="cancelEmailReauthentication">Nevermind</button>
+        </dialog>
+
+        <dialog id="editEmailThisTime">
+            <h2>New Email</h2>
+            <p>Thanks for verifying your identity! You may now change your email.</p>
+
+            <br />
+
+            <input type="email" id="newEmail" placeholder="Enter your new email address" />
+            <p style="color: var(--error-text); display: none; margin-top: 5px;" id="errorEmail"></p>
+
+            <br />
+            <br />
+
+            <button onclick="changeEmail()">Apply</button> <button onclick="document.getElementById('editEmailThisTime').close(); document.getElementById('newEmail').value = '';">Nevermind</button>
+        </dialog>
+
+        <dialog id="editPfp">
+            <h2>Edit Profile Picture</h2>
+            <p>Change your profile picture to reflect your style.</p>
+
+            <br />
+
+            <input type="file" accept="image/*" onsubmit="" id="pfpUploader" />
+            <p style="color: var(--error-text); display: none; margin-top: 5px;" id="pfpError"></p>
+            <img id="pfpPreview-modal" draggable="false" style="width: 100px; height: 100px; border-radius: 50%; margin-top: 10px; display: none;"/>
+
+            <br />
+            <br />
+
+            <button onclick="confirmPfpChange()">Apply</button> <button onclick="document.getElementById('editPfp').close(); document.getElementById('pfpUploader').value = ''; document.getElementById('pfpError').textContent = ''; document.getElementById('pfpError').style.display = 'none'; document.getElementById('pfpPreview-modal').style.display = 'none'; document.getElementById('pfpPreview-modal').src = '';">Nevermind</button>
+        </dialog>
+
+        <dialog id="editBio">
+            <h2>Edit Bio</h2>
+            <p>Your bio is your introduction - make it count!</p>
+
+            <br />
+
+            <textarea placeholder="I'm ..., my pronouns are ... and I like ..."></textarea>
+            
+            <p style="color: var(--error-text); display: none; margin-top: 5px;" id="bioError"></p>
+            
+            <br />
+            <br />
+
+            <button onclick="confirmBioChange()">Apply</button> <button onclick="document.getElementById('editBio').close(); document.getElementById('bioText').value = '';">Nevermind</button>
+        </dialog>
+        
+        <dialog id="editNsfw">
+            <h2>Mature Content Preferences</h2>
+            <p>Would you like mature content to not show, be blurred, or show up completely uncensored?</p>
+
+            <br />
+
+            <button onclick="nsfwPreferenceHide()" style="text-align: center; width: 100%;">Hide Mature Content</button>
+            
+            <br />
+
+            <button onclick="nsfwPreferenceBlur()" style="text-align: center; width: 100%;">Blur Mature Content</button>
+
+            <br />
+
+            <button onclick="nsfwPreferenceShow()" style="text-align: center; width: 100%;">Show Mature Content</button>
+            
+            <br />
+            <br />
+
+            <button onclick="document.getElementById('editNsfw').close();">Finish</button>
+        </dialog>
+
+        <dialog id="editSensitive">
+            <h2>Sensitive Content Preferences</h2>
+            <p>Would you like sensitive content to not show, be blurred, or show up completely uncensored?</p>
+
+            <br />
+
+            <button onclick="sensitivePreferenceHide()" style="text-align: center; width: 100%;">Hide Sensitive Content</button>
+            
+            <br />
+
+            <button onclick="sensitivePreferenceBlur()" style="text-align: center; width: 100%;">Blur Sensitive Content</button>
+
+            <br />
+
+            <button onclick="sensitivePreferenceShow()" style="text-align: center; width: 100%;">Show Sensitive Content</button>
+            
+            <br />
+            <br />
+
+            <button onclick="document.getElementById('editSensitive').close();">Finish</button>
+        </dialog>
+
+        <dialog id="editPolitical">
+            <h2>Political Content Preferences</h2>
+            <p>Would you like political content to not show, be blurred, or show up completely uncensored?</p>
+
+            <br />
+
+            <button onclick="politicalPreferenceHide()" style="text-align: center; width: 100%;">Hide Political Content</button>
+            
+            <br />
+
+            <button onclick="politicalPreferenceBlur()" style="text-align: center; width: 100%;">Blur Political Content</button>
+
+            <br />
+
+            <button onclick="politicalPreferenceShow()" style="text-align: center; width: 100%;">Show Political Content</button>
+            
+            <br />
+            <br />
+
+            <button onclick="document.getElementById('editPolitical').close();">Finish</button>            
+        </dialog>
+
+        <dialog id="editTheme">
+            <h2>Theme Preferences</h2>
+            <p>Make it yours! Pick a theme that reflects your style. It will stay the same on desktop, mobile, and web.</p>
+            <p style="color: var(--text-semi-transparent); font-size: 14px;">Some themes have poor accessibility.</p>
+
+            <br />
+
+            <h2>Dark Themes </h2>
+            <button onclick="themeDark()" style="text-align: center; width: 100%;">Dark</button>
+            <button onclick="themeMintDark()" style="text-align: center; width: 100%;">Mint (Dark)</button>
+            <button onclick="themeHighContrast()" style="text-align: center; width: 100%;">High Contrast</button>
+            <button onclick="themeMidnightPurple()" style="text-align: center; width: 100%;">Midnight Purple</button>
+            <button onclick="themeDarker()" style="text-align: center; width: 100%;">Darker</button>
+
+            <br />
+            <br />
+
+            <h2>Light Themes</h2>
+            <button onclick="themeLight()" style="text-align: center; width: 100%;">Light</button>
+            <button onclick="themeMintLight()" style="text-align: center; width: 100%;">Mint (Light)</button>
+            <button onclick="themeClassic()" style="text-align: center; width: 100%;">TransSocial Classic</button>
+            
+            <br />
+            <br />
+
+            <div id="css_theme-2024-04">
+                <h2>Experimental</h2>
+                <p>You have the <b>css_theme-2024-04</b> experiment enabled. Please note that this may break at any time, with or without warning.</p>
+                <button onclick="enableCustomThemes()" style="text-align: center; width: 100%;">Create Theme</button>
+
+                <br />
+                <br />
+            </div>
+
+            <button onclick="document.getElementById('editTheme').close();">Finish</button>
+        </dialog>
+
+        <dialog id="changePassword">
+            <h2 id="passwordResetEmailState">Sending Password Reset Email...</h2>
+            <p id="passwordResetEmailDesc">For security reasons, TransSocial is going to email you a password reset email.</p>
+
+            <br />
+
+            <button onclick="document.getElementById('changePassword').close();">Close</button>
+        </dialog>
+
+        <dialog id="enableThemeExperiment">
+            <h2>Enable Custom Theme Experiment?</h2>
+            <p>Custom themes are a work in progress. Please note that this may break at any time, with or without warning. This feature will not be finalized for a long time, if it releases.</p>
+
+            <br />
+
+            <button onclick="enableCustomThemes()" style="text-align: center; width: 100%;">Enable Experiment</button>
+            
+            <br />
+
+            <button onclick="disableCustomThemes()" style="text-align: center; width: 100%;">Disable Experiment (This will break any custom theme you have enabled)</button>
+            
+            <br />
+            <br />
+
+            <button onclick="document.getElementById('enableThemeExperiment').close();">Finish</button>
+        </dialog>
+
+        <dialog id="enableDirectMessages">
+            <h2>Enable Direct Messages experiment?</h2>
+            <p>Direct Messages are a work in progress. Please note that in this current stage, anyone can message you (privacy settings will be added). This feature is a work-in-progress and will not be finalized for a very long time.</p>
+
+            <br />
+
+            <button onclick="directMessagesEnable()" style="text-align: center; width: 100%;">Enable Experiment</button>
+            
+            <br />
+
+            <button onclick="directMessagesDisable()" style="text-align: center; width: 100%;">Disable Experiment (This will prevent anyone from DM'ing you)</button>
+            
+            <br />
+            <br />
+
+            <button onclick="document.getElementById('enableDirectMessages').close();">Finish</button>
+        </dialog>
+
+        <dialog id="alreadyVerified">
+            <h2><i class="fa-solid fa-circle-check"></i> Verified</h2>
+            <p>Oops! Looks like you're already in TransSocial's verification system! As much as we wish we could double-verify you because we're sure you're that cool, we can't. Maybe you'll have better luck next time!</p>
+
+            <br />
+
+            <button onclick="document.getElementById('alreadyVerified').close();">Okay</button>
+        </dialog>
+
+        <dialog id="getVerified">
+            <h2>Looking to get verified?</h2>
+            <p>You must meet the following requirements to get verified (as TransSocial grows, so will these requirements):</p>
+
+            <br />
+
+            <p><i class="fa-solid fa-check"></i> Must have 5 high quality notes</p>
+            <p><i class="fa-solid fa-check"></i> Must have 5 followers</p>
+            <p><i class="fa-solid fa-check"></i> Your account can't be a parody account</p>
+
+            <br />
+
+            <button onclick="submitVerificationRequest()">Submit Request</button> <button onclick="document.getElementById('getVerified').close();">Close</button>
+        </dialog>
+
+        <dialog id="verReqReceived">
+            <h2>Thanks!</h2>
+            <p>We've received your request for verification. We'll look into it and see if you qualify for verification.</p>
+
+            <br />
+
+            <button onclick="document.getElementById('verReqReceived').close();">Okay</button>
+        </dialog>
+    </body>
+
+    <!-- Core Firebase Scripts (MUST BE FIRST) -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-storage.js"></script>
+
+    <!-- Scripts -->
+    <script src="/assets/js/ts_fas_acih.js"></script>
+    <script src="/assets/js/pageLoader.js"></script>
+    <script src="/assets/js/sidebarOpen.js"></script>
+    <script src="/assets/js/twemoji.js"></script>
+</html>

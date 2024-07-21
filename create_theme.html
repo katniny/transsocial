@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>TransSocial | Creating Theme</title>
+        <link rel="stylesheet" href="/assets/css/mainSite.css">
+        <link rel="shortcut icon" href="/assets/imgs/favicon.png" type="image/png">
+        <script src="https://kit.fontawesome.com/be7c331826.js" crossorigin="anonymous"></script>
+        <script src="/assets/js/twemoji.js" crossorigin="anonymous"></script>
+    </head>
+    
+    <body onload="checkForThemeExperiment() + signedOutCheck()">
+        <!-- If someone tries to use TransSocial with JavaScript -->
+        <noscript>
+            <div class="noJavaScript">
+
+            </div>
+        </noscript>
+        
+        <!-- This loads the website -->
+        <div class="loader" id="loader">
+            <p style="position: fixed; left: 0; top: 0; color: var(--text-semi-transparent); transform: translateY(0px);">&copy; Katniny Studios 2024</p>
+            <p style="position: fixed; left: 0; top: 17px; color: var(--text-semi-transparent); transform: translateY(0px);">Katniny Online Services</p>
+            <p style="position: fixed; left: 0; top: 35px; color: var(--text-semi-transparent); transform: translateY(0px);">TransSocial v0.0.7_indev</p>
+            <img src="/assets/imgs/favicon.png" alt="TransSocial logo" draggable="false" />
+            <h3 id="loaderQuote" style="position: absolute; margin-top: 180px;"></h3>
+        </div>
+
+        <!-- Header -->
+        <div class="header" id="header" style="transform: translateY(0px)">
+            <a href="/"><img class="headerLogo" src="/assets/imgs/All_transparent.png" draggable="false" /></a>
+        </div>
+
+        <!-- Fixed Content -->
+        <div class="themeStuff">
+            <a href="/"><button style="margin-bottom: 10px">Go Home</button></a> or <button>Set as Theme</button>
+
+            <h2>Creating Theme</h2>
+            <p style="max-width: 100%;">You are currently creating a TransSocial theme!</p>
+            <p style="color: var(--text-semi-transparent); max-width: 100%;">Only accepts hex codes (e.g. #000). Make sure the # is front of the number or changing will be unsuccessful.</p>
+            <p style="color: var(--text-semi-transparent); max-width: 100%;">There is no save function yet.</p>
+
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+
+            <div id="backgroundColor"></div> <p>Background: </p> <input type="text" id="backgroundNewVal" onchange="updateBackground()">
+
+            <br />
+            <br />
+
+            <div id="mainColor"></div> <p>Main Color: </p> <input type="text" id="mainColorNewVal" onchange="updateMainColor()">
+        </div>
+        
+    </body>
+
+    <!-- Core Firebase Scripts (MUST BE FIRST) -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-storage.js"></script>
+
+    <!-- Scripts -->
+    <script src="/assets/js/ts_fas_acih.js"></script>
+    <script src="/assets/js/pageLoader.js"></script>
+    <script src="/assets/js/sidebarOpen.js"></script>
+    <script src="/assets/js/twemoji.js"></script>
+</html>
