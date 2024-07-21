@@ -1,103 +1,44 @@
 // Randomize quote
+const quotes = [
+    "Loading...or is it just thinking about loading?",
+    "If you can read this, the internet is officially slower than you.",
+    "Taking a moment to appreciate all the OTHER things I could be doing right now.",
+    "Dear Buffering Circle, You win. I surrender.",
+    "The only thing loading faster than this page is my frustration.",
+    "Even my patience has a loading bar.",
+    "Loading...please wait while I find my will to live.",
+    "Error: Motivation not found.",
+    "My internet speed is a perfect reflection of my productivity today.",
+    "Who needs enemies when you have slow internet?",
+    "At this rate, the dinosaurs will be back before this page loads.",
+    "The suspense is killing me. Or it would be, if the page would load.",
+    "Loading time sponsored by my unhealthy obsession with checking my phone.",
+    "Would you like a side of existential crisis with that buffering?",
+    "Shhh...The internet is taking a nap.",
+    "Hamsters powering TransSocial are taking a snack break.",
+    "Squirrels are frantically sorting your data. Please be patient.",
+    "Someone must be hogging all your bandwidth, probably watching cat videos.",
+    "Time to practice your 'waiting patiently' face.",
+    "Did you try turning it off and back on again?",
+    "This is a good time for a staring contest with the loading bar.",
+    "If you need me, I'll be here. Or I'll be here eventually.",
+    "Hey, at least you have something to look at, right?",
+    "I'd tell you a joke while you wait, but it might take even longer to load.",
+    "Maybe if you close my eyes and open them again, it'll magically be loaded.",
+    "TransSocial is currently in development - it's like watching paint dry, but way more exciting (maybe).",
+    "Don't worry if TransSocial is a little buggy - report them and we'll train the hamsters better.",
+    "We're releasing TransSocial in phases, kind of like building a snowman one snowball at a time.",
+    "Warning: Using TransSocial during development may lead to uncontrollable anger, mild confusion, and a strong urge to slap the developer. Use at your own risk!",
+];
+
 const quote = document.getElementById("loaderQuote");
-const key = Math.floor(Math.random() * 30); // +1 from number of quotes
+const key = Math.floor(Math.random() * quotes.length);
+
+quote.textContent = quotes[key];
+
+
 const date = new Date();
 const currentMonth = date.getMonth() + 1;
-
-switch (key) {
-    // If variable is 0
-    case 0:
-        quote.textContent = "Loading...or is it just thinking about loading?";
-        break;
-    // If variable i 1
-        case 1:
-            quote.textContent = "If you can read this, the internet is officially slower than you.";
-            break;
-    // If variable is 2
-        case 2:
-            quote.textContent = "Taking a moment to appreciate all the OTHER things I could be doing right now.";
-            break;
-    // If variable is 3
-        case 3:
-            quote.textContent = "Dear Buffering Circle, You win. I surrender.";
-            break;
-    // etc...
-        case 4:
-            quote.textContent = "The only thing loading faster than this page is my frustration.";
-            break;
-        case 5: 
-            quote.textContent = "Even my patience has a loading bar.";
-            break;
-        case 6: 
-            quote.textContent = "Loading...please wait while I find my will to live.";
-            break;
-        case 7: 
-            quote.textContent = "Error: Motivation not found.";
-            break;
-        case 8: 
-            quote.textContent = "My internet speed is a perfect reflection of my productivity today.";
-            break;
-        case 9: 
-            quote.textContent = "Who needs enemies when you have slow internet?";
-            break;
-        case 10:
-            quote.textContent = "At this rate, the dinosaurs will be back before this page loads.";
-            break;
-        case 11:
-            quote.textContent = "The suspense is killing me. Or it would be, if the page would load.";
-            break;
-        case 12:
-            quote.textContent = "Loading time sponsored by my unhealthy obsession with checking my phone.";
-            break;
-        case 13:
-            quote.textContent = "Would you like a side of existential crisis with that buffering?";
-            break;
-        case 14:
-            quote.textContent = "Shhh...The internet is taking a nap.";
-            break;
-        case 15: 
-            quote.textContent = "Hamsters powering TransSocial are taking a snack break.";
-            break;
-        case 16:
-            quote.textContent = "Squirrels are frantically sorting your data. Please be patient.";
-            break;
-        case 17:
-            quote.textContent = "Someone must be hogging all your bandwidth, probably watching cat videos.";
-            break;
-        case 18:
-            quote.textContent = "Time to practice your 'waiting patiently' face.";
-            break;
-        case 19:
-            quote.textContent = "Did you try turning it off and back on again?";
-            break;
-        case 20: 
-            quote.textContent = "This is a good time for a staring contest with the loading bar.";
-            break;
-        case 21:
-            quote.textContent = "If you need me, I'll be here. Or I'll be here eventually.";
-            break;
-        case 22: 
-            quote.textContent = "Hey, at least you have something to look at, right?";
-            break;
-        case 23:
-            quote.textContent = "I'd tell you a joke while you wait, but it might take even longer to load.";
-            break;
-        case 24: 
-            quote.textContent = "Maybe if you close my eyes and open them again, it'll magically be loaded.";
-            break;
-        case 25:
-            quote.textContent = "TransSocial is currently in development - it's like watching paint dry, but way more exciting (maybe).";
-            break;
-        case 26:
-            quote.textContent = "Don't worry if TransSocial is a little buggy - report them and we'll train the hamsters better.";
-            break;
-        case 27: 
-            quote.textContent = "We're releasing TransSocial in phases, kind of like building a snowman one snowball at a time.";
-            break;
-        case 28:
-            quote.textContent = "Warning: Using TransSocial during development may lead to uncontrollable anger, mild confusion, and a strong urge to slap the developer. Use at your own risk!";
-            break;
-}   
 
 firebase.auth().onAuthStateChanged((user) => {
     if (user) {
