@@ -10,7 +10,14 @@
     
     <body onload="hideErrorByDefault() + signedInCheck()">
         <div class="loader">
-            <p id="loaderQuote" style="display: none;"></p>
+            <p id="loaderQuote" style="display: none;">
+                <!-- If someone tries to use TransSocial with JavaScript -->
+                <noscript>
+                    <div class="noJavaScript" style="display: inline !important;">
+                        TransSocial requires JavaScript to run
+                    </div>
+                </noscript>
+            </p>
         </div>
 
         <div class="login-form">
