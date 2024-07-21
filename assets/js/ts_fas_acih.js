@@ -215,7 +215,7 @@ firebase.auth().onAuthStateChanged((user) => {
       firebase.database().ref(`users/${user.uid}`).on("value", (snapshot) => {
          const hasDoneIt = snapshot.val();
 
-         if (hasDoneIt.readv007UpdateLog === undefined || hasDoneIt.readv007UpdateLog === false) {
+         if (hasDoneIt.readv0071UpdateLog === undefined || hasDoneIt.readv0071UpdateLog === false) {
             document.getElementById("newestUpdates").showModal();
          } else {
             // don't execute anything else
@@ -232,7 +232,7 @@ function closeUploadLog() {
    firebase.auth().onAuthStateChanged((user) => {
       if (user) {
          firebase.database().ref(`users/${user.uid}`).update({
-            readv007UpdateLog: true,
+            readv0071UpdateLog: true,
          })
       }
    })
