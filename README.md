@@ -38,7 +38,7 @@ Open the project somehow. I use <a href="https://marketplace.visualstudio.com/it
 <br />
 
 ## License
-TransSocial uses the <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> license. Please note you are bound to this license if you remix, adapt or reuse any of this source code.
+TransSocial uses the <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> license. Please note you are bound to this license.
 
 <br />
 
