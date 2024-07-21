@@ -1,4 +1,5 @@
 // katniny Firebase Configuration
+// before pushing to git, always make sure the firebase config doesn't expose yours
 const firebaseConfig = {
    apiKey: "REPLACE",
    authDomain: "REPLACE",

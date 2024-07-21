@@ -1,3 +1,4 @@
+(always ensure )
 git add .
 git commit -m "[Update log thing]"
 git push -u origin main
