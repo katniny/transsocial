@@ -192,7 +192,10 @@ firebase.auth().onAuthStateChanged((user) => {
          if (pathName === "/notifications" || pathName === "/notifications.html") {
             document.getElementById("notificationsSidebar").innerHTML = `<button class="active"><i class="fa-solid fa-bell"></i> Notifications (${unreadNotifications})</button>`;
          } else {
-            document.getElementById("notificationsSidebar").innerHTML = `<button><i class="fa-solid fa-bell"></i> Notifications (${unreadNotifications})</button>`;
+            if (document.getElementById("notificationsSidebar")) {
+               document.getElementById("notificationsSidebar").innerHTML = `<button><i class="fa-solid fa-bell"></i> Notifications (${unreadNotifications})</button>`;
+         
+            }
          }
       })
    }
@@ -217,26 +220,32 @@ firebase.auth().onAuthStateChanged((user) => {
          const hasDoneIt = snapshot.val();
 
          if (hasDoneIt.readv0071UpdateLog === undefined || hasDoneIt.readv0071UpdateLog === false) {
-            document.getElementById("newestUpdates").showModal();
+            if (document.getElementById("newestUpdates")) {
+               document.getElementById("newestUpdates").showModal();
+            }
          } else {
             // don't execute anything else
          }
       })
    } else {
-      document.getElementById("newestUpdates").showModal();
+      if (document.getElementById("newestUpdates")) {
+         document.getElementById("newestUpdates").showModal();
+      }
    }
 })
 
 function closeUploadLog() {
-   document.getElementById("newestUpdates").close();
+   if (document.getElementById("newestUpdates")) {
+      document.getElementById("newestUpdates").close();
 
-   firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-         firebase.database().ref(`users/${user.uid}`).update({
-            readv0071UpdateLog: true,
-         })
-      }
-   })
+      firebase.auth().onAuthStateChanged((user) => {
+         if (user) {
+            firebase.database().ref(`users/${user.uid}`).update({
+               readv0071UpdateLog: true,
+            })
+         }
+      })
+   }
 }
 
 // If the user is on the 404 page, change the page URL to be the page they are on.
@@ -247,90 +256,234 @@ if (document.getElementById("404page")) {
    document.getElementById("profile404").href = `/u?id=${pageWithoutSlash}`;
 }
 
-// If user is on the register page and is not signed in, redirect to katniny.com
+// If user is on the register page and is not signed in, redirect to /
 if (pathName === "/auth/register" || pathName === "/auth/register.html") {
    firebase.auth().onAuthStateChanged((user) => {
       if (user) {
-         window.location.replace("/");
+         window.location.replace("/auth/pfp");
       } else {
-         window.location.replace("https://katniny.com/ts/prepare/acc");
+         // no need to do anything
       }
    })
+}
+
+// If user is on /auth/pfp, make sure their email is saved
+// We also add their profile picture here
+if (pathName === "/auth/pfp") {
+   firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+         firebase.database().ref(`users/${user.uid}`).update({
+            email : user.email
+         });
+
+         firebase.database().ref(`users/${user.uid}/pfp`).once("value", (snapshot) => {
+            if (snapshot.exists()) {
+               window.location.replace("/auth/names");
+            }
+         });
+      } else {
+         window.location.replace("/auth/register");
+      }
+   });
+}
+
+if (pathName === "/auth/pfp") {
+   document.getElementById("pfpUploader").addEventListener("change", function(event) {
+      const file = event.target.files[0];
+
+      if (file) {
+         // ensure file is 5mb or lower
+         if (file.size > 5 * 1024 * 1024) { // 5mb
+            document.getElementById("errorTxt").textContent = "Image must be under 5MB.";
+            document.getElementById("errorTxt").style.display = "block";
+            return;
+         }
+
+         // check file type
+         const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+         if (!allowedTypes.includes(file.type)) {
+            document.getElementById("errorTxt").textContent = "Image must be a JPG, PNG, or WEBP file.";
+            document.getElementById("errorTxt").style.display = "block";
+            return;
+         }
+
+         // get user uid
+         firebase.auth().onAuthStateChanged((user) => {
+            // create a reference to where you want to upload the file
+            const fileRef = storageRef.child(`images/pfp/${user.uid}/${file.name}`);
+
+            // upload the file
+            const uploadTask = fileRef.put(file);
+
+            uploadTask.on("state_changed",
+               function(snapshot) {
+                  // log progress
+                  const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                  document.getElementById("errorTxt").textContent = `Uploading profile picture! ${progress}% done`;
+                  document.getElementById("errorTxt").style.display = "block";
+                  document.getElementById("errorTxt").style.color = "var(--success-color)";
+               },
+               function(error) {
+                  document.getElementById("errorTxt").textContent = `${error.message}`;
+                  document.getElementById("errorTxt").style.display = "block";
+                  document.getElementById("errorTxt").style.color = "var(--error-text)";
+               },
+               function() {
+                  // complete!
+                  uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
+                     firebase.database().ref(`users/${user.uid}`).update({
+                        pfp : file.name
+                     })
+                     .then(() => {
+                        window.location.replace("/auth/names");
+                     });
+                  })
+               }
+            )
+         })
+      }
+   })
+}
+
+// if user is on /auth/names, allow them to add a display name and username
+if (pathName === "/auth/pfp") {
+   firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+         firebase.database().ref(`users/${user.uid}/username`).once("value", (snapshot) => {
+            if (snapshot.exists()) {
+               window.location.replace("/auth/done");
+            }
+         });
+      } else {
+         window.location.replace("/auth/register");
+      }
+   });
+}
+
+function displayAndUsernameReserve() {
+   document.getElementById("errorTxt").style.display = "none";
+   document.getElementById("displayAndUsernameBtn").innerHTML = `<i class="fa-solid fa-spinner fa-spin-pulse"></i> Checking display...`;
+   document.getElementById("displayAndUsernameBtn").classList.add("disabled");
+
+   // make sure display name isn't empty
+   const displayName = document.getElementById("displayName-text").value.trim();
+
+   // get username
+   const username = document.getElementById("username-text").value;
+
+   if (displayName === "") {
+      document.getElementById("errorTxt").textContent = `Your display name can't be empty.`;
+      document.getElementById("errorTxt").style.display = "block";
+      document.getElementById("errorTxt").style.color = "var(--error-text)";
+      document.getElementById("displayAndUsernameBtn").innerHTML = `Use Display Name & Check Username`;
+      document.getElementById("displayAndUsernameBtn").classList.remove("disabled");
+      return;
+   } else {
+      firebase.auth().onAuthStateChanged((user) => {
+         if (user) {
+            firebase.database().ref(`users/${user.uid}`).update({
+               display : displayName
+            })
+            .then(() => {
+               document.getElementById("displayAndUsernameBtn").innerHTML = `<i class="fa-solid fa-spinner fa-spin-pulse"></i> Checking username...`;
+      
+               firebase.database().ref(`taken-usernames/${username}`).once("value", (snapshot) => {
+                  if (snapshot.exists()) {
+                     // we don't have to check if the username is blank because firebase reads the entire "taken-usernames/"
+                     // database reference, so it assumes it's already taken.
+                     // if you want it to say "Username cannot be empty", then you can add it (i doubt it'd be hard)
+                     document.getElementById("errorTxt").textContent = `Username is unavailable! Try another.`;
+                     document.getElementById("errorTxt").style.display = "block";
+                     document.getElementById("displayAndUsernameBtn").innerHTML = `Use Display Name & Check Username`;
+                     document.getElementById("displayAndUsernameBtn").classList.remove("disabled");
+                     return;
+                  } else {
+                     firebase.auth().onAuthStateChanged((user) => {
+                        if (user) {
+                           document.getElementById("displayAndUsernameBtn").innerHTML = `<i class="fa-solid fa-spinner fa-spin-pulse"></i> Applying username...`;
+      
+                           // reserve the name
+                           firebase.database().ref(`taken-usernames/${username}`).update({
+                              user : user.uid
+                           })
+                           .then(() => {
+                              // then add username to account
+                              firebase.database().ref(`users/${user.uid}`).update({
+                                 username : username
+                              })
+                              .then(() => {
+                                 window.location.replace("/auth/done");
+                              });
+                           });
+                        }
+                     });
+                  }
+               });
+            });
+         }
+      })
+   }
+}
+
+// auth/done... not much to do, just check auth state
+if (pathName === "/auth/done") {
+   firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+         // nothing to do
+      } else {
+         window.location.replace("/auth/register");
+      }
+   });
 }
 
 // Register Function
 function register() {
    if (pathName === "/auth/register.html" || pathName === "/auth/register") {
-      // Get all the input fields
-      email = document.getElementById('email').value;
-      password = document.getElementById('password').value;
-      errorTxt = document.getElementById('errorTxt');
+      document.getElementById("registerBtn").innerHTML = `<i class="fa-solid fa-spinner fa-spin-pulse"></i> Registering...`;
+      document.getElementById("registerBtn").classList.add("disabled");
+      document.getElementById("errorTxt").style.display = "none";
 
-      // Validate Input Fields
-      if (validate_email(email) == false || validate_password(password) == false) {
-         // Alert User and don't continue running code
-         errorTxt.innerHTML = "Your email or password is invalid. Please try again.";
-         errorTxt.style.color = 'red';
-         return;
-      }
+      // get the email and password input fields
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
 
-      // If everything is valid, continue with auth
-      auth.createUserWithEmailAndPassword(email, password)
-         .then(function () {
-            // Create user
-            const user = auth.currentUser;
-
-            document.getElementById("body").setAttribute("onload", "null");
-
-            //window.location.replace("/auth/name");
+      firebase.auth().createUserWithEmailAndPassword(email, password)
+         .then((userCredential) => {
+            document.getElementById("registerBtn").innerHTML = `<i class="fa-solid fa-spinner fa-spin-pulse"></i> Starting...`;
+            firebase.database().ref(`users/${userCredential.uid}`).update({
+               email : email
+            }).then(() => {
+               window.location.replace("/auth/pfp");
+            });
          })
-         .catch(function (error) {
-            // Firstly, create variables for the Error Code and Error Message
-            const error_code = error.code;
-            const error_message = error.message;
-            // Then, alert the user of the error
-            errorTxt.innerHTML = error_message;
-            errorTxt.style.color = 'red';
-         })
+         .catch((error) => {
+            document.getElementById("errorTxt").textContent = error.message;
+            document.getElementById("errorTxt").style.display = "block";
+            document.getElementById("registerBtn").innerHTML = `Register`;
+            document.getElementById("registerBtn").classList.remove("disabled");
+         });
    }
 }
 
 // Login Function
 function login() {
+   document.getElementById("loginBtn").innerHTML = `<i class="fa-solid fa-spinner fa-spin-pulse"></i> Logging in...`;
+   document.getElementById("loginBtn").classList.add("disabled");
+   document.getElementById("errorTxt").style.display = "none";
+
    if (pathName === "/auth/login.html" || pathName === "/auth/login") {
-      // Get input fields
-      email = document.getElementById('email').value;
-      password = document.getElementById('password').value;
-      const errorTxt = document.getElementById("errorTxt");
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
 
-      // Validate Fields
-      if (validate_email(email) == false || validate_password(password) == false) {
-         errorTxt.textContent("Information provided is incorrect or account does not exist.");
-         return;
-      }
-
-      auth.signInWithEmailAndPassword(email, password)
-         .then(function () {
-            // Create user
-            const user = auth.currentUser;
-            // Create User Data
-            const database_ref = database.ref();
-            const user_data = {
-               last_login: Date.now()
-            }
-            // Save user data to the database
-            database_ref.child('users/' + user.uid).update(user_data);
-            // Finally, finally alert user that their account has been created & redirect
-            window.location.replace("/auth/katniny");
-         })
-         .catch(function (error) {
-            // Firstly, create variables for the Error Code and Error Message
-            const error_code = error.code;
-            const error_message = error.message;
-            // Then, alert the user of the error
-            errorTxt.textContent = error_message;
-            errorTxt.style.color = "red";
-         })
+      firebase.auth().signInWithEmailAndPassword(email, password)
+         .then(() => {
+            window.location.replace("/");
+         }).catch((error) => {
+            document.getElementById("errorTxt").style.display = "block";
+            document.getElementById("errorTxt").textContent = error.message;
+            document.getElementById("loginBtn").innerHTML = `Login`;
+            document.getElementById("loginBtn").classList.remove("disabled");
+         });
    }
 }
 
@@ -4879,7 +5032,9 @@ firebase.auth().onAuthStateChanged((user) => {
       const isEmailVerified = user.emailVerified;
 
       if (isEmailVerified === false) {
-         document.getElementById("verifyEmail").showModal();
+         if (document.getElementById("verifyEmail")) {
+            document.getElementById("verifyEmail").showModal();
+         }
       }
    }
 })

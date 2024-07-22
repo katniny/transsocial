@@ -1,23 +1,57 @@
 <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Register | TransSocial</title>
-        <link rel="stylesheet" href="/assets/css/loginPage.css">
-        <link rel="shortcut icon" href="/assets/imgs/favicon.png" type="image/png">
-    </head>
-    
-    <body id="body" onload="hideErrorByDefault() + signedInCheck()">
-      <h1>Getting authentication state...</h1>
-    </body>
+<html lang="en">
 
-    <!-- Core Firebase Scripts (MUST BE FIRST) -->
-    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-storage.js"></script>
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Register | TransSocial</title>
+   <link rel="stylesheet" href="/assets/css/mainSite.css">
+   <link rel="shortcut icon" href="/assets/imgs/favicon.png" type="image/png">
+   <script src="https://kit.fontawesome.com/be7c331826.js" crossorigin="anonymous"></script>
+</head>
 
-    <!-- Scripts -->
-    <script src="/assets/js/ts_fas_acih.js"></script>
+<body id="body" onload="hideErrorByDefault()">
+   <div class="loader" id="loader">
+      <p style="position: fixed; left: 0; top: 0; color: var(--text-semi-transparent); transform: translateY(0px);">
+         &copy; Katniny Studios 2024</p>
+      <p style="position: fixed; left: 0; top: 17px; color: var(--text-semi-transparent); transform: translateY(0px);">
+         Katniny Online Services</p>
+      <p style="position: fixed; left: 0; top: 35px; color: var(--text-semi-transparent); transform: translateY(0px);">
+         TransSocial v0.0.7_indev</p>
+      <img src="/assets/imgs/favicon.png" alt="TransSocial logo" draggable="false" />
+      <h3 id="loaderQuote" style="position: absolute; margin-top: 180px;">
+         <!-- If someone tries to use TransSocial with JavaScript -->
+         <noscript>
+            <div class="noJavaScript">
+               TransSocial requires JavaScript to run
+            </div>
+         </noscript>
+      </h3>
+   </div>
+
+   <!-- the actual registration box -->
+   <div class="formBox">
+      <h1><i class="fa-solid fa-hand-holding-heart"></i> Join TransSocial</h1>
+      <p>Join a safe place for everyone! <a href="/auth/login" style="color: var(--main-color);">Already have an account?</a></p>
+
+      <input type="text" id="email" placeholder="Enter your email address" />
+      <input type="password" id="password" placeholder="Enter a secure password" />
+      <p id="errorTxt" style="color: var(--error-text);">empty</p>
+
+      <br />
+
+      <button style="width: 100%;" onclick="register()" id="registerBtn">Register</button>
+   </div>
+</body>
+
+<!-- Core Firebase Scripts (MUST BE FIRST) -->
+<script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-storage.js"></script>
+
+<!-- Scripts -->
+<script src="/assets/js/ts_fas_acih.js"></script>
+<script src="/assets/js/pageLoader.js"></script>
+
 </html>

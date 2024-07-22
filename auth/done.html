@@ -4,13 +4,13 @@
 <head>
    <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>Login | TransSocial</title>
+   <title>Done! | TransSocial</title>
    <link rel="stylesheet" href="/assets/css/mainSite.css">
    <link rel="shortcut icon" href="/assets/imgs/favicon.png" type="image/png">
    <script src="https://kit.fontawesome.com/be7c331826.js" crossorigin="anonymous"></script>
 </head>
 
-<body id="body" onload="hideErrorByDefault() + signedInCheck()">
+<body id="body" onload="hideErrorByDefault()">
    <div class="loader" id="loader">
       <p style="position: fixed; left: 0; top: 0; color: var(--text-semi-transparent); transform: translateY(0px);">
          &copy; Katniny Studios 2024</p>
@@ -31,16 +31,12 @@
 
    <!-- the actual registration box -->
    <div class="formBox">
-      <h1><i class="fa-solid fa-handshake-simple"></i> Welcome back!</h1>
-      <p>Login into your TransSocial account. <a href="/auth/register" style="color: var(--main-color);">Don't have an account?</a></p>
+      <h1><i class="fa-solid fa-check"></i> Finished!</h1>
+      <p>You're finished with your account! You can either start using TransSocial or customize your experience further!</p>
 
-      <input type="text" id="email" placeholder="Enter your email address" />
-      <input type="password" id="password" placeholder="Enter your password" />
-      <p id="errorTxt" style="color: var(--error-text);">empty</p>
-
+      <a href="/"><button style="width: 100%;">Browse TransSocial</button></a>
       <br />
-
-      <button style="width: 100%;" onclick="login()" id="loginBtn">Login</button>
+      <a href="/settings"><button style="width: 100%;">Customize</button></a>
    </div>
 </body>
 
