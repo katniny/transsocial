@@ -34,8 +34,7 @@ function quoteRenote(id) {
 }
 
 // Read cookies
-let cookies = document.cookie;
-if (cookies == "cookieAcceptance=true") {
+if (localStorage.getItem("acceptedCookies") !== null) {
    if (pathName === "/" || pathName === "/index.html" || pathName === "/index") {
       document.getElementById("cookie-notice").style.display = "none";
    }
@@ -4353,7 +4352,7 @@ if (pathName === "/settings" || pathName === "/settings.html") {
 // Accept cookies
 function acceptCookies() {
    if (pathName === "/" || pathName === "/index" || pathName === "/index.html") {
-      document.cookie = "cookieAcceptance=true";
+      localStorage.setItem("acceptedCookies", "true");
       document.getElementById("cookie-notice").style.display = "none";
    }
 }
