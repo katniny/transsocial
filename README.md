@@ -9,7 +9,7 @@ TransSocial is 100% privacy focused! TransSocial does not track you across the w
 - Experiments\
 Try TransSocial features before they're fully released! Go to your Settings > Personalization then "Experiments"!
 - Themes\
-Try multiple themes! Such as the classic Dark and Light modes, but also Midnight Purple, Mint, and more! And soon, create your own themes! 🎨
+Try multiple themes! Such as the classic Dark and Light modes, but also Midnight Purple, Mint, and more! You can even create your own themes! 🎨
 ### and much more to come!
 
 <br />

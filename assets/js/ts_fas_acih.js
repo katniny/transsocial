@@ -130,6 +130,51 @@ if (document.getElementById("bioText")) {
    })
 }
 
+if (document.getElementById("themeName")) {
+   const themeText = document.getElementById("themeName");
+   const maxTheme = 30;
+
+   themeText.addEventListener("input", () => {
+      const currentLength = themeText.value.length;
+
+      if (currentLength > maxTheme) {
+         themeText.value = themeText.value.substring(0, maxTheme);
+      }
+
+      document.getElementById("characterLimit_Theme").textContent = `${currentLength}/30`;
+   })
+}
+
+if (document.getElementById("themeTitle")) {
+   const themeTitle = document.getElementById("themeTitle");
+   const maxTheme = 30;
+
+   themeTitle.addEventListener("input", () => {
+      const currentLength = themeTitle.value.length;
+
+      if (currentLength > maxTheme) {
+         themeTitle.value = themeTitle.value.substring(0, maxTheme);
+      }
+
+      document.getElementById("characterLimit_ThemeTitle").textContent = `${currentLength}/30`;
+   })
+}
+
+if (document.getElementById("themeDescription")) {
+   const themeDesc = document.getElementById("themeDescription");
+   const maxTheme = 250;
+
+   themeDesc.addEventListener("input", () => {
+      const currentLength = themeDesc.value.length;
+
+      if (currentLength > maxTheme) {
+         themeDesc.value = themeDesc.value.substring(0, maxTheme);
+      }
+
+      document.getElementById("characterLimit_ThemeDescription").textContent = `${currentLength}/250`;
+   })
+}
+
 // Constantly check user's suspension status
 if (pathName !== "/suspended.html" || pathName !== "/suspended") {
    firebase.auth().onAuthStateChanged((user) => {
@@ -3893,6 +3938,86 @@ if (pathName === "/settings" || pathName === "/settings.html") {
       document.getElementById("themeSelect").showModal();
    }
 
+   function transsocialThemes() {
+      document.getElementById("transsocialThemes").showModal();
+      document.getElementById("themeSelect").close();
+   }
+
+   function userThemes() {
+      // show modal
+      document.getElementById("userThemes").showModal();
+      document.getElementById("themeSelect").close();
+
+      // get user themes
+      firebase.auth().onAuthStateChanged((user) => {
+         if (user) {
+            firebase.database().ref(`users/${user.uid}/installedThemes`).once("value", (snapshot) => {
+               // append themes
+               const themesContainer = document.getElementById("themeSelection");
+               themesContainer.innerHTML = "";
+
+               const themes = snapshot.val();
+               if (themes) {
+                  Object.keys(themes).forEach(themeKey => {
+                     const theme = themes[themeKey];
+
+                     // create a button for each theme
+                     const button = document.createElement("button");
+                     firebase.database().ref(`themes/${themeKey}`).once("value", (snapshot) => {
+                        const themeData = snapshot.val();
+                        
+                        console.log(`${themeData.title}: ${themeData.themeColors.mainColor}`);
+
+                        button.innerText = themeData.title;
+                        button.onclick = () => {
+                           // apply the theme
+                           firebase.database().ref(`users/${user.uid}`).update({
+                              theme : "Custom"
+                           }).then(() => {
+                              firebase.database().ref(`users/${user.uid}/themeColors`).update({
+                                 background : themeData.themeColors.background,
+                                 buttonTransparentHover : themeData.themeColors.buttonTransparentHover,
+                                 error : themeData.themeColors.error,
+                                 headerColor : themeData.themeColors.headerColor,
+                                 liked : themeData.themeColors.liked,
+                                 mainColor : themeData.themeColors.mainColor,
+                                 mainColorDarker : themeData.themeColors.mainColorDarker,
+                                 noteBackground : themeData.themeColors.noteBackground,
+                                 noteSeperator : themeData.themeColors.noteSeperator,
+                                 renoted : themeData.themeColors.renoted,
+                                 replyBackground : themeData.themeColors.replyBackground,
+                                 replyHoveredBackground : themeData.themeColors.replyHoveredBackground,
+                                 sidebarButtonHover : themeData.themeColors.sidebarButtonHover,
+                                 sidebarText : themeData.themeColors.sidebarText,
+                                 success : themeData.themeColors.success,
+                                 text : themeData.themeColors.text,
+                                 textHalfTransparent : themeData.themeColors.textHalfTransparent,
+                                 textSemiTransparent : themeData.themeColors.textSemiTransparent,
+                                 warning : themeData.themeColors.warning
+                              }).then(() => {
+                                 window.location.reload();
+                              });
+                           });
+                        };
+                        button.style.width = "100%";
+                     });
+
+                     // append
+                     themesContainer.append(button);
+                  });
+               } else {
+                  // the user has no themes installed
+                  const p = document.createElement("p");
+
+                  p.innerHTML = `You have no custom themes! You can get some at the <a href="/userstudio" style="color: var(--main-color);">TransSocial User Studio!</a>`;
+
+                  document.getElementById("themeSelection").appendChild(p);
+               }
+            });
+         }
+      });
+   }
+
    function themeDark() {
       firebase.auth().onAuthStateChanged((user) => {
          if (user) {
@@ -4431,18 +4556,6 @@ if (pathName === "/notifications" || pathName === "/notifications.html") {
          });
       }
    });
-}
-
-// Creating custom theme
-if (pathName === "/create_theme" || pathName === "/create_theme.html") {
-   const rootStyles = getComputedStyle(document.documentElement);
-   const backgroundValue = rootStyles.getPropertyValue('--background');
-
-   // Background
-   document.getElementById("backgroundNewVal").value = backgroundValue;
-   function updateBackground() {
-      document.body.style.background = document.getElementById("backgroundNewVal").value;
-   }
 }
 
 // Report user
@@ -5340,4 +5453,819 @@ function unlockAchievement(achievement) {
          }
       }
    })
+}
+
+// Theme creation
+if (pathName === "/create_theme") {
+   // page specific variables
+   let wantsToApplyTheme = false;
+   let hasThemeBeenPublished = false;
+   let appliedTheme = null;
+
+   // Check for input, and if it's a valid color, change the color of the element.
+   document.addEventListener("input", (event) => {
+      const targetElement = event.target;
+      const inputValue = targetElement.value;
+      // this will check for hex
+      const hexColorRegex = /^#?([0-9A-F]{3}|[0-9A-F]{6})$/i;
+      // this will check for RGB (not RGBA)
+      // this will also allow the user to use the formatting: "rgb(0, 0, 0)" or just "0, 0, 0"
+      const rgbColorRegex = /^rgb\(\s*([01]?\d\d?|2[0-4]\d|25[0-5])\s*,\s*([01]?\d\d?|2[0-4]\d|25[0-5])\s*,\s*([01]?\d\d?|2[0-4]\d|25[0-5])\s*\)$/i;
+      const simpleRgbColorRegex = /^([01]?\d\d?|2[0-4]\d|25[0-5])\s*,\s*([01]?\d\d?|2[0-4]\d|25[0-5])\s*,\s*([01]?\d\d?|2[0-4]\d|25[0-5])$/i;
+      
+      // update the correct CSS value 
+      // background
+      if (targetElement.id === "background") {
+         if (hexColorRegex.test(inputValue)) {
+            // this will check if it's formatted as #321321 or not. if it's not, add a # on the users behalf
+            const hexValue = inputValue.startsWith("#") ? inputValue : `#${inputValue}`;
+            document.documentElement.style.setProperty("--background", hexValue);
+         }
+      // main color
+      } else if (targetElement.id === "mainColor") {
+         const hexValue = inputValue.startsWith("#") ? inputValue : `#${inputValue}`;
+         document.documentElement.style.setProperty("--main-color", hexValue);
+      // main color (but darker!!)
+      } else if (targetElement.id === "mainColorDarker") {
+         const hexValue = inputValue.startsWith("#") ? inputValue : `#${inputValue}`;
+         document.documentElement.style.setProperty("--main-color-darker", hexValue);
+      // header color
+      } else if (targetElement.id === "headerColor") {
+         const hexValue = inputValue.startsWith("#") ? inputValue : `#${inputValue}`;
+         document.documentElement.style.setProperty("--header-color", hexValue);
+      // text color
+      } else if (targetElement.id === "text") {
+         const hexValue = inputValue.startsWith("#") ? inputValue : `#${inputValue}`;
+         document.documentElement.style.setProperty("--text", hexValue);
+      // half transparent text
+      } else if (targetElement.id === "textHalfTransparent") {
+         // rgba has to be special so do some stuff because we cant use "rgba()" directly
+         let match = rgbColorRegex.exec(inputValue);
+
+         if (!match) {
+            match = simpleRgbColorRegex.exec(inputValue);
+            if (match) {
+               const r = match[1];
+               const g = match[2];
+               const b = match[3];
+               document.documentElement.style.setProperty("--text-half-transparent", `rgba(${r}, ${g}, ${b}, 0.5)`);
+            }
+         } else {
+            const r = match[1];
+            const g = match[2];
+            const b = match[3];
+            document.documentElement.style.setProperty("--text-half-transparent", `rgba(${r}, ${g}, ${b}, 0.5)`);
+         }
+      // semi transparent text
+      } else if (targetElement.id === "textSemiTransparent") {
+         // rgba has to be special so do some stuff because we cant use "rgba()" directly
+         let match = rgbColorRegex.exec(inputValue);
+
+         if (!match) {
+            match = simpleRgbColorRegex.exec(inputValue);
+            if (match) {
+               const r = match[1];
+               const g = match[2];
+               const b = match[3];
+               document.documentElement.style.setProperty("--text-semi-transparent", `rgba(${r}, ${g}, ${b}, 0.7)`);
+            }
+         } else {
+            const r = match[1];
+            const g = match[2];
+            const b = match[3];
+            document.documentElement.style.setProperty("--text-semi-transparent", `rgba(${r}, ${g}, ${b}, 0.7)`);
+         }
+      // sidebar button hovered
+      } else if (targetElement.id === "sidebarButtonHover") {
+         const hexValue = inputValue.startsWith("#") ? inputValue : `#${inputValue}`;
+         document.documentElement.style.setProperty("--sidebar-button-hover", hexValue);
+      // button transparent hover
+      } else if (targetElement.id === "buttonTransparentHover") {
+         const hexValue = inputValue.startsWith("#") ? inputValue : `#${inputValue}`;
+         document.documentElement.style.setProperty("--button-transparent-hover", hexValue);
+      // success color
+      } else if (targetElement.id === "successColor") {
+         const hexValue = inputValue.startsWith("#") ? inputValue : `#${inputValue}`;
+         document.documentElement.style.setProperty("--success-color", hexValue);
+      // warning text
+      } else if (targetElement.id === "warningText") {
+         const hexValue = inputValue.startsWith("#") ? inputValue : `#${inputValue}`;
+         document.documentElement.style.setProperty("--warning-text", hexValue);
+      // error text
+      } else if (targetElement.id === "errorText") {
+         const hexValue = inputValue.startsWith("#") ? inputValue : `#${inputValue}`;
+         document.documentElement.style.setProperty("--error-text", hexValue);
+      // sidebar text
+      } else if (targetElement.id === "sidebarText") {
+         const hexValue = inputValue.startsWith("#") ? inputValue : `#${inputValue}`;
+         document.documentElement.style.setProperty("--sidebar-text", hexValue);
+      // note seperator
+      } else if (targetElement.id === "noteSeperator") {
+         const hexValue = inputValue.startsWith("#") ? inputValue : `#${inputValue}`;
+         document.documentElement.style.setProperty("--note-seperator", hexValue);
+      // like color
+      } else if (targetElement.id === "likeColor") {
+         const hexValue = inputValue.startsWith("#") ? inputValue : `#${inputValue}`;
+         document.documentElement.style.setProperty("--like-color", hexValue);
+      // renote color
+      } else if (targetElement.id === "renoteColor") {
+         const hexValue = inputValue.startsWith("#") ? inputValue : `#${inputValue}`;
+         document.documentElement.style.setProperty("--renote-color", hexValue);
+      // reply background
+      } else if (targetElement.id === "replyBackground") {
+         const hexValue = inputValue.startsWith("#") ? inputValue : `#${inputValue}`;
+         document.documentElement.style.setProperty("--reply-background", hexValue);
+      // reply background (but hovered)
+      } else if (targetElement.id === "replyBackgroundHovered") {
+         const hexValue = inputValue.startsWith("#") ? inputValue : `#${inputValue}`;
+         document.documentElement.style.setProperty("--reply-hovered-background", hexValue);
+      } else if (targetElement.id === "noteBackground") {
+         const hexValue = inputValue.startsWith("#") ? inputValue : `#${inputValue}`;
+         document.documentElement.style.setProperty("--note-background", hexValue);
+      }
+   });
+
+   // save theme functions
+   function saveTheme_Open() {
+      document.getElementById("saveTheme").showModal();
+   }
+
+   function saveTheme() {
+      if (!document.getElementById("saveThemeBtn").classList.contains("disabled")) {
+         // this will prevent users from running functions they aren't supposed to while saving
+         document.getElementById("saveThemeBtn").classList.add("disabled");
+         document.getElementById("dontSaveThemeBtn").classList.add("disabled");
+         document.getElementById("saveThemeBtn").innerHTML = `<i class="fa-solid fa-spinner fa-spin-pulse"></i> Saving...`;
+
+         // check if the name already exists
+         firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+               firebase.database().ref(`users/savedThemes/${document.getElementById("themeName").value}`).once("value", (snapshot) => {
+                  const trueValue = document.getElementById("themeName").value.trim();
+
+                  // ensures that the name isn't empty
+                  if (trueValue === "") {
+                     document.getElementById("saveThemeBtn").classList.remove("disabled");
+                     document.getElementById("dontSaveThemeBtn").classList.remove("disabled");
+                     document.getElementById("saveThemeBtn").innerHTML = `Save Theme`;
+                     document.getElementById("errorSavingTheme").textContent = "Your theme name cannot be empty.";
+                     document.getElementById("errorSavingTheme").style.display = "block";
+                  } else {
+                     firebase.database().ref(`users/${user.uid}/savedThemes/${document.getElementById("themeName").value}`).update({
+                        background : document.getElementById("background").value,
+                        mainColor : document.getElementById("mainColor").value,
+                        mainColorDarker : document.getElementById("mainColorDarker").value,
+                        headerColor : document.getElementById("headerColor").value,
+                        text : document.getElementById("text").value,
+                        textSemiTransparent : document.getElementById("textSemiTransparent").value,
+                        textHalfTransparent : document.getElementById("textHalfTransparent").value,
+                        sidebarButtonHover : document.getElementById("sidebarButtonHover").value,
+                        buttonTransparentHover : document.getElementById("buttonTransparentHover").value,
+                        success : document.getElementById("successColor").value,
+                        warning : document.getElementById("warningText").value,
+                        error : document.getElementById("errorText").value,
+                        sidebarText : document.getElementById("sidebarText").value,
+                        noteSeperator : document.getElementById("noteSeperator").value,
+                        liked : document.getElementById("likeColor").value,
+                        renoted : document.getElementById("renoteColor").value,
+                        replyBackground : document.getElementById("replyBackground").value,
+                        replyHoveredBackground : document.getElementById("replyBackgroundHovered").value,
+                        noteBackground : document.getElementById("noteBackground").value
+                     }).then(() => {
+                        // successfully saved
+                        document.getElementById("saveThemeBtn").classList.remove("disabled");
+                        document.getElementById("dontSaveThemeBtn").classList.remove("disabled");
+                        document.getElementById("saveThemeBtn").innerHTML = `Save Theme`;
+                        document.getElementById("saveTheme").close();
+
+                        // if the user wants to apply the theme, close this modal and apply it
+                        if (wantsToApplyTheme === true) {
+                           document.getElementById("saveTheme").close();
+                           document.getElementById("applyingTheme").showModal();
+
+                           // apply the theme and prompt user where they want to go (stay on this page or go to another page)
+                           const inputs = [
+                              { id: "background", cssVar: "--background", saveAs: "background", type: "hex" },
+                              { id: "mainColor", cssVar: "--main-color", saveAs: "mainColor", type: "hex" },
+                              { id: "mainColorDarker", cssVar: "--main-color-darker", saveAs: "mainColorDarker", type: "hex" },
+                              { id: "headerColor", cssVar: "--header-color", saveAs: "headerColor", type: "hex" },
+                              { id: "text", cssVar: "--text", saveAs: "text", type: "hex" },
+                              { id: "textHalfTransparent", cssVar: "--text-half-transparent", saveAs: "textHalfTransparent", type: "rgb" },
+                              { id: "textSemiTransparent", cssVar: "--text-semi-transparent", saveAs: "textSemiTransparent", type: "rgb" },
+                              { id: "sidebarButtonHover", cssVar: "--sidebar-button-hover", saveAs: "sidebarButtonHover", type: "hex" },
+                              { id: "buttonTransparentHover", cssVar: "--button-transparent-hover", saveAs: "buttonTransparentHover", type: "hex" },
+                              { id: "successColor", cssVar: "--success-color", saveAs: "success", type: "hex" },
+                              { id: "warningText", cssVar: "--warning-text", saveAs: "warning", type: "hex" },
+                              { id: "errorText", cssVar: "--error-text", saveAs: "error", type: "hex" },
+                              { id: "sidebarText", cssVar: "--sidebar-text", saveAs: "sidebarText", type: "hex" },
+                              { id: "noteSeperator", cssVar: "--note-seperator", saveAs: "noteSeperator", type: "hex" },
+                              { id: "likeColor", cssVar: "--like-color", saveAs: "liked", type: "hex" },
+                              { id: "renoteColor", cssVar: "--renote-color", saveAs: "renoted", type: "hex" },
+                              { id: "replyBackground", cssVar: "--reply-background", saveAs: "replyBackground", type: "hex" },
+                              { id: "replyBackgroundHovered", cssVar: "--reply-hovered-background", saveAs: "replyHoveredBackground", type: "hex" },
+                              { id: "noteBackground", cssVar: "--note-background", saveAs: "noteBackground", type: "hex" },
+                           ];
+
+                           inputs.forEach(input => {
+                              const inputElement = document.getElementById(input.id);
+                              let value = inputElement.value;
+
+                              if (input.type === "hex") {
+                                 // if missing "#", add it
+                                 if (value.charAt(0) !== "#") {
+                                    value = `#${value}`;
+                                 }
+
+                                 // update css variable
+                                 document.documentElement.style.setProperty(input.cssVar, value);
+
+                                 // update value in db
+                                 firebase.database().ref(`users/${user.uid}/themeColors`).update({
+                                    [input.saveAs]: value
+                                 }).then(() => {
+                                    firebase.database().ref(`users/${user.uid}`).update({
+                                       theme : "Custom"
+                                    });
+
+                                    if (input.id === "noteBackground") {
+                                       // let the user know its finished
+                                       document.getElementById("applyingTheme_div").style.display = "none";
+                                       document.getElementById("finishedApplyingTheme").style.display = "block";
+                                       wantsToApplyTheme = false;
+                                    }
+                                 });
+                              } else if (input.type === "rgb") {
+                                 // handle rgb values
+                                 if (/^rgb\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3})\)$/.test(value)) {
+                                    // value is in "rgb(r, g, b)" format
+                                    if (input.id === "textSemiTransparent") {
+                                       value = value.replace(/^rgb\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3})\)$/, 'rgba($1, $2, $3, 0.7)');
+                                    } else if (input.id === "textHalfTransparent") {
+                                       value = value.replace(/^rgb\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3})\)$/, 'rgba($1, $2, $3, 0.5)');
+                                    }
+                                 } else if (/^\d{1,3},\s*\d{1,3},\s*\d{1,3}$/.test(value)) {
+                                    // value is in "r, g, b" format
+                                    if (input.id === "textSemiTransparent") {
+                                       value = `rgba(${value}, 0.7)`;
+                                    } else if (input.id === "textHalfTransparent") {
+                                       value = `rgba(${value}, 0.5)`;
+                                    }
+                                 }
+
+                                 // update css variable
+                                 document.documentElement.style.setProperty(input.cssVar, value);
+
+                                 // update value in db
+                                 firebase.database().ref(`users/${user.uid}/themeColors`).update({
+                                    [input.saveAs]: value
+                                 }).then(() => {
+                                    firebase.database().ref(`users/${user.uid}`).update({
+                                       theme : "Custom"
+                                    });
+                                 });
+                              }
+                           })
+                        }
+                     });
+                  }
+               });
+            }
+         });
+      }
+   }
+
+   function dontSaveTheme() {
+      if (!document.getElementById("dontSaveThemeBtn").classList.contains("disabled")) {
+         document.getElementById("themeName").value = "";
+         document.getElementById("saveTheme").close();
+      }
+   }
+
+   // load theme functions
+   function loadTheme() {
+      // show the modal
+      document.getElementById("loadTheme").showModal();
+
+      // load themes
+      firebase.auth().onAuthStateChanged((user) => {
+         if (user) {
+            firebase.database().ref(`users/${user.uid}/savedThemes`).get().then((snapshot) => {
+               if (snapshot.exists()) {
+                  const savedThemes = snapshot.val();
+
+                  // clear the "savedThemes" innerHTML to avoid repeats
+                  document.getElementById("savedThemes").innerHTML = "";
+                  
+                  // create a button for each theme
+                  Object.keys(savedThemes).forEach((key) => {
+                     const themeName = key;
+                     const button = document.createElement("button");
+
+                     // update the button text to the name of the theme, as well as style and add an event listener
+                     button.textContent = themeName;
+                     button.style.width = "100%";
+                     button.addEventListener("click", () => {
+                        // when clicked, we want the user to know their theme is being loaded
+                        document.getElementById("savedThemes").style.display = "none"; // to ensure they aren't opening multiple
+                        document.getElementById("fetchingThemes").innerHTML = `<i class="fa-solid fa-spinner fa-spin-pulse"></i> Loading ${themeName}...`;
+                        document.getElementById("fetchingThemes").style.display = "block";
+
+                        // actually load the theme
+                        // tell the input that user input happened, so the colors will automatically update
+                        firebase.database().ref(`users/${user.uid}/savedThemes/${themeName}`).once("value", (snapshot) => {
+                           const themeData = snapshot.val();
+
+                           // has theme been published?
+                           if (themeData.published === undefined) {
+                              hasThemeBeenPublished = false;
+                           } else {
+                              hasThemeBeenPublished = `${themeData.published}`;
+                           }
+
+                           // let transsocial know what theme is applied
+                           appliedTheme = themeName;
+
+                           // set background
+                           if (themeData.background !== "") {
+                              document.getElementById("background").value = themeData.background;
+                              const event = new Event("input", {
+                                 bubbles: true,
+                                 cancelable: true,
+                              });
+                              document.getElementById("background").dispatchEvent(event);
+                           }
+
+                           // set mainColor
+                           if (themeData.mainColor !== "") {
+                              document.getElementById("mainColor").value = themeData.mainColor;
+                              const event = new Event("input", {
+                                 bubbles: true,
+                                 cancelable: true,
+                              });
+                              document.getElementById("mainColor").dispatchEvent(event);
+                           }
+
+                           // set mainColorDarker
+                           if (themeData.mainColorDarker !== "") {
+                              document.getElementById("mainColorDarker").value = themeData.mainColorDarker;
+                              const event = new Event("input", {
+                                 bubbles: true,
+                                 cancelable: true,
+                              });
+                              document.getElementById("mainColorDarker").dispatchEvent(event);
+                           }
+
+                           // set headerColor
+                           if (themeData.headerColor !== "") {
+                              document.getElementById("headerColor").value = themeData.headerColor;
+                              const event = new Event("input", {
+                                 bubbles: true,
+                                 cancelable: true,
+                              });
+                              document.getElementById("headerColor").dispatchEvent(event);
+                           }
+
+                           // set text
+                           if (themeData.text !== "") {
+                              document.getElementById("text").value = themeData.text;
+                              const event = new Event("input", {
+                                 bubbles: true,
+                                 cancelable: true,
+                              });
+                              document.getElementById("text").dispatchEvent(event);
+                           }
+
+                           // set textHalfTransparent
+                           if (themeData.textHalfTransparent !== "") {
+                              document.getElementById("textHalfTransparent").value = themeData.textHalfTransparent;
+                              const event = new Event("input", {
+                                 bubbles: true,
+                                 cancelable: true,
+                              });
+                              document.getElementById("textHalfTransparent").dispatchEvent(event);
+                           }
+
+                           // set textSemiTransparent
+                           if (themeData.textSemiTransparent !== "") {
+                              document.getElementById("textSemiTransparent").value = themeData.textSemiTransparent;
+                              const event = new Event("input", {
+                                 bubbles: true,
+                                 cancelable: true,
+                              });
+                              document.getElementById("textSemiTransparent").dispatchEvent(event);
+                           }
+
+                           // set sidebarButtonHover
+                           if (themeData.sidebarButtonHover !== "") {
+                              document.getElementById("sidebarButtonHover").value = themeData.sidebarButtonHover;
+                              const event = new Event("input", {
+                                 bubbles: true,
+                                 cancelable: true,
+                              });
+                              document.getElementById("sidebarButtonHover").dispatchEvent(event);
+                           }
+
+                           // set buttonTransparentHover
+                           if (themeData.buttonTransparentHover !== "") {
+                              document.getElementById("buttonTransparentHover").value = themeData.buttonTransparentHover;
+                              const event = new Event("input", {
+                                 bubbles: true,
+                                 cancelable: true,
+                              });
+                              document.getElementById("buttonTransparentHover").dispatchEvent(event);
+                           }
+
+                           // set successColor
+                           if (themeData.success !== "") {
+                              document.getElementById("successColor").value = themeData.success;
+                              const event = new Event("input", {
+                                 bubbles: true,
+                                 cancelable: true,
+                              });
+                              document.getElementById("successColor").dispatchEvent(event);
+                           }
+
+                           // set warningText
+                           if (themeData.warning !== "") {
+                              document.getElementById("warningText").value = themeData.warning;
+                              const event = new Event("input", {
+                                 bubbles: true,
+                                 cancelable: true,
+                              });
+                              document.getElementById("warningText").dispatchEvent(event);
+                           }
+
+                           // set errorText
+                           if (themeData.error !== "") {
+                              document.getElementById("errorText").value = themeData.error;
+                              const event = new Event("input", {
+                                 bubbles: true,
+                                 cancelable: true,
+                              });
+                              document.getElementById("errorText").dispatchEvent(event);
+                           }
+
+                           // set sidebarText
+                           if (themeData.sidebarText !== "") {
+                              document.getElementById("sidebarText").value = themeData.sidebarText;
+                              const event = new Event("input", {
+                                 bubbles: true,
+                                 cancelable: true,
+                              });
+                              document.getElementById("sidebarText").dispatchEvent(event);
+                           }
+
+                           // set noteSeperator
+                           if (themeData.noteSeperator !== "") {
+                              document.getElementById("noteSeperator").value = themeData.noteSeperator;
+                              const event = new Event("input", {
+                                 bubbles: true,
+                                 cancelable: true,
+                              });
+                              document.getElementById("noteSeperator").dispatchEvent(event);
+                           }
+
+                           // set likeColor
+                           if (themeData.liked !== "") {
+                              document.getElementById("likeColor").value = themeData.liked;
+                              const event = new Event("input", {
+                                 bubbles: true,
+                                 cancelable: true,
+                              });
+                              document.getElementById("likeColor").dispatchEvent(event);
+                           }
+
+                           // set renoteColor
+                           if (themeData.renoted !== "") {
+                              document.getElementById("renoteColor").value = themeData.renoted;
+                              const event = new Event("input", {
+                                 bubbles: true,
+                                 cancelable: true,
+                              });
+                              document.getElementById("renoteColor").dispatchEvent(event);
+                           }
+
+                           // set replyBackground
+                           if (themeData.replyBackground !== "") {
+                              document.getElementById("replyBackground").value = themeData.replyBackground;
+                              const event = new Event("input", {
+                                 bubbles: true,
+                                 cancelable: true,
+                              });
+                              document.getElementById("replyBackground").dispatchEvent(event);
+                           }
+
+                           // set replyBackgroundHovered
+                           if (themeData.replyHoveredBackground !== "") {
+                              document.getElementById("replyBackgroundHovered").value = themeData.replyHoveredBackground;
+                              const event = new Event("input", {
+                                 bubbles: true,
+                                 cancelable: true,
+                              });
+                              document.getElementById("replyBackgroundHovered").dispatchEvent(event);
+                           }
+
+                           // set noteBackground
+                           if (themeData.noteBackground !== "") {
+                              document.getElementById("noteBackground").value = themeData.noteBackground;
+                              const event = new Event("input", {
+                                 bubbles: true,
+                                 cancelable: true,
+                              });
+                              document.getElementById("noteBackground").dispatchEvent(event);
+                           }
+
+                           // after setting everything, close the modal and show the "savedThemes" again (just in case)
+                           document.getElementById("loadTheme").close();
+                           document.getElementById("fetchingThemes").innerHTML = `<i class="fa-solid fa-spinner fa-spin-pulse"></i> Loading themes...`;
+                           document.getElementById("savedThemes").style.display = "block";
+                        });
+                     });
+
+                     // update the button (and hide "Fetching themes..." if available)
+                     document.getElementById("savedThemes").appendChild(button);
+                     if (document.getElementById("fetchingThemes")) {
+                        document.getElementById("fetchingThemes").style.display = "none";
+                     }
+                  })
+               } else {
+                  // the user has no themes
+                  document.getElementById("fetchingThemes").innerHTML = `No saved themes found. Try creating one!`;
+               }
+            }).catch((error) => {
+               // error occurred
+               document.getElementById("fetchingThemes").innerHTML = `An error occurred while fetching themes: ${error.message}`;
+            });
+         }
+      });
+   }
+
+   // apply theme
+   function applyTheme() {
+      // update this, as transsocial needs to know
+      wantsToApplyTheme = true;
+
+      // prompt the user to save the theme first
+      saveTheme_Open();
+   }
+
+   // publish theme
+   function publishTheme_Open() {
+      document.getElementById("publishTheme").showModal();
+   }
+
+   function publishTheme() {
+      document.getElementById("themeSuccessfullyPublished").style.display = "none";
+
+      // make sure the title/description isn't empty
+      if (document.getElementById("themeTitle").value !== "" && document.getElementById("themeDescription").value !== "") {
+         // make sure none of the variables are empty
+         // ik this is ineffective... but be quiet
+         if (document.getElementById("background").value !== "" && 
+            document.getElementById("mainColor").value !== "" && 
+            document.getElementById("mainColorDarker").value !== "" && 
+            document.getElementById("headerColor").value !== "" && 
+            document.getElementById("text").value !== "" && 
+            document.getElementById("textHalfTransparent").value !== "" && 
+            document.getElementById("textSemiTransparent").value !== "" && 
+            document.getElementById("sidebarButtonHover").value !== "" && 
+            document.getElementById("buttonTransparentHover").value !== "" && 
+            document.getElementById("successColor").value !== "" && 
+            document.getElementById("warningText").value !== "" && 
+            document.getElementById("errorText").value !== "" && 
+            document.getElementById("sidebarText").value !== "" && 
+            document.getElementById("likeColor").value !== "" && 
+            document.getElementById("renoteColor").value !== "" && 
+            document.getElementById("replyBackground").value !== "" && 
+            document.getElementById("replyBackgroundHovered").value !== "" && 
+         document.getElementById("noteBackground").value !== "") {
+            // add the theme to the database
+            firebase.auth().onAuthStateChanged((user) => {
+               if (user) {
+                  // generate a key for the theme. that way, multiple themes can have the same name without overriding an existing one
+                  // if user has published this theme, just update the theme lol.
+                  let newKey = null;
+
+                  if (hasThemeBeenPublished === false) {
+                     const themesRef = firebase.database().ref("themes/");
+                     const newKeyRef = themesRef.push();
+                     newKey = newKeyRef.key;
+                  } else {
+                     newKey = hasThemeBeenPublished;
+                  }
+
+                  // save all the values
+                  // yes. this code is copy pasted. judge me.
+                  const inputs = [
+                     { id: "background", cssVar: "--background", saveAs: "background", type: "hex" },
+                     { id: "mainColor", cssVar: "--main-color", saveAs: "mainColor", type: "hex" },
+                     { id: "mainColorDarker", cssVar: "--main-color-darker", saveAs: "mainColorDarker", type: "hex" },
+                     { id: "headerColor", cssVar: "--header-color", saveAs: "headerColor", type: "hex" },
+                     { id: "text", cssVar: "--text", saveAs: "text", type: "hex" },
+                     { id: "textHalfTransparent", cssVar: "--text-half-transparent", saveAs: "textHalfTransparent", type: "rgb" },
+                     { id: "textSemiTransparent", cssVar: "--text-semi-transparent", saveAs: "textSemiTransparent", type: "rgb" },
+                     { id: "sidebarButtonHover", cssVar: "--sidebar-button-hover", saveAs: "sidebarButtonHover", type: "hex" },
+                     { id: "buttonTransparentHover", cssVar: "--button-transparent-hover", saveAs: "buttonTransparentHover", type: "hex" },
+                     { id: "successColor", cssVar: "--success-color", saveAs: "success", type: "hex" },
+                     { id: "warningText", cssVar: "--warning-text", saveAs: "warning", type: "hex" },
+                     { id: "errorText", cssVar: "--error-text", saveAs: "error", type: "hex" },
+                     { id: "sidebarText", cssVar: "--sidebar-text", saveAs: "sidebarText", type: "hex" },
+                     { id: "noteSeperator", cssVar: "--note-seperator", saveAs: "noteSeperator", type: "hex" },
+                     { id: "likeColor", cssVar: "--like-color", saveAs: "liked", type: "hex" },
+                     { id: "renoteColor", cssVar: "--renote-color", saveAs: "renoted", type: "hex" },
+                     { id: "replyBackground", cssVar: "--reply-background", saveAs: "replyBackground", type: "hex" },
+                     { id: "replyBackgroundHovered", cssVar: "--reply-hovered-background", saveAs: "replyHoveredBackground", type: "hex" },
+                     { id: "noteBackground", cssVar: "--note-background", saveAs: "noteBackground", type: "hex" },
+                  ];
+
+                  inputs.forEach(input => {
+                     const inputElement = document.getElementById(input.id);
+                     let value = inputElement.value;
+
+                     if (input.type === "hex") {
+                        // if missing "#", add it
+                        if (value.charAt(0) !== "#") {
+                           value = `#${value}`;
+                        }
+
+                        // update css variable
+                        document.documentElement.style.setProperty(input.cssVar, value);
+
+                        // update value in db
+                        firebase.database().ref(`themes/${newKey}`).update({
+                           title : document.getElementById("themeTitle").value,
+                           desc : document.getElementById("themeDescription").value,
+                           creator : user.uid
+                        });
+
+                        firebase.database().ref(`themes/${newKey}/themeColors`).update({
+                           [input.saveAs]: value
+                        }).then(() => {
+                           if (input.id === "background") {
+                              // this only needs to be executed once at the beginning
+                              if (hasThemeBeenPublished === false) {
+                                 firebase.database().ref(`users/${user.uid}/savedThemes/${appliedTheme}`).update({
+                                    published : newKey
+                                 });
+
+                                 hasThemeBeenPublished = `${newKey}`;
+                              }
+                           }
+
+                           if (input.id === "noteBackground") {
+                              // let the user know its finished
+                              document.getElementById("themeSuccessfullyPublished").style.display = "block";
+                              document.getElementById("themeSuccessfullyPublished").style.color = "var(--success-color)";
+                              document.getElementById("themeSuccessfullyPublished").innerHTML = `Your theme has been successfully published! It is available on the TransSocial User Studio <a href="/userstudio?theme=${newKey}" style="color: var(--main-color)">here.</a>`;
+                           }
+                        });
+                     } else if (input.type === "rgb") {
+                        // handle rgb values
+                        if (/^rgb\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3})\)$/.test(value)) {
+                           // value is in "rgb(r, g, b)" format
+                           if (input.id === "textSemiTransparent") {
+                              value = value.replace(/^rgb\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3})\)$/, 'rgba($1, $2, $3, 0.7)');
+                           } else if (input.id === "textHalfTransparent") {
+                              value = value.replace(/^rgb\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3})\)$/, 'rgba($1, $2, $3, 0.5)');
+                           }
+                        } else if (/^\d{1,3},\s*\d{1,3},\s*\d{1,3}$/.test(value)) {
+                           // value is in "r, g, b" format
+                           if (input.id === "textSemiTransparent") {
+                              value = `rgba(${value}, 0.7)`;
+                           } else if (input.id === "textHalfTransparent") {
+                              value = `rgba(${value}, 0.5)`;
+                           }
+                        }
+
+                        // update css variable
+                        document.documentElement.style.setProperty(input.cssVar, value);
+
+                        // update value in db
+                        firebase.database().ref(`themes/${newKey}`).update({
+                           title : document.getElementById("themeTitle").value,
+                           desc : document.getElementById("themeDescription").value,
+                           creator : user.uid
+                        });
+
+                        firebase.database().ref(`themes/${newKey}/themeColors`).update({
+                           [input.saveAs]: value
+                        })
+                     }
+                  })
+               }
+            });
+         } else {
+            document.getElementById("themeSuccessfullyPublished").style.display = "block";
+            document.getElementById("themeSuccessfullyPublished").style.color = "var(--error-text)";
+            document.getElementById("themeSuccessfullyPublished").textContent = "You can't have an empty color.";
+         }
+      } else {
+         document.getElementById("themeSuccessfullyPublished").style.display = "block";
+         document.getElementById("themeSuccessfullyPublished").style.color = "var(--error-text)";
+         document.getElementById("themeSuccessfullyPublished").textContent = "Your title and description cannot be empty.";
+      }
+   }
+
+   function dontPublishTheme() {
+      // clear text areas and close modal
+      document.getElementById("themeTitle").value = "";
+      document.getElementById("characterLimit_ThemeTitle").textContent = "0/30";
+      document.getElementById("themeDescription").value = "";
+      document.getElementById("characterLimit_ThemeDescription").textContent = "0/250";
+      document.getElementById("publishTheme").close();
+      document.getElementById("themeSuccessfullyPublished").style.display = "none";
+   }
+}
+
+// User Studio
+if (pathName === "/userstudio") {
+   // see if user has a theme applied or not
+   const url = new URL(window.location.href);
+   const themeParam = url.searchParams.get("theme");
+
+   if (!themeParam) {
+      firebase.database().ref("themes/").once("value", (snapshot) => {
+         const themesContainer = document.getElementById("availableThemes");
+
+         snapshot.forEach((childSnapshot) => {
+            const themeKey = childSnapshot.key;
+            const themeData = childSnapshot.val();
+
+            // create a div for each theme
+            const themeDiv = document.createElement("div");
+            themeDiv.classList.add("theme");
+
+            // add title/desc/creator to div
+            const title = document.createElement("h3");
+            title.textContent = themeData.title;
+
+            const desc = document.createElement("p");
+            desc.textContent = themeData.desc;
+
+            const creator = document.createElement("h4");
+            firebase.database().ref(`users/${themeData.creator}/username`).once("value", (snapshot) => {
+               const user = snapshot.val();
+
+               creator.textContent = `Created by @${user}`;
+            })
+
+            // append elements to the theme div
+            themeDiv.appendChild(title);
+            themeDiv.appendChild(desc);
+            themeDiv.appendChild(creator);
+            themeDiv.setAttribute("onclick", `window.location.replace("/userstudio?theme=${themeKey}")`);
+            
+            // append the theme to the entire page
+            if (themeData.canAppearOnStore !== "false") {
+               themesContainer.append(themeDiv);
+            }
+         });
+      });
+   } else {
+      // hide the container for store front
+      document.getElementById("noThemeSelected").style.display = "none";
+
+      // get data for the stuff
+      firebase.database().ref(`themes/${themeParam}`).once("value", (snapshot) => {
+         const themeExists = snapshot.exists();
+         const themeData = snapshot.val();
+
+         if (themeExists === false) {
+            // 404 the user
+            document.getElementById("themeNotFound").style.display = "block";
+         } else {
+            // show the user the theme
+            document.getElementById("themeSelected").style.display = "block";
+            document.getElementById("themeName_title").textContent = themeData.title;
+            document.getElementById("themeDesc").textContent = themeData.desc;
+            firebase.database().ref(`users/${themeData.creator}/username`).once("value", (snapshot) => {
+               const user = snapshot.val();
+
+               document.getElementById("themeCreator").setAttribute("href", `/u?id=${user}`);
+               document.getElementById("themeCreator").textContent = `by @${user}`;
+            });
+
+            // allow the user to get the theme
+            document.getElementById("installTheme").setAttribute("onclick", `installTheme("${snapshot.key}")`);
+         }
+      });
+   }
+
+   // install theme
+   function installTheme(theme) {
+      // get the user
+      firebase.auth().onAuthStateChanged((user) => {
+         if (user) {
+            // add it to the user's account
+            firebase.database().ref(`users/${user.uid}/installedThemes/${theme}`).update({
+               installed : true
+            }).then(() => {
+               // show modal letting them know it was successful
+               document.getElementById("confirmAdding").showModal();
+            });
+         } else {
+            loginPrompt();
+         }
+      })
+   }
 }

@@ -14,8 +14,8 @@
    --sidebar-button-hover: #3d3d3d;
    --button-transparent-hover: #2d2d2d;
    --success-color: #00dc00;
-   --warning-text: yellow;
-   --error-text: red;
+   --warning-text: #ffff00;
+   --error-text: #ff0000;
    --sidebar-text: #fff;
    --banner-button-bg: #000;
    --note-seperator: #2d2d2d;
@@ -31,7 +31,7 @@
    --skeleton-end: #252525;
    --reply-background: #303030;
    --reply-hovered-background: #3f3f3f;
-   --note-background: rgb(40, 40, 40);
+   --note-background: #282828;
    --header-shadow: rgba(0, 0, 0, 0.1);
    --zoom-level: 1;
 }
@@ -2614,4 +2614,23 @@ textarea.borderBlack:focus {
 
 .formBox input {
    margin-top: 10px;
+}
+
+/* User Studio */
+#availableThemes .theme {
+   padding: 10px;
+   background: var(--note-background);
+   border-radius: 15px;
+   width: 250px;
+   max-width: 250px;
+   cursor: pointer;
+   float: left;
+   margin-left: 10px;
+   margin-top: 10px;
+   height: 150px;
+   transition: all 0.15s linear;
+}
+
+#availableThemes .theme:hover {
+   transform: translateY(-3px);
 }

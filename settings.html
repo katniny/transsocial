@@ -209,7 +209,7 @@
                     <br />
 
                     <p>Theme</p>
-                    <button onclick="selectTheme()">Select Theme</button>
+                    <button onclick="selectTheme()">Select Theme</button> <a href="/create_theme"><button>Create Theme</button></a>
 
                     <br />
                     <br />
@@ -364,72 +364,22 @@
 
         <!-- Modals -->
         <dialog id="themeSelect">
-            <h2>Pick a theme!</h2>
-            <p style="color: var(--text-semi-transparent);">Customize your TransSocial experience exactly to your liking.</p>
-            <button onclick="document.getElementById('themeSelect').close();">Nevermind</button>
-
-            <br />
+            <h2>Pick a theme type</h2>
+            <p style="color: var(--text-semi-transparent);">Use standard TransSocial themes or try themes created by fellow users!</p>
+            
             <br />
 
-            <!-- Default -->
-            <div class="themeContainer" onclick="themeDark()">
-                <img src="/assets/imgs/ThemeDark.png" alt="Dark theme on the home page" class="themeImage" />
-                <div class="themeText">Dark</div>
-                <div class="themeDescription">TransSocial's default theme: sleek and clean.</div>
-            </div>
+            <button style="width: 100%; font-size: 15px;" onclick="transsocialThemes()">
+               Standard TransSocial Themes<br/>
+               <span style="color: var(--text-semi-transparent); font-size: 14px;">All the themes created by TransSocial.</span>
+            </button>
 
-            <!-- Mint Dark -->
-            <div class="themeContainer" onclick="themeMintDark()">
-                <img src="/assets/imgs/ThemeMintDark.png" alt="Mint (Dark) theme on the home page" class="themeImage" />
-                <div class="themeText">Mint (Dark)</div>
-                <div class="themeDescription">A refreshing blend of minty dark hues.</div>
-            </div>
+            <button style="width: 100%; font-size: 15px;" onclick="userThemes()">
+               Custom Themes<br/>
+               <span style="color: var(--text-semi-transparent); font-size: 14px;">Themes created by fellow TransSocial users!</span>
+            </button>
+            <p style="margin-top: 5px;">Want to make your own custom theme? <a href="/create_theme" style="color: var(--main-color);">Now you can!</a></p>
 
-            <!-- High Contrast -->
-            <div class="themeContainer" onclick="themeHighContrast()">
-                <img src="/assets/imgs/ThemeHighContrast.png" alt="High Contrast on the home page" class="themeImage" />
-                <div class="themeText">High Contrast</div>
-                <div class="themeDescription">Bold and impactful, emphasizing sharp clarity and visibility.</div>
-            </div>
-
-            <!-- Midnight Purple -->
-            <div class="themeContainer" onclick="themeMidnightPurple()">
-                <img src="/assets/imgs/ThemeMidnightPurple.png" alt="Midnight Purple on the home page" class="themeImage" />
-                <div class="themeText">Midnight Purple</div>
-                <div class="themeDescription">A calming shade of purple.</div>
-            </div>
-
-            <!-- Darker -->
-            <div class="themeContainer" onclick="themeDarker()">
-                <img src="/assets/imgs/ThemeDarker.png" alt="Darker on the home page" class="themeImage" />
-                <div class="themeText">Darker</div>
-                <div class="themeDescription">A deeper shade, providing a more subdued and shadowed appearance.</div>
-            </div>
-
-            <!-- Light -->
-            <div class="themeContainer" onclick="themeLight()">
-                <img src="/assets/imgs/ThemeLight.png" alt="Light on the home page" class="themeImage" />
-                <div class="themeText">Light</div>
-                <div class="themeDescription">A gentle and luminous theme, designed for clarity and ease.</div>
-            </div>
-
-            <!-- Mint Light -->
-            <div class="themeContainer" onclick="themeMintLight()">
-                <img src="/assets/imgs/ThemeMintLight.png" alt="Mint (Light) on the home page" class="themeImage" />
-                <div class="themeText">Mint (Light)</div>
-                <div class="themeDescription">A fresh and airy theme, blending minty hues with a light, refreshing touch. (This theme has poor accessibility)</div>
-            </div>
-
-            <!-- Classic -->
-            <div class="themeContainer" onclick="themeClassic()">
-                <img src="/assets/imgs/ThemeClassic.png" alt="TransSocial Classic on the home page" class="themeImage" />
-                <div class="themeText">TransSocial Classic</div>
-                <div class="themeDescription">The timeless and familiar theme that started it all. (This theme has poor accessibility)</div>
-            </div>
-
-            <!-- DEBUG (FOR REWRITING SETTINGS PAGE) -->
-
-            <br />
             <br />
 
             <button onclick="document.getElementById('themeSelect').close();">Nevermind</button>
@@ -847,41 +797,94 @@
             <button onclick="document.getElementById('editPolitical').close();">Finish</button>            
         </dialog>
 
-        <dialog id="editTheme">
-            <h2>Theme Preferences</h2>
-            <p>Make it yours! Pick a theme that reflects your style. It will stay the same on desktop, mobile, and web.</p>
-            <p style="color: var(--text-semi-transparent); font-size: 14px;">Some themes have poor accessibility.</p>
+        <dialog id="transsocialThemes">
+            <h2>TransSocial Themes</h2>
+            <p>All available TransSocial themes!</p>
 
-            <br />
-
-            <h2>Dark Themes </h2>
-            <button onclick="themeDark()" style="text-align: center; width: 100%;">Dark</button>
-            <button onclick="themeMintDark()" style="text-align: center; width: 100%;">Mint (Dark)</button>
-            <button onclick="themeHighContrast()" style="text-align: center; width: 100%;">High Contrast</button>
-            <button onclick="themeMidnightPurple()" style="text-align: center; width: 100%;">Midnight Purple</button>
-            <button onclick="themeDarker()" style="text-align: center; width: 100%;">Darker</button>
+            <button onclick="document.getElementById('transsocialThemes').close();">Nevermind</button>
 
             <br />
             <br />
 
-            <h2>Light Themes</h2>
-            <button onclick="themeLight()" style="text-align: center; width: 100%;">Light</button>
-            <button onclick="themeMintLight()" style="text-align: center; width: 100%;">Mint (Light)</button>
-            <button onclick="themeClassic()" style="text-align: center; width: 100%;">TransSocial Classic</button>
-            
-            <br />
-            <br />
-
-            <div id="css_theme-2024-04">
-                <h2>Experimental</h2>
-                <p>You have the <b>css_theme-2024-04</b> experiment enabled. Please note that this may break at any time, with or without warning.</p>
-                <button onclick="enableCustomThemes()" style="text-align: center; width: 100%;">Create Theme</button>
-
-                <br />
-                <br />
+            <!-- Default -->
+            <div class="themeContainer" onclick="themeDark()">
+                <img src="/assets/imgs/ThemeDark.png" alt="Dark theme on the home page" class="themeImage" />
+                <div class="themeText">Dark</div>
+                <div class="themeDescription">TransSocial's default theme: sleek and clean.</div>
             </div>
 
-            <button onclick="document.getElementById('editTheme').close();">Finish</button>
+            <!-- Mint Dark -->
+            <div class="themeContainer" onclick="themeMintDark()">
+                <img src="/assets/imgs/ThemeMintDark.png" alt="Mint (Dark) theme on the home page" class="themeImage" />
+                <div class="themeText">Mint (Dark)</div>
+                <div class="themeDescription">A refreshing blend of minty dark hues.</div>
+            </div>
+
+            <!-- High Contrast -->
+            <div class="themeContainer" onclick="themeHighContrast()">
+                <img src="/assets/imgs/ThemeHighContrast.png" alt="High Contrast on the home page" class="themeImage" />
+                <div class="themeText">High Contrast</div>
+                <div class="themeDescription">Bold and impactful, emphasizing sharp clarity and visibility.</div>
+            </div>
+
+            <!-- Midnight Purple -->
+            <div class="themeContainer" onclick="themeMidnightPurple()">
+                <img src="/assets/imgs/ThemeMidnightPurple.png" alt="Midnight Purple on the home page" class="themeImage" />
+                <div class="themeText">Midnight Purple</div>
+                <div class="themeDescription">A calming shade of purple.</div>
+            </div>
+
+            <!-- Darker -->
+            <div class="themeContainer" onclick="themeDarker()">
+                <img src="/assets/imgs/ThemeDarker.png" alt="Darker on the home page" class="themeImage" />
+                <div class="themeText">Darker</div>
+                <div class="themeDescription">A deeper shade, providing a more subdued and shadowed appearance.</div>
+            </div>
+
+            <!-- Light -->
+            <div class="themeContainer" onclick="themeLight()">
+                <img src="/assets/imgs/ThemeLight.png" alt="Light on the home page" class="themeImage" />
+                <div class="themeText">Light</div>
+                <div class="themeDescription">A gentle and luminous theme, designed for clarity and ease.</div>
+            </div>
+
+            <!-- Mint Light -->
+            <div class="themeContainer" onclick="themeMintLight()">
+                <img src="/assets/imgs/ThemeMintLight.png" alt="Mint (Light) on the home page" class="themeImage" />
+                <div class="themeText">Mint (Light)</div>
+                <div class="themeDescription">A fresh and airy theme, blending minty hues with a light, refreshing touch. (This theme has poor accessibility)</div>
+            </div>
+
+            <!-- Classic -->
+            <div class="themeContainer" onclick="themeClassic()">
+                <img src="/assets/imgs/ThemeClassic.png" alt="TransSocial Classic on the home page" class="themeImage" />
+                <div class="themeText">TransSocial Classic</div>
+                <div class="themeDescription">The timeless and familiar theme that started it all. (This theme has poor accessibility)</div>
+            </div>
+
+            <!-- DEBUG (FOR REWRITING SETTINGS PAGE) -->
+
+            <br />
+            <br />
+
+            <button onclick="document.getElementById('transsocialThemes').close();">Nevermind</button>
+        </dialog>
+
+        <dialog id="userThemes">
+            <h2>User Themes</h2>
+            <p>Try themes by fellow TransSocial users!</p>
+            <button onclick="document.getElementById('userThemes').close();">Nevermind</button>
+
+            <br />
+            <br />
+
+            <div id="themeSelection">
+
+            </div>
+
+            <br />
+
+            <button onclick="document.getElementById('userThemes').close();">Nevermind</button>
         </dialog>
 
         <dialog id="changePassword">
