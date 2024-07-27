@@ -25,6 +25,13 @@ const pageURL = new URL(currentURL);
 const pathName = pageURL.pathname;
 let isOnDesktopApp = null;
 
+// TransSocial Version
+let transsocialVersion = "v2024.7.27";
+const notices = document.getElementsByClassName("version-notice");
+for (let notice of notices) {
+   notice.innerHTML = `TransSocial is currently in the InDev stage (version ${transsocialVersion}). A lot of features are missing or are in development and will be added with updates. <a href="/indev">Learn more</a>.`;
+}
+
 // Quote renote ID
 let renotingNote = null;
 
