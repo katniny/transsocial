@@ -1,14 +1,14 @@
 // katniny Firebase Configuration
 // before pushing to git, always make sure the firebase config doesn't expose yours
 const firebaseConfig = {
-   apiKey: "REPLACE",
-   authDomain: "REPLACE",
-   databaseURL: "REPLACE",
-   projectId: "REPLACE",
-   storageBucket: "REPLACE",
-   messagingSenderId: "REPLACE",
-   appId: "REPLACE",
-   measurementId: "REPLACE"
+   apiKey: "RETURN",
+   authDomain: "RETURN",
+   databaseURL: "RETURN",
+   projectId: "RETURN",
+   storageBucket: "RETURN",
+   messagingSenderId: "RETURN",
+   appId: "RETURN",
+   measurementId: "RETURN"
 }
 
 // Initialize Firebase
@@ -3574,12 +3574,14 @@ if (pathName === "/settings" || pathName === "/settings.html") {
       document.getElementById("accountTab").classList.remove("active");
       document.getElementById("personalizationTab").classList.remove("active");
       document.getElementById("subscriptionTab").classList.remove("active");
+      document.getElementById("environmentTab").classList.remove("active");
 
       // Show section
       document.getElementById("profileTab-display").style.display = "block";
       document.getElementById("profileTab-account").style.display = "none";
       document.getElementById("profileTab-personalization").style.display = "none";
       document.getElementById("profileTab-subscription").style.display = "none";
+      document.getElementById("profileTab-environment").style.display = "none";
    }
 
    function accountTab() {
@@ -3588,12 +3590,14 @@ if (pathName === "/settings" || pathName === "/settings.html") {
       document.getElementById("accountTab").classList.add("active");
       document.getElementById("personalizationTab").classList.remove("active");
       document.getElementById("subscriptionTab").classList.remove("active");
+      document.getElementById("environmentTab").classList.remove("active");
 
       // Show section
       document.getElementById("profileTab-display").style.display = "none";
       document.getElementById("profileTab-account").style.display = "block";
       document.getElementById("profileTab-personalization").style.display = "none";
       document.getElementById("profileTab-subscription").style.display = "none";
+      document.getElementById("profileTab-environment").style.display = "none";
    }
 
    function personalizationTab() {
@@ -3602,12 +3606,14 @@ if (pathName === "/settings" || pathName === "/settings.html") {
       document.getElementById("accountTab").classList.remove("active");
       document.getElementById("personalizationTab").classList.add("active");
       document.getElementById("subscriptionTab").classList.remove("active");
+      document.getElementById("environmentTab").classList.remove("active");
 
       // Show section
       document.getElementById("profileTab-display").style.display = "none";
       document.getElementById("profileTab-account").style.display = "none";
       document.getElementById("profileTab-personalization").style.display = "block";
       document.getElementById("profileTab-subscription").style.display = "none";
+      document.getElementById("profileTab-environment").style.display = "none";
    }
 
    function subscriptionTab() {
@@ -3616,12 +3622,29 @@ if (pathName === "/settings" || pathName === "/settings.html") {
       document.getElementById("accountTab").classList.remove("active");
       document.getElementById("personalizationTab").classList.remove("active");
       document.getElementById("subscriptionTab").classList.add("active");
+      document.getElementById("environmentTab").classList.remove("active");
 
       // Show section
       document.getElementById("profileTab-display").style.display = "none";
       document.getElementById("profileTab-account").style.display = "none";
       document.getElementById("profileTab-personalization").style.display = "none";
       document.getElementById("profileTab-subscription").style.display = "block";
+      document.getElementById("profileTab-environment").style.display = "none";
+   }
+
+   function environmentTab() {
+      document.getElementById("profileTab").classList.remove("active");
+      document.getElementById("accountTab").classList.remove("active");
+      document.getElementById("personalizationTab").classList.remove("active");
+      document.getElementById("subscriptionTab").classList.remove("active");
+      document.getElementById("environmentTab").classList.add("active");
+
+      // Show section
+      document.getElementById("profileTab-display").style.display = "none";
+      document.getElementById("profileTab-account").style.display = "none";
+      document.getElementById("profileTab-personalization").style.display = "none";
+      document.getElementById("profileTab-subscription").style.display = "none";
+      document.getElementById("profileTab-environment").style.display = "block";
    }
 
    // Set defaults
@@ -4479,6 +4502,67 @@ if (pathName === "/settings" || pathName === "/settings.html") {
          }
       })
    }
+
+   // environment tab
+   // get browser and browser version
+   function getBrowserInfo() {
+      const userAgent = navigator.userAgent;
+      let name = "Unknown Browser";
+      let version = "Unknown version";
+
+      if (userAgent.indexOf("Firefox") > -1) {
+         name = "Mozilla Firefox";
+         version = userAgent.match(/Firefox\/([0-9.]+)/)[1];
+      } else if (userAgent.indexOf("SamsungBrowser") > -1) {
+         name = "Samsung Browser";
+         version = userAgent.match(/SamsungBrowser\/([0-9.]+)/)[1];
+      } else if (userAgent.indexOf("Opera") > -1 || userAgent.indexOf("OPR") > -1) {
+         name = "Opera";
+         version = userAgent.match(/(Opera|OPR)\/([0-9.]+)/)[2];
+      } else if (userAgent.indexOf("Trident") > -1) {
+         name = "Internet Explorer";
+         version = userAgent.match(/rv:([0-9.]+)/)[1];
+      } else if (userAgent.indexOf("Edge") > -1) {
+         name = "Microsoft Edge";
+         version = userAgent.match(/Edge\/([0-9.]+)/)[1];
+      } else if (userAgent.indexOf("Chrome") > -1) {
+         name = "Google Chrome";
+         version = userAgent.match(/Chrome\/([0-9.]+)/)[1];
+      } else if (userAgent.indexOf("Safari") > -1) {
+         name = "Apple Safari";
+         version = userAgent.match(/Version\/([0-9.]+)/)[1];
+      }
+   
+      return { name, version };
+   }
+   const browserInfo = getBrowserInfo();
+   document.getElementById("userBrowser").textContent = browserInfo.name;
+   document.getElementById("userBrowserVer").textContent = browserInfo.version;
+
+   // get user os
+   function getOS() {
+      const userAgent = navigator.userAgent;
+      let os = "Unknown";
+  
+      if (userAgent.indexOf("Win") > -1) {
+         os = "Microsoft Windows";
+      } else if (userAgent.indexOf("Mac") > -1) {
+         os = "Apple MacOS";
+      } else if (userAgent.indexOf("X11") > -1 || userAgent.indexOf("Linux") > -1) {
+         os = "Linux";
+      } else if (userAgent.indexOf("Android") > -1) {
+         os = "Android";
+      } else if (userAgent.indexOf("iPhone") > -1 || userAgent.indexOf("iPad") > -1) {
+         os = "Apple iOS";
+      } else {
+         os = "Unknown";
+      }
+  
+      return os;
+   }
+  
+   const userOS = getOS();
+   document.getElementById("userOs").textContent = userOS;
 }
 
 // Accept cookies
@@ -5192,27 +5276,30 @@ function getVerificationEmail() {
 //     });
 // }
 
-// Detect if user is on the desktop or not, and update the variable
-if (window.location.origin === "http://127.0.0.1:1430") {
-   isOnDesktopApp = true;
+// Detect if user is on an outdated version of the desktop app
+function isTauri() {
+   return (
+      typeof window !== "undefined" &&
+      typeof window.__TAURI__ !== "undefined"
+   );
+}
 
-   // Remove the "We're beta testing out Windows app" notice from the index page
-   if (document.getElementById("betaTestingApp")) {
-      document.getElementById("betaTestingApp").remove();
-   }
-
-   // Remove the "Looks like you aren't on the desktop app..." noticce
-   if (document.getElementById("notOnDesktopApp")) {
-      document.getElementById("notOnDesktopApp").remove();
-      document.getElementById("isOnDesktopApp").style.display = "block";
+if (isTauri()) {
+   if (pathName !== "/outdated") {
+      window.location.replace("/outdated");
    }
 } else {
-   isOnDesktopApp = false;
-
-   // Remove the Desktop settings
-   if (document.getElementById("isOnDesktopApp")) {
-      document.getElementById("isOnDesktopApp").remove();
+   if (pathName === "/outdated") {
+      window.location.replace("/");
    }
+}
+
+// Detect if user is on new desktop app
+if (window.electron && typeof window.electron.doSomething === "function") {
+   window.electron.doSomething("some data");
+   window.electron.onSomethingDone((event, result) => {
+      console.log("Something was done!", result);
+   });
 }
 
 // Detect user OS
