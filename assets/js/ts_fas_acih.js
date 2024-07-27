@@ -1,14 +1,14 @@
 // katniny Firebase Configuration
 // before pushing to git, always make sure the firebase config doesn't expose yours
 const firebaseConfig = {
-   apiKey: "RETURN",
-   authDomain: "RETURN",
-   databaseURL: "RETURN",
-   projectId: "RETURN",
-   storageBucket: "RETURN",
-   messagingSenderId: "RETURN",
-   appId: "RETURN",
-   measurementId: "RETURN"
+   apiKey: "REPLACE",
+   authDomain: "REPLACE",
+   databaseURL: "REPLACE",
+   projectId: "REPLACE",
+   storageBucket: "REPLACE",
+   messagingSenderId: "REPLACE",
+   appId: "REPLACE",
+   measurementId: "REPLACE"
 }
 
 // Initialize Firebase
