@@ -1,0 +1,79 @@
+name: Bug Report
+description: File a bug report.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: "Don't forget to fill in a title!"
+  - type: textarea
+    id: describe
+    attributes:
+      label: Describe the bug
+      description: Please provide as much information as you can, include screenshots if applicable.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: How should it be normally?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1.
+        2.
+        3.
+        ...
+  - type: textarea
+    id: notes
+    attributes:
+      label: Additional notes
+      description: Got anything else to say?
+  - type: checkboxes
+    id: misc
+    attributes:
+      label: Other
+      options:
+        - label: I could replicate this in a local dev environment
+        - label: I will fix this issue myself
+        - label: I have searched for similar issues
+          required: true
+  - type: markdown
+    id: env-header
+    attributes:
+      value: "## Environment"
+  - type: markdown
+    id: env-note
+    attributes:
+      value: Please do not provide versions like "newest", get the actual version number instead
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      options:
+        - Desktop/Laptop (Browser)
+        - Desktop/Laptop (App)
+        - Phone (Browser)
+        - Phone (App)
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: Browser
+      description: If you selected an option with Browser above, provide which one and its version
+      placeholder: "(ex: Firefox 128.0)"
+  - type: dropdown
+    id: app
+    attributes:
+      label: App
+      description: Otherwise if you selected an option with App above, provide the source of the app
+      options:
+        - Windows MSI Installer
+        - Windows Microsoft Store
+        - Android APK
