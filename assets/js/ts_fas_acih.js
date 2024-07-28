@@ -5276,7 +5276,7 @@ function getVerificationEmail() {
 //     });
 // }
 
-// Detect if user is on an outdated version of the desktop app
+// Detect if user is on the desktop app
 function isTauri() {
    return (
       typeof window !== "undefined" &&
@@ -5285,21 +5285,9 @@ function isTauri() {
 }
 
 if (isTauri()) {
-   if (pathName !== "/outdated") {
-      window.location.replace("/outdated");
+   if (document.getElementById("betaTestingApp")) {
+      document.getElementById("betaTestingApp").remove();
    }
-} else {
-   if (pathName === "/outdated") {
-      window.location.replace("/");
-   }
-}
-
-// Detect if user is on new desktop app
-if (window.electron && typeof window.electron.doSomething === "function") {
-   window.electron.doSomething("some data");
-   window.electron.onSomethingDone((event, result) => {
-      console.log("Something was done!", result);
-   });
 }
 
 // Detect user OS
