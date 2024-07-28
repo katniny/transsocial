@@ -416,6 +416,27 @@
             <button onclick="document.getElementById('experimentSelect').close();">Nevermind</button>
         </dialog>
 
+        <dialog id="fatalAccountError">
+         <h2>Fatal Account Error</h2>
+         <p>When creating or updating your account, TransSocial encountered an error. If it's an error related to just your email,
+            this popup will close soon as we automatically resolve email related errors. Otherwise, you're missing your display name, username and/or profile picture. <br />
+            Before you can use TransSocial, you will need to resolve your missing info.
+         </p>
+
+         <br />
+
+         <button onclick="document.getElementById('fatalAccountError').close();">Resolve</button>
+        </dialog>
+
+        <dialog id="fatalAccountError_AutomaticFix">
+         <h2>Account Repaired</h2>
+         <p>When creating your account or updating your account, there was a fatal error. However, we were able to automatically resolve this error.
+            <br /> You may continue using TransSocial.
+         </p>
+
+         <a href="/"><button>Okay</button></a>
+        </dialog>
+
         <dialog id="createNote-popup">
             <div class="creatingStuff">
                 <!-- Display above everything else when a note is sending -->
