@@ -34,12 +34,14 @@ body:
       label: Additional notes
       description: Got anything else to say?
   - type: checkboxes
-    id: self-assigned
+    id: misc
     attributes:
       label: Other
       options:
         - label: I could replicate this in a local dev environment
         - label: I will fix this issue myself
+        - label: I have searched for similar issues
+          required: true
   - type: markdown
     id: env-header
     attributes:
