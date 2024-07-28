@@ -27,9 +27,15 @@ let isOnDesktopApp = null;
 
 // TransSocial Version
 let transsocialVersion = "v2024.7.28";
+let transsocialReleaseVersion = "indev";
+
 const notices = document.getElementsByClassName("version-notice");
+const loaderVersions = document.getElementsByClassName("loaderVersion");
 for (let notice of notices) {
    notice.innerHTML = `TransSocial is currently in the InDev stage (version ${transsocialVersion}). A lot of features are missing or are in development and will be added with updates. <a href="/indev">Learn more</a>.`;
+}
+for (let loader of loaderVersions) {
+   loader.innerHTML = `TransSocial ${transsocialVersion}_${transsocialReleaseVersion}`;
 }
 
 // Quote renote ID
