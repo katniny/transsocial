@@ -4306,6 +4306,63 @@ if (pathName === "/settings" || pathName === "/settings.html") {
       }
    }
 
+   // small utility functions to help wipe data
+   // function isReplyTo(possibleReply, repliedToId) {
+   //    // if (possibleReply.id === repliedToId) throw new Error("Same Note");
+   //    // if (!possibleReply.replyingTo) throw new Error("Note isn't a reply");
+   //    if (possibleReply.replyingTo === repliedToId) return true;
+   //    return false; // no else needed because we return early
+   // }
+   //
+   // function deleteNoteReally(note) {
+   //    const noteId = note.id;
+   //    const senderId = note.whoSentIt;
+   //
+   //    if (note.image) {
+   //       firebase.storage().ref(`images/notes/${noteId}`).delete();
+   //    }
+   //
+   //    firebase.database().ref(`users/${senderId}/posts/${noteId}`).remove();
+   //    firebase.database().ref(`notes/${noteId}`).remove();
+   // }
+
+   // delete account
+   function deleteAccount() {
+      const user = firebase.auth().currentUser;
+      const uid = user.uid;
+      const userDbRef = firebase.database().ref(`users/${uid}`);
+
+      const email = user.email;
+      const password = document.getElementById("deleteAccountPassword").content;
+      const credential = firebase.auth.EmailAuthProvider.credential(email, password);
+
+      user.reauthenticateWithCredential(credential).then(() => {
+
+         // delete notes
+         // firebase.database().ref(`notes`).once("value", (snapshot) => {
+         //    const notes = snapshot.val();
+         //    let notesToDelete = [];
+         //    
+         //    notesToDelete.forEach((note) => deleteNoteReally(note.id));
+         // });
+
+         firebase.storage().ref(`images/pfp/${uid}`).delete();
+
+
+         userDbRef.once("value", (snapshot) => {
+            const data = snapshot.val();
+            const username = data.username;
+            firebase.storage().ref(`taken-usernames/${username}`).delete();
+         });
+
+         userDbRef.remove();
+
+
+         user.delete();
+
+      }).catch((error) => console.log(error));
+   }
+
    // theme selection
    function selectTheme() {
       document.getElementById("themeSelect").showModal();
