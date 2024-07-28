@@ -26,7 +26,7 @@ const pathName = pageURL.pathname;
 let isOnDesktopApp = null;
 
 // TransSocial Version
-let transsocialVersion = "v2024.7.27";
+let transsocialVersion = "v2024.7.28";
 const notices = document.getElementsByClassName("version-notice");
 for (let notice of notices) {
    notice.innerHTML = `TransSocial is currently in the InDev stage (version ${transsocialVersion}). A lot of features are missing or are in development and will be added with updates. <a href="/indev">Learn more</a>.`;
@@ -5276,7 +5276,7 @@ function getVerificationEmail() {
 //     });
 // }
 
-// Detect if user is on an outdated version of the desktop app
+// Detect if user is on the desktop app
 function isTauri() {
    return (
       typeof window !== "undefined" &&
@@ -5285,21 +5285,9 @@ function isTauri() {
 }
 
 if (isTauri()) {
-   if (pathName !== "/outdated") {
-      window.location.replace("/outdated");
+   if (document.getElementById("betaTestingApp")) {
+      document.getElementById("betaTestingApp").remove();
    }
-} else {
-   if (pathName === "/outdated") {
-      window.location.replace("/");
-   }
-}
-
-// Detect if user is on new desktop app
-if (window.electron && typeof window.electron.doSomething === "function") {
-   window.electron.doSomething("some data");
-   window.electron.onSomethingDone((event, result) => {
-      console.log("Something was done!", result);
-   });
 }
 
 // Detect user OS
