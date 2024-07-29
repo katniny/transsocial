@@ -9,7 +9,7 @@ const firebaseConfig = {
    messagingSenderId: "REPLACE",
    appId: "REPLACE",
    measurementId: "REPLACE"
-}
+};
 
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
@@ -1014,9 +1014,16 @@ function linkify(text) {
    return linkedText;
 }
 
+function addNewlines(text) {
+   let newText = text.replace(/(\r\n|\n|\r)/g, '<br>');
+   return newText;
+}
+
 function sanitizeAndLinkify(text) {
-   const escapedText = escapeHtml(text);
-   return linkify(escapedText);
+   let escapedText = escapeHtml(text);
+   escapedText = linkify(newText);
+   escapedText = addNewlines(newText);
+   return escapedText;
 }
 
 // Old Code
