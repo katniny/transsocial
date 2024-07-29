@@ -1441,6 +1441,11 @@ select {
    margin-left: 15px;
 }
 
+.melissa .noteContent code {
+   font-family: "Inconsolata", monospace;
+   background: var(--note-background);
+}
+
 /* Note Error */
 #noteError {
    color: var(--error-text);
