@@ -1,14 +1,14 @@
 // katniny Firebase Configuration
 // before pushing to git, always make sure the firebase config doesn't expose yours
 const firebaseConfig = {
-   apiKey: "AIzaSyCrBeEOpk9vyzIdcCgDk95phPrQX8euAtw",
-   authDomain: "chat-transsocial-test.firebaseapp.com",
-   databaseURL: "https://chat-transsocial-test-default-rtdb.firebaseio.com/",
-   projectId: "chat-transsocial-test",
-   storageBucket: "chat-transsocial-test.appspot.com",
-   messagingSenderId: "921564672979",
-   appId: "1:921564672979:web:fe73a3934074b91677b526",
-   measurementId: "G-D6PHVBS3Z0"
+   apiKey: "REPLACE",
+   authDomain: "REPLACE",
+   databaseURL: "REPLACE",
+   projectId: "REPLACE",
+   storageBucket: "REPLACE",
+   messagingSenderId: "REPLACE",
+   appId: "REPLACE",
+   measurementId: "REPLACE"
 };
 
 // Initialize Firebase
@@ -6368,54 +6368,57 @@ if (pathName === "/userstudio") {
 // check for fatal account creation errors
 firebase.auth().onAuthStateChanged((user) => {
    if (user) {
-      firebase.database().ref(`users/${user.uid}`).on("value", (snapshot) => {
-         if (snapshot.exists()) {
-            const checkInfo = snapshot.val();
+      // make sure the user isn't trying to register
+      if (!pathName.startsWith("/auth/")) {
+         firebase.database().ref(`users/${user.uid}`).on("value", (snapshot) => {
+            if (snapshot.exists()) {
+               const checkInfo = snapshot.val();
 
-            // check for any vital missing info (email, display, pfp or username (everything else is non-vital))
-            if (pathName !== "/settings") {
-               if (checkInfo.email === undefined || checkInfo.display === undefined || checkInfo.username === undefined || checkInfo.pfp === undefined) {
-                  // this means either their email, display name or username is missing
-                  window.location.replace("/settings?fatal=true");
-               }
-            } else if (pathName === "/settings") {
-               if (checkInfo.email === undefined || checkInfo.display === undefined || checkInfo.username === undefined || checkInfo.pfp === undefined) {
-                  document.getElementById("fatalAccountError").showModal();
-                  document.getElementById("createNote-sidebar").style.display = "none"; // prevent them from creating notes
+               // check for any vital missing info (email, display, pfp or username (everything else is non-vital))
+               if (pathName !== "/settings") {
+                  if (checkInfo.email === undefined || checkInfo.display === undefined || checkInfo.username === undefined || checkInfo.pfp === undefined) {
+                     // this means either their email, display name or username is missing
+                     window.location.replace("/settings?fatal=true");
+                  }
+               } else if (pathName === "/settings") {
+                  if (checkInfo.email === undefined || checkInfo.display === undefined || checkInfo.username === undefined || checkInfo.pfp === undefined) {
+                     document.getElementById("fatalAccountError").showModal();
+                     document.getElementById("createNote-sidebar").style.display = "none"; // prevent them from creating notes
 
-                  // if email, just add it to the db lol
-                  // "wait spongebob! we're not cavemen! we have technology!"
-                  if (checkInfo.email === undefined) {
-                     firebase.database().ref(`users/${user.uid}`).update({
-                        email : user.email
-                     })
-                     .then(() => {
-                        document.getElementById("email-address").value = user.email;
+                     // if email, just add it to the db lol
+                     // "wait spongebob! we're not cavemen! we have technology!"
+                     if (checkInfo.email === undefined) {
+                        firebase.database().ref(`users/${user.uid}`).update({
+                           email : user.email
+                        })
+                        .then(() => {
+                           document.getElementById("email-address").value = user.email;
 
-                        if (checkInfo.display !== undefined && checkInfo.username !== undefined && checkInfo.pfp !== undefined) {
-                           // this means nothing else broke. we automatically fixed it
-                           document.getElementById("fatalAccountError").close();
-                           document.getElementById("fatalAccountError_AutomaticFix").showModal();
-                           document.getElementById("createNote-sidebar").style.display = "block";
-                        }
-                     });
+                           if (checkInfo.display !== undefined && checkInfo.username !== undefined && checkInfo.pfp !== undefined) {
+                              // this means nothing else broke. we automatically fixed it
+                              document.getElementById("fatalAccountError").close();
+                              document.getElementById("fatalAccountError_AutomaticFix").showModal();
+                              document.getElementById("createNote-sidebar").style.display = "block";
+                           }
+                        });
+                     }
                   }
                }
-            }
-         } else {
-            // this means their account isn't in the db AT ALL
-            if (pathName !== "/settings") {
-               // ensure their set in the db isn't empty as that causes SEVERAL issues
-               // (well, several issues besides the fact their account basically doesnt exist in transsocial's eyes)
-               firebase.database().ref(`users/${user.uid}`).update({
-                  email : user.email
-               }).then(() => {
-                  window.location.replace("/settings?fatal=true");
-               });
             } else {
-               document.getElementById("fatalAccountError").showModal();
+               // this means their account isn't in the db AT ALL
+               if (pathName !== "/settings") {
+                  // ensure their set in the db isn't empty as that causes SEVERAL issues
+                  // (well, several issues besides the fact their account basically doesnt exist in transsocial's eyes)
+                  firebase.database().ref(`users/${user.uid}`).update({
+                     email : user.email
+                  }).then(() => {
+                     window.location.replace("/settings?fatal=true");
+                  });
+               } else {
+                  document.getElementById("fatalAccountError").showModal();
+               }
             }
-         }
-      });
+         });
+      }
    }
 })
