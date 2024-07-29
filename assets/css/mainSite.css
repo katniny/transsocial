@@ -1281,7 +1281,7 @@ select {
    margin-right: 15px;
 }
 
-.melissa #display-profile.canBeHovered:hover {
+.melissa #display-profile.canBeUnderlined:hover {
    text-decoration: underline;
 }
 
@@ -1301,7 +1301,7 @@ select {
    font-size: 20px;
 }
 
-.melissa #username-profile.canBeHovered:hover {
+.melissa #username-profile.canBeUnderlined:hover {
    text-decoration: underline;
 }
 
@@ -1314,7 +1314,7 @@ select {
    font-size: 20px;
 }
 
-.melissa #pronouns-profile.canBeHovered:hover {
+.melissa #pronouns-profile.canBeUnderlined:hover {
    text-decoration: underline;
 }
 
@@ -2054,6 +2054,14 @@ dialog .coverCreateANote {
 
 ::-webkit-scrollbar-thumb:hover {
    background: var(--main-color-darker);
+}
+
+/* Firefox Scrollbar */
+@-moz-document url-prefix() {
+   * {
+      scrollbar-width: auto;
+      scrollbar-color: var(--main-color) var(--note-background);
+   }
 }
 
 /* Download Page */
