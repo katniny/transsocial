@@ -988,7 +988,7 @@ dialog {
    background: var(--header-color);
    border: 1px solid var(--main-color);
    margin-top: 25px;
-   animation: openPopup 0.35s ease;
+   animation: openPopup 0.25s ease;
    overflow-y: scroll;
 }
 
@@ -1086,11 +1086,12 @@ dialog .settingsStuff .optionAlt {
 
 @keyframes openPopup {
    0% {
-      margin-top: -250px;
+      transform: scale(0.5);
+      opacity: 0;
    }
-
    100% {
-      margin-top: 25px;
+      transform: scale(1);
+      opacity: 1;
    }
 }
 
@@ -1323,6 +1324,12 @@ select {
    margin-top: 15px;
 }
 
+@-moz-document url-prefix() {
+   .melissa #bio-profile {
+      margin-bottom: 15px;
+   }
+}
+
 .melissa #bio-profile .emoji {
    height: 1em;
    width: 1em;
@@ -1471,6 +1478,13 @@ select {
 /* Note Content */
 .noteContent {
    overflow-wrap: break-word;
+}
+
+@-moz-document url-prefix() {
+   .noteContent {
+      margin-top: 15px;
+      margin-bottom: 5px;
+   }
 }
 
 .noteContent .emoji {
@@ -2103,6 +2117,12 @@ dialog .coverCreateANote {
    padding: 10px;
    border-radius: 15px;
    background: var(--note-background);
+}
+
+@-moz-document url-prefix() { /* Only applies on Firefox */
+   .update li {
+      margin-left: 15px;
+   }
 }
 
 /* Achievement Unlock */
