@@ -1,14 +1,14 @@
 // katniny Firebase Configuration
 // before pushing to git, always make sure the firebase config doesn't expose yours
 const firebaseConfig = {
-   apiKey: "REPLACE",
-   authDomain: "REPLACE",
-   databaseURL: "REPLACE",
-   projectId: "REPLACE",
-   storageBucket: "REPLACE",
-   messagingSenderId: "REPLACE",
-   appId: "REPLACE",
-   measurementId: "REPLACE"
+   apiKey: "AIzaSyCrBeEOpk9vyzIdcCgDk95phPrQX8euAtw",
+   authDomain: "chat-transsocial-test.firebaseapp.com",
+   databaseURL: "https://chat-transsocial-test-default-rtdb.firebaseio.com/",
+   projectId: "chat-transsocial-test",
+   storageBucket: "chat-transsocial-test.appspot.com",
+   messagingSenderId: "921564672979",
+   appId: "1:921564672979:web:fe73a3934074b91677b526",
+   measurementId: "G-D6PHVBS3Z0"
 };
 
 // Initialize Firebase
@@ -1021,8 +1021,8 @@ function addNewlines(text) {
 
 function sanitizeAndLinkify(text) {
    let escapedText = escapeHtml(text);
-   escapedText = linkify(newText);
-   escapedText = addNewlines(newText);
+   escapedText = linkify(escapedText);
+   escapedText = addNewlines(escapedText);
    return escapedText;
 }
 
