@@ -9,7 +9,7 @@ const firebaseConfig = {
    messagingSenderId: "REPLACE",
    appId: "REPLACE",
    measurementId: "REPLACE"
-}
+};
 
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
@@ -26,7 +26,7 @@ const pathName = pageURL.pathname;
 let isOnDesktopApp = null;
 
 // TransSocial Version
-let transsocialVersion = "v2024.7.28";
+let transsocialVersion = "v2024.7.29";
 let transsocialReleaseVersion = "indev";
 
 const notices = document.getElementsByClassName("version-notice");
@@ -1014,9 +1014,16 @@ function linkify(text) {
    return linkedText;
 }
 
+function addNewlines(text) {
+   let newText = text.replace(/(\r\n|\n|\r)/g, '<br>');
+   return newText;
+}
+
 function sanitizeAndLinkify(text) {
-   const escapedText = escapeHtml(text);
-   return linkify(escapedText);
+   let escapedText = escapeHtml(text);
+   escapedText = linkify(newText);
+   escapedText = addNewlines(newText);
+   return escapedText;
 }
 
 // Old Code
