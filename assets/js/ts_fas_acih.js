@@ -1721,7 +1721,7 @@ if (pathName === "/" || pathName === "/index.html" || pathName === "/index" || p
 
                      const quoteText = document.createElement("span");
                      quoteText.classList.add("quoteText");
-                     quoteText.textContent = quoteData.text;
+                     quoteText.innerHTML = sanitizeAndLinkify(quoteData.text);
 
                      container.appendChild(quotePfp);
                      container.appendChild(quoteContent);
@@ -2687,7 +2687,7 @@ if (pathName === "/u.html" || pathName === "/u") {
 
                            const quoteText = document.createElement("span");
                            quoteText.classList.add("quoteText");
-                           quoteText.textContent = quoteData.text;
+                           quoteText.innerHTML = sanitizeAndLinkify(quoteData.text);
 
                            container.appendChild(quotePfp);
                            container.appendChild(quoteContent);
@@ -3155,7 +3155,7 @@ if (pathName === "/note.html" || pathName === "/note") {
                   document.getElementById("noteQuotePfp").src = `https://firebasestorage.googleapis.com/v0/b/chat-transsocial-test.appspot.com/o/images%2Fpfp%2F${quoteData.whoSentIt}%2F${quoteUser.pfp}?alt=media`;
                   document.getElementById("noteQuoteDisplay").textContent = quoteUser.display;
                   document.getElementById("noteQuoteUsername").textContent = `@${quoteUser.username}`;
-                  document.getElementById("noteQuoteText").textContent = quoteData.text;
+                  document.getElementById("noteQuoteText").innerHTML = sanitizeAndLinkify(quoteData.text);;
                   twemoji.parse(document.getElementById("noteQuoteText"), {
                      folder: 'svg',
                      ext: '.svg'
