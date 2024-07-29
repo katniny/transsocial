@@ -1787,7 +1787,7 @@ if (pathName === "/" || pathName === "/index.html" || pathName === "/index" || p
 
             // Add reply button
             const replyBtn = document.createElement("p");
-            replyBtn.classList.add("renoteBtn");
+            replyBtn.classList.add("replyBtn");
             if (noteContent.replies !== undefined) {
                replyBtn.innerHTML = `<i class="fa-solid fa-comment"></i> ${noteContent.replies}`;
             } else {
