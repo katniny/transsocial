@@ -1019,8 +1019,35 @@ function addNewlines(text) {
    return newText;
 }
 
+function markdownify(text) {
+   // headers
+   // ###, ## and #
+   text = text.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+   text = text.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+   text = text.replace(/^# (.+)$/gm, '<h1>$1</h1>');
+
+   // bold, italics, strikethrough and monospace
+   text = text.replace(/\*(.+?)\*/g, '<strong>$1</strong>'); //bold
+   text = text.replace(/\_(.+?)\_/g, '<em>$1</em>'); // italics
+   text = text.replace(/~(.+?)~/g, '<del>$1</del>'); // strikethrough
+   text = text.replace(/`([^`]+)`/g, '<code>$1</code>'); // monospace
+   text = text.replace(/```([^`]+)```/g, '<pre><code>$1</code></pre>'); // multi-line monospace
+
+   // lists
+   text = text.replace(/^- (.+)$/gm, '<ul><li>$1</li></ul>');
+
+   // blockquotes
+   text = text.replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>');
+
+   // escape backslashes
+   text = text.replace(/\\(.)/g, '$1');
+
+   return text;
+}
+
 function sanitizeAndLinkify(text) {
    let escapedText = escapeHtml(text);
+   escapedText = markdownify(escapedText);
    escapedText = linkify(escapedText);
    escapedText = addNewlines(escapedText);
    return escapedText;
@@ -1721,7 +1748,11 @@ if (pathName === "/" || pathName === "/index.html" || pathName === "/index" || p
 
                      const quoteText = document.createElement("span");
                      quoteText.classList.add("quoteText");
-                     quoteText.innerHTML = sanitizeAndLinkify(quoteData.text);
+                     let content = sanitizeAndLinkify(quoteData.text);
+                     if (content.length > 247) { // check length
+                        content = content.substring(0, 247) + "...";
+                     }
+                     quoteText.innerHTML = content;
 
                      container.appendChild(quotePfp);
                      container.appendChild(quoteContent);
@@ -2694,6 +2725,11 @@ if (pathName === "/u.html" || pathName === "/u") {
                            const quoteText = document.createElement("span");
                            quoteText.classList.add("quoteText");
                            quoteText.innerHTML = sanitizeAndLinkify(quoteData.text);
+                           let content = sanitizeAndLinkify(quoteData.text);
+                           if (content.length > 247) { // check length
+                              content = content.substring(0, 247) + "...";
+                           }
+                           quoteText.innerHTML = content;
 
                            container.appendChild(quotePfp);
                            container.appendChild(quoteContent);
@@ -3161,7 +3197,12 @@ if (pathName === "/note.html" || pathName === "/note") {
                   document.getElementById("noteQuotePfp").src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${quoteData.whoSentIt}%2F${quoteUser.pfp}?alt=media`;
                   document.getElementById("noteQuoteDisplay").textContent = quoteUser.display;
                   document.getElementById("noteQuoteUsername").textContent = `@${quoteUser.username}`;
-                  document.getElementById("noteQuoteText").innerHTML = sanitizeAndLinkify(quoteData.text);;
+                  document.getElementById("noteQuoteText").innerHTML = sanitizeAndLinkify(quoteData.text);
+                  let content = sanitizeAndLinkify(quoteData.text);
+                     if (content.length > 247) { // check length
+                        content = content.substring(0, 247) + "...";
+                     }
+                     document.getElementById("noteQuoteText").innerHTML = content;
                   twemoji.parse(document.getElementById("noteQuoteText"), {
                      folder: 'svg',
                      ext: '.svg'

@@ -1,5 +1,6 @@
 /* Import Font */
 @import url('https://fonts.googleapis.com/css2?family=Gabarito:wght@400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inconsolata:wght@200..900&display=swap'); /* For monospace */
 
 /* Contains all the colors for TransSocial */
 :root {
@@ -630,6 +631,15 @@ body {
    padding-top: 10px;
    margin-bottom: 10px;
    padding-left: 5px;
+}
+
+.noteText code { /* style the monospace stuff */
+   font-family: "Inconsolata", monospace;
+   background: var(--background);
+}
+
+.noteText li {
+   margin-left: 15px;
 }
 
 .noteText .emoji {
@@ -1425,6 +1435,10 @@ select {
 
 .melissa .filters button.active {
    border-bottom: 3px solid var(--main-color);
+}
+
+.melissa .noteContent li {
+   margin-left: 15px;
 }
 
 /* Note Error */
@@ -2663,4 +2677,19 @@ textarea.borderBlack:focus {
 
 #availableThemes .theme:hover {
    transform: translateY(-3px);
+}
+
+/* Markdown Toolbar */
+#toolbar {
+   position: absolute;
+   background-color: var(--note-background);
+   border: 1px solid var(--main-color);
+   padding: 5px;
+   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+   display: none;
+}
+
+#toolbar button {
+   margin-right: 5px;
+   padding: 5px 10px;
 }
