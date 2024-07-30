@@ -3,14 +3,15 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>TransSocial | Theme Creation</title>
+        <title>TransSocial | Favorites</title>
         <link rel="stylesheet" href="/assets/css/mainSite.css">
         <link rel="shortcut icon" href="/assets/imgs/favicon.png" type="image/png">
         <link rel="manifest" href="/manifest.json">
         <script src="https://kit.fontawesome.com/be7c331826.js" crossorigin="anonymous"></script>
+        <script src="/assets/js/twemoji.js" crossorigin="anonymous"></script>
     </head>
     
-    <body onload="loadEverything() + signedOutCheck()">
+    <body onload="loadEverything()">
         <!-- This loads the website -->
         <div class="loader" id="loader">
             <p style="position: fixed; left: 0; top: 0; color: var(--text-semi-transparent); transform: translateY(0px);">&copy; Katniny Studios 2024</p>
@@ -60,8 +61,8 @@
             <a href="/settings" id="settingsSidebar"><button class="settings"><i class="fa-solid fa-gear"></i> Settings</button></a>
             <a href="/updates"><button><i class="fa-solid fa-wrench"></i> Updates</button></a>
             <a href="/contributors"><button><i class="fa-solid fa-face-smile-beam"></i> Contributors</button></a>
-                        <a href="/achievements" id="achievementsSidebar"><button><i class="fa-solid fa-award"></i> Achievements</button></a>
-            <a href="/favorites" id="favoritesSidebar"><button><i class="fa-solid fa-bookmark"></i> Favorites</button></a>
+            <a href="/achievements" id="achievementsSidebar"><button><i class="fa-solid fa-award"></i> Achievements</button></a>
+            <a href="/favorites" id="favoritesSidebar"><button class="active"><i class="fa-solid fa-bookmark"></i> Favorites</button></a>
             <a href="/" id="linkToAcc"><button><i class="fa-solid fa-user"></i> Your Profile</button></a>
             <button onclick="createNotePopup()" class="createNote-sidebar" id="createNote-sidebar"><i class="fa-solid fa-pen-to-square"></i> Create</button>
 
@@ -107,161 +108,13 @@
         <!-- Notes -->
         <div class="notes" id="notes">
             <div class="newNotesAdded" id="newNotesAdded">
-                <!-- Notes go here. This content is user-generated, no default HTML should be here. -->
+               <!-- Notes go here. This content is user-generated, no default HTML should be here. -->
+               <h3 id="haventFavoritedAnyNotes" style="text-align: center; transform: translateY(75px);">You haven't favorited any notes. Once you do, they'll appear here.</h3>
             </div>
             
             <div class="noteFilter">
-               <!--<p class="version-notice">TransSocial is currently in the InDev stage (version 0.0.1). A lot of features are missing and will be added with updates. <a href="/indev">Learn more</a>.</p>-->
-               <!--<button class="active" style="border-right: 1px solid gray;">All Notes</button><button>Following</button>-->
-
-               <h1>Create your own TransSocial theme! <span style="font-size: 15px;">(ALPHA)</span></h1>
-               <p>Want to spice up your TransSocial theme? Here's where you do exactly that! <span style="color: var(--text-semi-transparent);">Please note that this functionality is in alpha, there are many things that are yet to be added and the experience is just for testing.</span></p> 
-               <p>An element that uses the color will be placed below the input. Also please note that some names are misleading, and may be used for more elements ("Note Background" is an example).</p>
-
-               <br />
-
-               <h2>Colors</h2>
-
-               <label for="background">Background (Uses Hex)</label>
-               <input type="text" id="background" placeholder="#1d1d1d" style="width: 25%;" />
-               <p>(No element provided. Entire background will change)</p>
-
-               <br />
-
-               <label for="mainColor">Main Color (Uses Hex)</label>
-               <input type="text" id="mainColor" placeholder="#ff869a" style="width: 25%;" />
-               <br />
-               <button>Example of Main Color</button>
-
-               <br />
-               <br />
-
-               <label for="mainColorDarker">Main Color Darker (Uses Hex)</label>
-               <input type="text" id="mainColorDarker" placeholder="#e1788a" style="width: 25%;" />
-               <br />
-               <a style="color: var(--main-color-darker);">Hovered Link</a>
-
-               <br />
-               <br />
-
-               <label for="headerColor">Header Color (Uses Hex)</label>
-               <input type="text" id="headerColor" placeholder="#2d2d2d" style="width: 25%;" />
-               <p>(No element provided. Header and sidebar will change colors)</p>
-
-               <br />
-
-               <label for="text">Text (Uses Hex)</label>
-               <input type="text" id="text" placeholder="#fff" style="width: 25%;" />
-               <p>(No element provided. All text, except on the sidebar/header, will change)</p>
-
-               <br />
-
-               <label for="textHalfTransparent">Text Half Transparent (Uses RGB)</label>
-               <input type="text" id="textHalfTransparent" placeholder="255, 255, 255" style="width: 25%;" />
-               <p style="color: var(--text-half-transparent);">This text is half transparent.</p>
-
-               <br />
-
-               <label for="textSemiTransparent">Text Semi Transparent (Uses RGB)</label>
-               <input type="text" id="textSemiTransparent" placeholder="255, 255, 255" style="width: 25%;" />
-               <p style="color: var(--text-semi-transparent);">This text is semi-transparent.</p>
-
-               <br />
-
-               <label for="sidebarButtonHover">Sidebar Button Hover (Uses Hex)</label>
-               <input type="text" id="sidebarButtonHover" placeholder="#e1788a" style="width: 25%;" />
-               <button style="width: 100%; background: var(--sidebar-button-hover); border: 0px;">Sidebar button</button>
-
-               <br />
-               <br />
-
-               <label for="buttonTransparentHover">Button Transparent Hover (Uses Hex)</label>
-               <input type="text" id="buttonTransparentHover" placeholder="#2d2d2d" style="width: 25%;" />
-               <br />
-               <button style="width: 100%; background: var(--button-transparent-hover); border: 0px;">Transparent Button Hovered</button>
-
-               <br />
-               <br />
-
-               <label for="successColor">Success Color (Uses Hex)</label>
-               <input type="text" id="successColor" placeholder="#00dc00" style="width: 25%;" />
-               <p style="color: var(--success-color);">This action was successful!</p>
-
-               <br />
-
-               <label for="warningText">Warning Text (Uses Hex)</label>
-               <input type="text" id="warningText" placeholder="#ffff00" style="width: 25%;" />
-               <p style="color: var(--warning-text);">Uh oh. There's a warning.</p>
-
-               <br />
-
-               <label for="errorText">Error Text (Uses Hex)</label>
-               <input type="text" id="errorText" placeholder="#ff0000" style="width: 25%;" />
-               <p style="color: var(--error-text);">There was an error.</p>
-
-               <br />
-
-               <label for="sidebarText">Sidebar Text (Uses Hex)</label>
-               <input type="text" id="sidebarText" placeholder="#fff" style="width: 25%;" />
-               <p>(No element provided. Sidebar text will change color)</p>
-
-               <br />
-
-               <label for="noteSeperator">Note Seperator (Uses Hex)</label>
-               <input type="text" id="noteSeperator" placeholder="#2d2d2d" style="width: 25%;" />
-               <div style="width: 100%; background: var(--note-seperator); height: 5px; margin-top: 5px;"></div>
-
-               <br />
-
-               <label for="likeColor">Like Color (Uses Hex)</label>
-               <input type="text" id="likeColor" placeholder="#ff0000" style="width: 25%;" />
-               <br />
-               <i class="fa-solid fa-heart" style="color: var(--like-color)"></i>
-
-               <br />
-               <br />
-
-               <label for="renoteColor">Renote Color (Uses Hex)</label>
-               <input type="text" id="renoteColor" placeholder="#84dd00" style="width: 25%;" />
-               <br />
-               <i class="fa-solid fa-retweet" style="color: var(--renote-color);"></i>
-
-               <br />
-
-               <label for="replyBackground">Reply Background (Uses Hex)</label>
-               <input type="text" id="replyBackground" placeholder="#303030" style="width: 25%;" />
-               <div class="replyToNote" style="width: 50%;">Reply</div>
-
-               <br />
-
-               <label for="replyBackgroundHovered">Reply Background Hovered (Uses Hex)</label>
-               <input type="text" id="replyBackgroundHovered" placeholder="#3f3f3f" style="width: 25%;" />
-               <div class="replyToNote" style="width: 50%; background: var(--reply-hovered-background);">Reply</div>
-
-               <br />
-
-               <label for="noteBackground">Note Background (Uses Hex)</label>
-               <input type="text" id="noteBackground" placeholder="#282828" style="width: 25%;" />
-               <div style="background: var(--note-background); height: 10px; width: 50%; margin-top: 5px;"></div>
-
-               <div class="divider"></div>
-
-               <br />
-
-               <button style="width: 100%;" onclick="saveTheme_Open()">Save Theme</button> 
-               <p>Save your theme to configure later.</p>
-
-               <button style="width: 100%;" onclick="loadTheme()">Load Theme</button>
-               <p>Load a previously saved theme.</p>
-
-               <button style="width: 100%;" onclick="applyTheme()">Apply Theme</button>
-               <p>Apply the theme without publishing it to the TransSocial User Studio (useful for testing).</p>
-
-               <button style="width: 100%;" onclick="publishTheme_Open()">Publish</button>
-               <p>Let other people use your theme on the TransSocial User Studio!</p>
-
-               <br />
-               <br />
+                <!--<p class="version-notice">TransSocial is currently in the InDev stage (version 0.0.1). A lot of features are missing and will be added with updates. <a href="/indev">Learn more</a>.</p>-->
+                <!--<button class="active" style="border-right: 1px solid gray;">All Notes</button><button>Following</button>-->
             </div>
 
             <!-- Please Donate -->
@@ -403,68 +256,6 @@
             <a href="/auth/login"><button>Login</button></a>
             <div style="margin-top: 5px;"></div>
             <a href="/auth/register"><button>Register</button></a>
-        </dialog>
-
-        <dialog id="saveTheme">
-            <h2>Save Theme</h2>
-            <p>Save your theme to modify later.</p>
-
-            <input type="text" id="themeName" placeholder="Enter a name for this theme" />
-            <p id="characterLimit_Theme" style="color: var(--text-semi-transparent);">0/30</p>
-            <p id="errorSavingTheme" style="display: none; color: var(--error-text);"></p>
-
-            <br />
-
-            <button onclick="saveTheme()" id="saveThemeBtn">Save Theme</button> <button onclick="dontSaveTheme()" id="dontSaveThemeBtn">Nevermind</button>
-        </dialog>
-
-        <dialog id="loadTheme">
-            <h2>Load Theme</h2>
-            <p>Load a previously saved theme.</p>
-
-            <br />
-
-            <p id="fetchingThemes"><i class="fa-solid fa-spinner fa-spin-pulse"></i> Loading themes...</p>
-            <div id="savedThemes">
-
-            </div>
-
-            <br />
-
-            <button onclick="document.getElementById('loadTheme').close()">Nevermind</button>
-        </dialog>
-
-        <dialog id="applyingTheme">
-            <div id="applyingTheme_div">
-               <h2>Please wait... we are currently applying your theme.</h2>
-               <p>This may take a moment. We appreciate your patience.</p>
-            </div>
-
-            <div id="finishedApplyingTheme" style="display: none;">
-               <h2>Finished!</h2>
-               <p>Would you like to stay on this page or try your theme on another page?</p>
-
-               <br />
-
-               <a href="/"><button style="width: 100%;">Try theme on another page</button></a>
-               <button style="width: 100%;" onclick="document.getElementById('applyingTheme').close()">Stay on this page</button>
-            </div>
-        </dialog>
-
-        <dialog id="publishTheme">
-            <h2>Publish your theme</h2>
-            <p>Ready to publish your theme? We're ready to see it!</p>
-
-            <input type="text" id="themeTitle" placeholder="What's the name of this theme?" />
-            <p id="characterLimit_ThemeTitle" style="color: var(--text-semi-transparent)">0/30</p>
-
-            <textarea id="themeDescription" placeholder="Enter a description for this theme!"></textarea>
-            <p id="characterLimit_ThemeDescription">0/250</p>
-            <p id="themeSuccessfullyPublished" style="color: var(--success-color); display: none;">Your theme has been successfully published! It is available on the TransSocial User Studio <a href="/" style="color: var(--main-color)">here.</a></p>
-
-            <br />
-
-            <button onclick="publishTheme()">Publish Theme</button> <button onclick="dontPublishTheme()">Nevermind</button>
         </dialog>
 
         <dialog id="addAltText">

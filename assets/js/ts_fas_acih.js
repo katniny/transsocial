@@ -26,7 +26,7 @@ const pathName = pageURL.pathname;
 let isOnDesktopApp = null;
 
 // TransSocial Version
-let transsocialVersion = "v2024.7.29";
+let transsocialVersion = "v2024.7.30";
 let transsocialReleaseVersion = "indev";
 
 const notices = document.getElementsByClassName("version-notice");
@@ -1411,7 +1411,7 @@ let isLoading = false;
 let lastVisibleNoteId = null;
 let loadedNotesId = [];
 
-if (pathName === "/" || pathName === "/index.html" || pathName === "/index" || pathName === "/u" || pathName === "/u.html" || pathName === "/note" || pathName === "/note.html") {
+if (pathName === "/" || pathName === "/index.html" || pathName === "/index" || pathName === "/u" || pathName === "/u.html" || pathName === "/note" || pathName === "/note.html" || pathName === "/favorites") {
    // Reload page
    function loadNotesFromButton() {
       window.location.reload();
@@ -1842,6 +1842,23 @@ if (pathName === "/" || pathName === "/index.html" || pathName === "/index" || p
             quoteRenote.setAttribute("onclick", `quoteRenote("${noteContent.id}")`);
             noteDiv.appendChild(quoteRenote);
 
+            // Add favorite button
+            const favorite = document.createElement("p");
+            favorite.classList.add("quoteRenoteBtn"); // eh. just reuse a class tbh
+            favorite.innerHTML = `<i class="fa-solid fa-bookmark fa-xs" id="favorite-${noteContent.id}"></i>`; // apply the id to the favorites button or it will not change colors
+            favorite.setAttribute("onclick", `favorite("${noteContent.id}")`);
+            firebase.auth().onAuthStateChanged((user) => {
+               if (user) {
+                  firebase.database().ref(`users/${user.uid}/favorites/${noteContent.id}`).once("value", (snapshot) => {
+                     if (snapshot.exists()) {
+                        // checked if the user has already favorited this. if they have, change the color to indicate that
+                        favorite.innerHTML = `<i class="fa-solid fa-bookmark fa-xs" id="favorite-${noteContent.id}" style="color: var(--main-color);"></i>`;
+                     }
+                  });
+               }
+            });
+            noteDiv.appendChild(favorite);
+
             // If user created the note, allow them to edit/delete
             firebase.auth().onAuthStateChanged((user) => {
                if (user) {
@@ -1873,6 +1890,20 @@ if (pathName === "/" || pathName === "/index.html" || pathName === "/index" || p
                   }
                }
             }
+
+            if (pathName === "/favorites") {
+               firebase.auth().onAuthStateChanged((user) => {
+                  if (user) {
+                     firebase.database().ref(`users/${user.uid}/favorites/${noteContent.id}`).once("value", (snapshot) => {
+                        if (snapshot.exists()) {
+                           // only show if the user has favorited this note
+                           notesContainer.appendChild(noteDiv);
+                        }
+                     });
+                  }
+               });
+            }
+
             if (pathName === "/note") {
                const url = new URL(window.location.href);
                const noteParam = url.searchParams.get("id");
@@ -2819,6 +2850,23 @@ if (pathName === "/u.html" || pathName === "/u") {
                   quoteRenote.setAttribute("onclick", `quoteRenote("${noteContent.id}")`);
                   noteDiv.appendChild(quoteRenote);
 
+                  // Add favorite button
+                  const favorite = document.createElement("p");
+                  favorite.classList.add("quoteRenoteBtn"); // eh. just reuse a class tbh
+                  favorite.innerHTML = `<i class="fa-solid fa-bookmark fa-xs" id="favorite-${noteContent.id}"></i>`; // apply the id to the favorites button or it will not change colors
+                  favorite.setAttribute("onclick", `favorite("${noteContent.id}")`);
+                  firebase.auth().onAuthStateChanged((user) => {
+                     if (user) {
+                        firebase.database().ref(`users/${user.uid}/favorites/${noteContent.id}`).once("value", (snapshot) => {
+                           if (snapshot.exists()) {
+                              // checked if the user has already favorited this. if they have, change the color to indicate that
+                              favorite.innerHTML = `<i class="fa-solid fa-bookmark fa-xs" id="favorite-${noteContent.id}" style="color: var(--main-color);"></i>`;
+                           }
+                        });
+                     }
+                  });
+                  noteDiv.appendChild(favorite);
+
                   // If user created the note, allow them to edit/delete
                   firebase.auth().onAuthStateChanged(user => {
                      if (user) {
@@ -3211,6 +3259,20 @@ if (pathName === "/note.html" || pathName === "/note") {
          } else {
             document.getElementById("quotingNote_note").style.display = "none";
          }
+
+         // check for favorites
+         // also make the favorite button do smth
+         document.getElementById("favoriteButton").setAttribute("onclick", `favoriteNoteView("${noteData.id}")`);
+
+         firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+               firebase.database().ref(`users/${user.uid}/favorites/${noteData.id}`).once("value", (snapshot) => {
+                  if (snapshot.exists()) {
+                     document.getElementById("favoriteButton_icon").style.color = "var(--main-color)";
+                  }
+               });
+            }
+         });
 
          database.ref(`users/${noteData.whoSentIt}`).once("value", (snapshot) => {
             const profileData = snapshot.val();
@@ -6500,3 +6562,60 @@ document.addEventListener("keydown", function(event) {
       }
    }
 });
+
+// allow users to favorite notes (yet again)
+function favorite(note) {
+   firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+         firebase.database().ref(`users/${user.uid}/favorites/${note}`).once("value", (snapshot) => {
+            if (snapshot.exists()) {
+               // remove the note from their favorites
+               firebase.database().ref(`users/${user.uid}/favorites/${note}`).update({
+                  favorited : null // removes the favorite
+               }).then(() => {
+                  // find the favorite button
+                  document.getElementById(`favorite-${note}`).style.color = "var(--text)";
+               });
+            } else {
+               // add the note to their favorites
+               firebase.database().ref(`users/${user.uid}/favorites/${note}`).update({
+                  favorited : true // adds the favorite
+               }).then(() => {
+                  // find the favorite button and change color
+                  document.getElementById(`favorite-${note}`).style.color = "var(--main-color)";
+               });
+            }
+         });
+      } else {
+         loginPrompt(); // not logged in. prompt them to log in.
+      }
+   });
+}
+
+function favoriteNoteView(note) { // yes. this is the exact code but for the note view. i couldnt figure out issues so this was the only solution i could think of. dont judge me.
+   firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+         firebase.database().ref(`users/${user.uid}/favorites/${note}`).once("value", (snapshot) => {
+            if (snapshot.exists()) {
+               // remove the note from their favorites
+               firebase.database().ref(`users/${user.uid}/favorites/${note}`).update({
+                  favorited : null // removes the favorite
+               }).then(() => {
+                  // find the favorite button
+                  document.getElementById(`favoriteButton_icon`).style.color = "var(--text)";
+               });
+            } else {
+               // add the note to their favorites
+               firebase.database().ref(`users/${user.uid}/favorites/${note}`).update({
+                  favorited : true // adds the favorite
+               }).then(() => {
+                  // find the favorite button and change color
+                  document.getElementById(`favoriteButton_icon`).style.color = "var(--main-color)";
+               });
+            }
+         });
+      } else {
+         loginPrompt(); // not logged in. prompt them to log in.
+      }
+   });
+}

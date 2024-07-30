@@ -751,10 +751,18 @@ body {
    float: left;
    font-size: large;
    width: auto;
-   margin-left: 96px;
+   margin-left: 97px;
    cursor: pointer;
    max-width: 50px;
    margin-top: -22px;
+}
+
+#favoriteButton {
+   float: left;
+   width: auto;
+   cursor: pointer;
+   max-width: 50px;
+   transform: translate(-3px, 1px);
 }
 
 .note .quoteRenoteBtn {
