@@ -245,14 +245,11 @@ firebase.auth().onAuthStateChanged((user) => {
    if (user) {
       firebase.database().ref(`users/${user.uid}/notifications/unread`).on("value", (snapshot) => {
          unreadNotifications = snapshot.val();
-
-         if (pathName === "/notifications" || pathName === "/notifications.html") {
-            document.getElementById("notificationsSidebar").innerHTML = `<button class="active"><i class="fa-solid fa-bell"></i> Notifications (${unreadNotifications})</button>`;
+         if (unreadNotifications !== null && unreadNotifications !== 0) {
+            document.getElementById("notificationsCount").classList.add("show");
+            document.getElementById("notificationsCount").innerHTML = `${unreadNotifications}`;
          } else {
-            if (document.getElementById("notificationsSidebar")) {
-               document.getElementById("notificationsSidebar").innerHTML = `<button><i class="fa-solid fa-bell"></i> Notifications (${unreadNotifications})</button>`;
-         
-            }
+            document.getElementById("notificationsCount").classList.remove("show");
          }
       })
    }
