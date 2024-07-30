@@ -1144,7 +1144,7 @@ function linkify(text) {
    const urlPattern = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
    const usernamePattern = /@(\w+)/g;
 
-   let linkedText = text.replace(urlPattern, '<a href="$1" target="_blank">$1</a>');
+   let linkedText = text.replace(urlPattern, '<a href="javascript:void(0)" onclick="openLink(`$1`)">$1</a>');
    linkedText = linkedText.replace(usernamePattern, '<a href="/u?id=$1">@$1</a>');
 
    return linkedText;
@@ -6787,5 +6787,35 @@ if (pathName === "/updates") {
       document.getElementById("alphaVersions").style.display = "none";
       document.getElementById("betaVersions").style.display = "none";
       document.getElementById("releaseVersions").style.display = "block";
+   }
+}
+
+// don't open external links without a warning
+function openLink(link) {
+   // get the domain and grey out https:// and subdomain (so the user knows the SITE they're visiting)
+   let url = new URL(link);
+   let protocol = url.protocol + "//";
+   let hostname = url.hostname;
+   let pathname = url.pathname;
+
+   // handle subdomains
+   let parts = hostname.split(".");
+   if (parts.length > 2) {
+      parts.shift();
+   }
+   let domain = parts.join(".");
+   let greyedOutPart = hostname.replace(domain, "");
+
+   if (domain !== "transs.social") {
+      // display link with greyed out subdomain
+      document.getElementById("linkyLink").innerHTML = `<span style="color: var(--text-half-transparent)">${protocol}${greyedOutPart}</span>${domain}<span style="color: var(--text-half-transparent)">${pathname}</span>`;
+
+      // button :3
+      document.getElementById("externalLink").href = link;
+      
+      // open the modal
+      document.getElementById("openLink").showModal();
+   } else {
+      window.location.replace(link);
    }
 }

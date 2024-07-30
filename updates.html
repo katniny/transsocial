@@ -139,6 +139,8 @@
                               <li>Update the updates popup to notify users of new versioning</li>
                               <li>Visiting a user is no longer case sensitive</li>
                               <li>Allow users to filter through versions (though useless right now)</li>
+                              <li>Started disallowing outdated browsers from using TransSocial</li>
+                              <li>Added safety popup when clicking non-TransSocial links</li>
                         </div>
 
                         <br />
@@ -552,6 +554,19 @@
             <div style="margin-top: 5px;"></div>
             <a href="/auth/register"><button>Register</button></a>
         </dialog>
+
+      <dialog id="openLink">
+         <h2>Leaving TransSocial</h2>
+         <p>This link is taking you to the following website:</p>
+
+         <br />
+
+         <p style="text-align: center;" id="linkyLink">https://link.com/</p>
+
+         <br />
+
+         <a href="link" id="externalLink" target="_blank"><button onclick="document.getElementById('openLink').close()">Visit Site</button></a> <a href="javascript:void(1);" onclick="document.getElementById('openLink').close()" style="color: var(--main-color); font-size: 14px;">Go Back</a>
+      </dialog>
 
         <dialog id="addAltText">
             <h2>Add Alt Text</h2>

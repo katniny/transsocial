@@ -299,6 +299,19 @@
             <a href="/auth/register"><button>Register</button></a>
         </dialog>
 
+      <dialog id="openLink">
+         <h2>Leaving TransSocial</h2>
+         <p>This link is taking you to the following website:</p>
+
+         <br />
+
+         <p style="text-align: center;" id="linkyLink">https://link.com/</p>
+
+         <br />
+
+         <a href="link" id="externalLink" target="_blank"><button onclick="document.getElementById('openLink').close()">Visit Site</button></a> <a href="javascript:void(1);" onclick="document.getElementById('openLink').close()" style="color: var(--main-color); font-size: 14px;">Go Back</a>
+      </dialog>
+
         <dialog id="confirmAdding">
             <h2>Successfully added theme!</h2>
             <p>This theme has been added to your account. You can now go to your Personalization settings to enable it.</p>
