@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>TransSocial | Unsupported Browser</title>
+        <link rel="stylesheet" href="/assets/css/mainSite.css">
+        <link rel="shortcut icon" href="/assets/imgs/favicon.png" type="image/png">
+        <link rel="manifest" href="/manifest.json">
+        <script src="https://kit.fontawesome.com/be7c331826.js" crossorigin="anonymous"></script>
+    </head>
+    
+    <body style="text-align: center; margin-top: 25px; margin-bottom: 25px;">
+        <!-- This'll change if the browser is actually unsupported (I just don't feel like coding functionality to send a user back if their browser is supported) -->
+        <h1>Your browser is outdated</h1>
+        <p>TransSocial does not support your current browser. Please get <span id="version_browser">{browser ver}</span> or later, or update to a more modern browser.</p>
+        <p>TransSocial requires a browser from 2022 or later for certain web technology that your current browser does not support.</p>
+
+        <br />
+
+        <h2>OR</h2>
+        <h3>Get a new, supported browser</h3>
+
+        <br />
+
+        <a href="https://www.mozilla.org/en-US/firefox/new/" target="_blank"><img class="browserLogo" draggable="false" src="/assets/imgs/Firefox Logo.webp"></a>
+        <a href="https://www.google.com/chrome/" target="_blank"><img class="browserLogo" draggable="false" src="/assets/imgs/Chrome Logo.png" /></a>
+        <a href="https://www.microsoft.com/en-us/edge/download" target="_blank"><img class="browserLogo" draggable="false" src="/assets/imgs/Microsoft Edge.png" /></a>
+        <a href="https://arc.net/download" target="_blank"><img class="browserLogo" draggable="false" src="/assets/imgs/Arc Logo.png" /></a>
+        <p style="margin-top: 15px; margin-left: 55px; margin-right: 55px; font-size: 14px; color: var(--text-semi-transparent);">The links provided for downloading Firefox, Google Chrome, Microsoft Edge, and Arc are not associated or affiliated with TransSocial. These browsers are owned by their respective companies and may have different privacy practices than TransSocial. We recommend reviewing their privacy policies before installation.</p>
+
+        <br />
+
+        <h2>Up to date and seeing this?</h2>
+        <p>That may be a mistake. Please let us know on our <a style="color: var(--main-color)" target="_blank" href="https://discord.gg/SmhATjRxvc">Discord</a> or <a href="https://twitter.com/transs_ocial" target="_blank" style="color: var(--main-color);">Twitter</a>.</p>
+        <!-- i did legitimately download browsers to test this so it shouldn't happen... but just in case -->
+    </body> 
+
+    <!-- Core Firebase Scripts (MUST BE FIRST) -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-storage.js"></script>
+
+    <!-- Scripts -->
+    <script src="/assets/js/ts_fas_acih.js"></script>
+    <script src="/assets/js/pageLoader.js"></script>
+    <script src="/assets/js/sidebarOpen.js"></script>
+    <script src="/assets/js/twemoji.js"></script>
+</html>

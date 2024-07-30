@@ -53,6 +53,145 @@ if (localStorage.getItem("acceptedCookies") !== null) {
    }
 }
 
+// get browser and browser version
+const userAgent = navigator.userAgent;
+let browserName = "Unknown Browser";
+let browserVersion = "Unknown version";
+
+if (userAgent.indexOf("Firefox") > -1) {
+   browserName = "Mozilla Firefox";
+   browserVersion = userAgent.match(/Firefox\/([0-9.]+)/)[1];
+} else if (userAgent.indexOf("SamsungBrowser") > -1) {
+   browserName = "Samsung Browser";
+   browserVersion = userAgent.match(/SamsungBrowser\/([0-9.]+)/)[1];
+} else if (userAgent.indexOf("Opera") > -1 || userAgent.indexOf("OPR") > -1) {
+   browserName = "Opera";
+   browserVersion = userAgent.match(/(Opera|OPR)\/([0-9.]+)/)[2];
+} else if (userAgent.indexOf("Trident") > -1) {
+   browserName = "Internet Explorer";
+   browserVersion = userAgent.match(/rv:([0-9.]+)/)[1];
+} else if (userAgent.indexOf("Edge") > -1) {
+   browserName = "Microsoft Edge";
+   browserVersion = userAgent.match(/Edge\/([0-9.]+)/)[1];
+} else if (userAgent.indexOf("Chrome") > -1) {
+   browserName = "Google Chrome";
+   browserVersion = userAgent.match(/Chrome\/([0-9.]+)/)[1];
+} else if (userAgent.indexOf("Safari") > -1) {
+   browserName = "Apple Safari";
+   browserVersion = userAgent.match(/Version\/([0-9.]+)/)[1];
+}
+
+if (document.getElementById("userBrowser")) { // environment settings
+   document.getElementById("userBrowser").textContent = browserName;
+   document.getElementById("userBrowserVer").textContent = browserVersion;
+}
+
+// if on outdated browser, dont let the user use transsocial
+// dont bother with ie, dont even work at all
+if (browserName === "Mozilla Firefox") {
+   // when <dialog> (the latest web tech transsocial uses) started getting supported
+   if (document.getElementById("version_browser")) {
+      document.getElementById("version_browser").textContent = "Firefox version 98"
+   }
+
+   if (browserVersion < 98) {
+      if (pathName !== "/unsupported") {
+         window.location.replace("/unsupported");
+      } else {
+         
+      }
+   } else {
+      if (pathName === "/unsupported") {
+         window.location.replace("/");
+      }
+   }
+}
+
+if (browserName === "Samsung Browser") {
+   if (document.getElementById("version_browser")) {
+      document.getElementById("version_browser").textContent = "Samsung Browser version 3.0"
+   }
+
+   // when <dialog> (the latest web tech transsocial uses) started getting supported
+   if (browserVersion < 3.0) {
+      if (pathName !== "/unsupported") {
+         window.location.replace("/unsupported");
+      }
+   } else {
+      if (pathName === "/unsupported") {
+         window.location.replace("/");
+      }
+   }
+}
+
+if (browserName === "Opera") {
+   if (document.getElementById("version_browser")) {
+      document.getElementById("version_browser").textContent = "Opera version 24"
+   }
+
+   // when <dialog> (the latest web tech transsocial uses) started getting supported
+   if (browserVersion < 24) {
+      if (pathName !== "/unsupported") {
+         window.location.replace("/unsupported");
+      }
+   } else {
+      if (pathName === "/unsupported") {
+         window.location.replace("/");
+      }
+   }
+}
+
+if (browserName === "Microsoft Edge") {
+   if (document.getElementById("version_browser")) {
+      document.getElementById("version_browser").textContent = "Edge version 79"
+   }
+
+   // when <dialog> (the latest web tech transsocial uses) started getting supported
+   if (browserVersion < 79) {
+      if (pathName !== "/unsupported") {
+         window.location.replace("/unsupported");
+      }
+   } else {
+      if (pathName === "/unsupported") {
+         window.location.replace("/");
+      }
+   }
+}
+
+if (browserName === "Google Chrome") {
+   if (document.getElementById("version_browser")) {
+      document.getElementById("version_browser").textContent = "Chrome version 37"
+   }
+
+   // when <dialog> (the latest web tech transsocial uses) started getting supported
+   if (browserVersion < 37) {
+      if (pathName !== "/unsupported") {
+         window.location.replace("/unsupported");
+      }
+   } else {
+      if (pathName === "/unsupported") {
+         window.location.replace("/");
+      }
+   }
+}
+
+if (browserName === "Apple Safari") {
+   if (document.getElementById("version_browser")) {
+      document.getElementById("version_browser").textContent = "Safari version 15.4"
+   }
+
+   // when <dialog> (the latest web tech transsocial uses) started getting supported
+   if (browserVersion < 15.4) {
+      if (pathName !== "/unsupported") {
+         window.location.replace("/unsupported");
+      }
+   } else {
+      if (pathName === "/unsupported") {
+         window.location.replace("/");
+      }
+   }
+}
+
 // Implement character limit
 const noteText = document.getElementById('noteContent-textarea');
 const maxCharacters = 1250;
@@ -4623,41 +4762,6 @@ if (pathName === "/settings" || pathName === "/settings.html") {
    }
 
    // environment tab
-   // get browser and browser version
-   function getBrowserInfo() {
-      const userAgent = navigator.userAgent;
-      let name = "Unknown Browser";
-      let version = "Unknown version";
-
-      if (userAgent.indexOf("Firefox") > -1) {
-         name = "Mozilla Firefox";
-         version = userAgent.match(/Firefox\/([0-9.]+)/)[1];
-      } else if (userAgent.indexOf("SamsungBrowser") > -1) {
-         name = "Samsung Browser";
-         version = userAgent.match(/SamsungBrowser\/([0-9.]+)/)[1];
-      } else if (userAgent.indexOf("Opera") > -1 || userAgent.indexOf("OPR") > -1) {
-         name = "Opera";
-         version = userAgent.match(/(Opera|OPR)\/([0-9.]+)/)[2];
-      } else if (userAgent.indexOf("Trident") > -1) {
-         name = "Internet Explorer";
-         version = userAgent.match(/rv:([0-9.]+)/)[1];
-      } else if (userAgent.indexOf("Edge") > -1) {
-         name = "Microsoft Edge";
-         version = userAgent.match(/Edge\/([0-9.]+)/)[1];
-      } else if (userAgent.indexOf("Chrome") > -1) {
-         name = "Google Chrome";
-         version = userAgent.match(/Chrome\/([0-9.]+)/)[1];
-      } else if (userAgent.indexOf("Safari") > -1) {
-         name = "Apple Safari";
-         version = userAgent.match(/Version\/([0-9.]+)/)[1];
-      }
-   
-      return { name, version };
-   }
-   const browserInfo = getBrowserInfo();
-   document.getElementById("userBrowser").textContent = browserInfo.name;
-   document.getElementById("userBrowserVer").textContent = browserInfo.version;
-
    // get user os
    function getOS() {
       const userAgent = navigator.userAgent;

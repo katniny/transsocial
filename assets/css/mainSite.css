@@ -2783,3 +2783,14 @@ textarea.borderBlack:focus {
 #notificationsCount.show {
    display: block;
 }
+
+/* Browser Logos (unsupported page) */
+.browserLogo {
+   width: 45px;
+   transition: all 0.1s ease;
+   margin-left: 15px;
+}
+
+.browserLogo:hover {
+   transform: scale(1.1);
+}
