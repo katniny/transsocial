@@ -6619,3 +6619,69 @@ function favoriteNoteView(note) { // yes. this is the exact code but for the not
       }
    });
 }
+
+// allow users to filter through versions (indev, pre-alpha, etc.)
+if (pathName === "/updates") {
+   let filteredVersion = transsocialReleaseVersion; // by default, set it to what transsocial currently is
+
+   // allow user to switch filters
+   function filterInDev() {
+      filteredVersion = "indev";
+      document.getElementById("selectedFilter").textContent = "Indev Versions";
+
+      // hide all the other versions and show current
+      document.getElementById("indevVersions").style.display = "block";
+      document.getElementById("prealphaVersions").style.display = "none";
+      document.getElementById("alphaVersions").style.display = "none";
+      document.getElementById("betaVersions").style.display = "none";
+      document.getElementById("releaseVersions").style.display = "none";
+   }
+
+   function filterPreAlpha() {
+      filteredVersion = "pre-alpha";
+      document.getElementById("selectedFilter").textContent = "Pre-Alpha Versions";
+
+      // hide all the other versions and show current
+      document.getElementById("indevVersions").style.display = "none";
+      document.getElementById("prealphaVersions").style.display = "block";
+      document.getElementById("alphaVersions").style.display = "none";
+      document.getElementById("betaVersions").style.display = "none";
+      document.getElementById("releaseVersions").style.display = "none";
+   }
+
+   function filterAlpha() {
+      filteredVersion = "alpha";
+      document.getElementById("selectedFilter").textContent = "Alpha Versions";
+
+      // hide all the other versions and show current
+      document.getElementById("indevVersions").style.display = "none";
+      document.getElementById("prealphaVersions").style.display = "none";
+      document.getElementById("alphaVersions").style.display = "block";
+      document.getElementById("betaVersions").style.display = "none";
+      document.getElementById("releaseVersions").style.display = "none";
+   }
+
+   function filterBeta() {
+      filteredVersion = "beta";
+      document.getElementById("selectedFilter").textContent = "Beta Versions";
+
+      // hide all the other versions and show current
+      document.getElementById("indevVersions").style.display = "none";
+      document.getElementById("prealphaVersions").style.display = "none";
+      document.getElementById("alphaVersions").style.display = "none";
+      document.getElementById("betaVersions").style.display = "block";
+      document.getElementById("releaseVersions").style.display = "none";
+   }
+
+   function filterRelease() {
+      filteredVersion = "release";
+      document.getElementById("selectedFilter").textContent = "Release Versions";
+
+      // hide all the other versions and show current
+      document.getElementById("indevVersions").style.display = "none";
+      document.getElementById("prealphaVersions").style.display = "none";
+      document.getElementById("alphaVersions").style.display = "none";
+      document.getElementById("betaVersions").style.display = "none";
+      document.getElementById("releaseVersions").style.display = "block";
+   }
+}
