@@ -2287,7 +2287,7 @@ if (pathName === "/u.html" || pathName === "/u") {
    let profileExists = null;
    let profileData = null;
 
-   database.ref(`taken-usernames/${userParam}`).once("value", (snapshot) => {
+   database.ref(`taken-usernames/${userParam.toLowerCase()}`).once("value", (snapshot) => {
       profileExists = snapshot.val();
 
       if (profileExists.user !== null) {
