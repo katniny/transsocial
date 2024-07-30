@@ -1,34 +1,37 @@
 // Randomize quote
 const quotes = [
-    "Loading...or is it just thinking about loading?",
-    "If you can read this, the internet is officially slower than you.",
-    "Taking a moment to appreciate all the OTHER things I could be doing right now.",
-    "Dear Buffering Circle, You win. I surrender.",
-    "The only thing loading faster than this page is my frustration.",
-    "Even my patience has a loading bar.",
-    "Loading...please wait while I find my will to live.",
-    "Error: Motivation not found.",
-    "My internet speed is a perfect reflection of my productivity today.",
-    "Who needs enemies when you have slow internet?",
-    "At this rate, the dinosaurs will be back before this page loads.",
-    "The suspense is killing me. Or it would be, if the page would load.",
-    "Loading time sponsored by my unhealthy obsession with checking my phone.",
-    "Would you like a side of existential crisis with that buffering?",
-    "Shhh...The internet is taking a nap.",
-    "Hamsters powering TransSocial are taking a snack break.",
-    "Squirrels are frantically sorting your data. Please be patient.",
-    "Someone must be hogging all your bandwidth, probably watching cat videos.",
-    "Time to practice your 'waiting patiently' face.",
-    "Did you try turning it off and back on again?",
-    "This is a good time for a staring contest with the loading bar.",
-    "If you need me, I'll be here. Or I'll be here eventually.",
-    "Hey, at least you have something to look at, right?",
-    "I'd tell you a joke while you wait, but it might take even longer to load.",
-    "Maybe if you close my eyes and open them again, it'll magically be loaded.",
-    "TransSocial is currently in development - it's like watching paint dry, but way more exciting (maybe).",
-    "Don't worry if TransSocial is a little buggy - report them and we'll train the hamsters better.",
-    "We're releasing TransSocial in phases, kind of like building a snowman one snowball at a time.",
-    "Warning: Using TransSocial during development may lead to uncontrollable anger, mild confusion, and a strong urge to slap the developer. Use at your own risk!",
+   "Cats have five toes on their front paws but only four on their back paws.",
+   "A cat's purring can reduce stress in humans.",
+   "Cats can rotate their ears 180 degrees and hear ultrasonic sounds.",
+   "Cats have a special collarbone that allows them to always land on their feet.",
+   "Cats can make over 100 different sounds, while dogs can only make about 10.",
+   "A cat's nose print is unique, like a human fingerprint.",
+   "The average cat runs at 30 miles an hour! They're faster than most humans!",
+   "Cats can make a special thrill sound that's often used to communicate with their kittens.",
+   "Cats sweat through their paws. You might see little damp spots if they're nervous.",
+   "A cat's sense of smell is 14 times stronger than a human's.",
+   "The longest recorded cat jump is over 7 feet!",
+   "Cats have more bones in their bodies than humans - 230 compared to our 206.",
+   "The average cat sleeps for 12-16 hours a day.",
+   "Cats have a special grooming tool called a 'barbed tongue' that helps them clean their fur and remove loose hair.",
+   "The meow is a form of communication that cats only use with humans. They don't meow at each other!",
+   "Cats can see in near-total darkness, thanks to their exceptional night vision.",
+   "Cats have 32 muscles in each ear, allowing them to move their ears independently.",
+   "Cats have five different types of vocalizations to communicate with their owners, including purrs, meows and thrills.",
+   "A cat's whiskers are about as wide as their body, which helps them guage whether they can fit through spaces.",
+   "When a cat purrs, it can produce a sound between 25 and 150 hertz, which is a frequency known to promote healing.",
+   "Cats have a special reflective layer behind their retinas called the tapetum lucidum that enhances their night vision.",
+   "A group of kittens is called a 'kindle'.",
+   "Kittens are born with their eyes closed, and they first open them around 7 to 10 days old.",
+   "Cats have a special 'love blink' where they slowly close their eyes to show affection. If a cat slow blinks at you, it means they trust you!",
+   "Cats have a unique way of showing they're happy by kneading with their paws, a behavior they learn as kittens when nursing from their mother.",
+   "Many cats will curl up in a ball or stretch out their paws when they're feeling cozy and safe.",
+   "A cat's purring is a sign of contentment, but it can also be a self-soothing mechanism when they're stressed or in pain.",
+   "Cats often bring their owners 'gifts' like toys or even caught prey, which is their way of showing love and sharing their bounty.",
+   "Cats have a special 'kitty loaf' position where they tuck their paws underneath themselves. It's a sign of contentment and security.",
+   "When cats follow you around the house, it's their way of showing affection and wanting to be close to you.",
+   "Many cats enjoy playing with boxes and paper bags, finding them irresistible for their fun and cozy hideouts.",
+   "TransSocial has 31 cats facts just for the loading quote."
 ];
 
 const quote = document.getElementById("loaderQuote");
@@ -326,13 +329,13 @@ firebase.auth().onAuthStateChanged((user) => {
                 }
             })
     } else {
-        const loader = document.querySelector('.loader');
+      const loader = document.querySelector('.loader');
 
-        loader.classList.add("loader-hidden");
+      loader.classList.add("loader-hidden");
 
-        loader.addEventListener("transitioned", () => {
-            document.body.removeChild("loader");
-        })
+      loader.addEventListener("transitioned", () => {
+         document.body.removeChild("loader");
+      })
     }
 })
 

@@ -79,9 +79,24 @@ body {
 }
 
 .loader #transSocialLoadLong {
-   color: var(--warning-text);
-   transform: translateY(100px);
+   /*display: none;*/
+   position: fixed;
+   left: 46vw;
+   margin-top: 110vh; 
+   color: var(--text-semi-transparent); 
+   transform: translateY(0px);
+   width: 100%;
    display: none;
+   animation: transsocialLoadLong 0.25s ease;
+}
+
+@keyframes transsocialLoadLong {
+   0% {
+      transform: translateY(100px);
+   }
+   100% {
+      transform: translateY(0px);
+   }
 }
 
 .loader #transSocialLoadFail {
