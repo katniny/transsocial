@@ -220,6 +220,38 @@ body {
    }
 }
 
+/* Mobile Bottom Nav */
+.mobileBottomNav {
+   position: fixed;
+   height: 60px;
+   width: 100%;
+   transform: translateY(-10px);
+   background: var(--header-color);
+   z-index: 1;
+   box-shadow: 2px 0px 5px var(--header-shadow);
+   bottom: -10px;
+   display: none;
+   text-align: center;
+}
+
+.mobileBottomNav .nav {
+   margin-top: 25px;
+}
+
+.mobileBottomNav a.active i {
+   color: var(--main-color);
+}
+
+.mobileBottomNav .nav i {
+   margin-right: 50px;
+}
+
+@media (max-width: 1149px) {
+   .mobileBottomNav {
+      display: block;
+   }
+}
+
 /* Sidebar */
 .sidebar {
    position: fixed;

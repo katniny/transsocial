@@ -36,19 +36,26 @@
 
         <!-- Header -->
         <div class="header" id="header">
-            <div class="left">
-                <button id="hamburgerMenu"><i class="fa-solid fa-bars"></i></button> <a href="/"><img class="headerLogo" id="transsocialHeaderLogo" src="/assets/imgs/All_transparent.png" draggable="false" /></a>
-            </div>
+         <div class="left">
+            <button id="hamburgerMenu"><i class="fa-solid fa-bars"></i></button> <a href="/"><img class="headerLogo" id="transsocialHeaderLogo" src="/assets/imgs/All_transparent.png" draggable="false" /></a>
+         </div>
 
-            <div class="right">
-                <a href="/download"><button style="margin-right: 20px; transform: translateY(-23px);" id="headerGetApp">Get App</button></a> <a href="/notifications"><i class="fa-solid fa-bell fa-lg"></i></a> <a href="/achievements"><i class="fa-solid fa-trophy fa-lg" style="margin-right: 0px;"></i></a> <img src="" alt="Your profile picture" draggable="false" id="userPfp-header" onclick="accountManager()" />
-            </div>
-            <div class="accountManager" id="accountManager" style="display: none;">
-                <h3 id="greetingManager">Hello, {user}</h3>
-                <a href="/settings"><button><i class="fa-solid fa-gear"></i> Settings</button></a>
-                <a href="/achievements"><button><i class="fa-solid fa-award"></i> Achievements</button></a>
-            </div>
-        </div>
+         <div class="right">
+            <a href="/download"><button style="margin-right: 20px; transform: translateY(-23px);" id="headerGetApp">Get App</button></a> <a href="/notifications"><i class="fa-solid fa-bell fa-lg"></i></a> <a href="/achievements"><i class="fa-solid fa-trophy fa-lg" style="margin-right: 0px;"></i></a> <img src="" alt="Your profile picture" draggable="false" id="userPfp-header" onclick="accountManager()" />
+         </div>
+         <div class="accountManager" id="accountManager" style="display: none;">
+            <h3 id="greetingManager">Hello, {user}</h3>
+            <a href="/settings"><button><i class="fa-solid fa-gear"></i> Settings</button></a>
+            <a href="/achievements"><button><i class="fa-solid fa-award"></i> Achievements</button></a>
+         </div>
+      </div>
+
+      <!-- Bottom Nav (mobile) -->
+      <div class="mobileBottomNav" id="mobileBottomNav">
+         <div class="nav">
+            <a href="/" style="margin-left: 20px;"><i class="fa-solid fa-house fa-xl"></i></a> <a href="/notifications"><i class="fa-solid fa-bell fa-xl"></i></a> <a href="/settings"><i class="fa-solid fa-gear fa-xl"></i></a> <a href="javascript:void();" onclick="createNotePopup()"><i class="fa-solid fa-pen-to-square fa-xl"></i></a>
+         </div>
+      </div>
 
         <!-- Sidebar -->
         <header class="sidebar" id="sidebar">
