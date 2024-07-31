@@ -2146,18 +2146,10 @@ if (pathName === "/" || pathName === "/index.html" || pathName === "/index" || p
                            if (user.uid !== whoSentIt_note.whoSentIt) {
                               firebase.database().ref(`notes/${noteId}`).once("value", (snapshot) => {
                                  const getUser = snapshot.val();
-
-                                 const newNotiKey = firebase.database().ref("users/" + getUser.whoSentIt + "notifications/").push().key;
-
-                                 const notiData = {
+                                 sendNotification(getUser.whoSentIt, {
                                     type: "Love",
                                     who: user.uid,
                                     postId: noteId,
-                                 }
-
-                                 firebase.database().ref(`users/${getUser.whoSentIt}/notifications/`).child(newNotiKey).set(notiData);
-                                 firebase.database().ref().update({
-                                    [`users/${getUser.whoSentIt}/notifications/unread`]: firebase.database.ServerValue.increment(1)
                                  });
                               })
                            }
@@ -2225,18 +2217,10 @@ if (pathName === "/" || pathName === "/index.html" || pathName === "/index" || p
                            if (user.uid !== whoSentIt_note.whoSentIt) {
                               firebase.database().ref(`notes/${noteId}`).once("value", (snapshot) => {
                                  const getUser = snapshot.val();
-
-                                 const newNotiKey = firebase.database().ref("users/" + getUser.whoSentIt + "notifications/").push().key;
-
-                                 const notiData = {
+                                 sendNotification(getUser.whoSentIt, {
                                     type: "Renote",
                                     who: user.uid,
                                     postId: noteId,
-                                 }
-
-                                 firebase.database().ref(`users/${getUser.whoSentIt}/notifications/`).child(newNotiKey).set(notiData);
-                                 firebase.database().ref().update({
-                                    [`users/${getUser.whoSentIt}/notifications/unread`]: firebase.database.ServerValue.increment(1)
                                  });
                               })
                            }
@@ -3173,16 +3157,9 @@ if (pathName === "/u.html" || pathName === "/u") {
                               [`users/${currentUserUid}/following`]: firebase.database.ServerValue.increment(1)
                            });
 
-                           const newNotiKey = firebase.database().ref("users/" + profileUserUid + "notifications/").push().key;
-
-                           const notiData = {
+                           sendNotification(profileUserUid, {
                               type: "Follow",
-                              who: currentUserUid,
-                           }
-
-                           firebase.database().ref(`users/${profileUserUid}/notifications/`).child(newNotiKey).set(notiData);
-                           firebase.database().ref().update({
-                              [`users/${profileUserUid}/notifications/unread`]: firebase.database.ServerValue.increment(1)
+                              whp: currentUserUid,
                            });
 
                            unlockAchievement("The Social Butterfly");
@@ -3574,18 +3551,10 @@ if (pathName === "/note.html" || pathName === "/note") {
                      if (user.uid !== whoSentIt_note.whoSentIt) {
                         firebase.database().ref(`notes/${uniNoteId_notehtml}`).once("value", (snapshot) => {
                            const getUser = snapshot.val();
-
-                           const newNotiKey = firebase.database().ref("users/" + getUser.whoSentIt + "notifications/").push().key;
-
-                           const notiData = {
+                           sendNotification(getUser.whoSentIt, {
                               type: "Love",
                               who: user.uid,
                               postId: uniNoteId_notehtml,
-                           }
-
-                           firebase.database().ref(`users/${getUser.whoSentIt}/notifications/`).child(newNotiKey).set(notiData);
-                           firebase.database().ref().update({
-                              [`users/${getUser.whoSentIt}/notifications/unread`]: firebase.database.ServerValue.increment(1)
                            });
                         })
                      }
@@ -3643,18 +3612,10 @@ if (pathName === "/note.html" || pathName === "/note") {
                      if (user.uid !== whoSentIt_note.whoSentIt) {
                         firebase.database().ref(`notes/${uniNoteId_notehtml}`).once("value", (snapshot) => {
                            const getUser = snapshot.val();
-
-                           const newNotiKey = firebase.database().ref("users/" + getUser.whoSentIt + "notifications/").push().key;
-
-                           const notiData = {
+                           sendNotification(getUser.whoSentIt, {
                               type: "Renote",
                               who: user.uid,
                               postId: uniNoteId_notehtml,
-                           }
-
-                           firebase.database().ref(`users/${getUser.whoSentIt}/notifications/`).child(newNotiKey).set(notiData);
-                           firebase.database().ref().update({
-                              [`users/${getUser.whoSentIt}/notifications/unread`]: firebase.database.ServerValue.increment(1)
                            });
                         })
                      }
@@ -3758,20 +3719,12 @@ async function publishNote() {
                firebase.database().ref(`notes/${uniNoteId_notehtml}`).once("value", (snapshot) => {
                   const replyData = snapshot.val();
 
-                  if (user.uid !== replyData.whoSentIt) {
-                     firebase.database().ref(`users/${replyData.whoSentIt}`).once("value", (snapshot) => {
-                        const newNotiKey = firebase.database().ref("users/" + replyData.whoSentIt + "notifications/").push().key;
-                        const notiData = {
-                           type: "Reply",
-                           who: user.uid,
-                           postId: uniNoteId_notehtml,
-                        }
-                        firebase.database().ref(`users/${replyData.whoSentIt}/notifications/`).child(newNotiKey).set(notiData);
-                        firebase.database().ref().update({
-                           [`users/${replyData.whoSentIt}/notifications/unread`]: firebase.database.ServerValue.increment(1)
-                        });
-                     })
-                  }
+                  if (user.uid !== replyData.whoSentIt)
+                     sendNotification(replyData.whoSentIt, {
+                        type: "Reply",
+                        who: user.uid,
+                        postId: uniNoteId_notehtml,
+                     });
 
                   if (replyData.replies === undefined) {
                      firebase.database().ref(`notes/${uniNoteId_notehtml}`).update({
@@ -6677,6 +6630,15 @@ document.addEventListener("keydown", function(event) {
       }
    }
 });
+
+// send notifications
+function sendNotification(toWho, data) {
+   const newNotiKey = firebase.database().ref("users/" + toWho + "notifications/").push().key;
+   firebase.database().ref(`users/${toWho}/notifications/`).child(newNotiKey).set(data);
+   firebase.database().ref().update({
+      [`users/${toWho}/notifications/unread`]: firebase.database.ServerValue.increment(1)
+   });
+}
 
 // allow users to favorite notes (yet again)
 function favorite(note) {
