@@ -1783,11 +1783,16 @@ if (pathName === "/" || pathName === "/index.html" || pathName === "/index" || p
 
             // Create the note's text
             const text = document.createElement("p");
-            text.innerHTML = sanitizeAndLinkify(noteContent.text);
+            text.innerHTML = sanitizeAndLinkify(noteContent.text)
             text.classList.add("noteText");
             if (noteContent.replyingTo === undefined) {
                text.setAttribute("onclick", `window.location.href="/note?id=${noteContent.id}"`);
             }
+            text.querySelectorAll('a').forEach(link => {
+               link.addEventListener('click', (event) => {
+                  event.stopPropagation();
+               });
+            });
             twemoji.parse(text, {
                folder: 'svg',
                ext: '.svg'
@@ -2795,6 +2800,12 @@ if (pathName === "/u.html" || pathName === "/u") {
                   if (noteContent.replyingTo === undefined) {
                      text.setAttribute("onclick", `window.location.href="/note?id=${noteContent.id}"`);
                   }
+                  // this will prevent the user from getting forced into the note view when clicking a link. now it'll just work! woo!!
+                  text.querySelectorAll("a").forEach(link => {
+                     link.addEventListener("click", (event) => {
+                        event.stopPropagation();
+                     });
+                  });
                   twemoji.parse(text, {
                      folder: 'svg',
                      ext: '.svg'
