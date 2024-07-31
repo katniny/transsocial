@@ -2021,7 +2021,7 @@ if (pathName === "/" || pathName === "/index.html" || pathName === "/index" || p
             firebase.database().ref(`users/${noteContent.whoSentIt}`).once("value", (snapshot) => {
                const isSuspended = snapshot.val();
 
-               if (isSuspended.suspensionStatus !== undefined) {
+               if (isSuspended.suspensionStatus === "suspended") {
                   noteDiv.remove();
                }
             })
@@ -3035,7 +3035,7 @@ if (pathName === "/u.html" || pathName === "/u") {
                   firebase.database().ref(`users/${noteContent.whoSentIt}`).once("value", snapshot => {
                      const isSuspended = snapshot.val();
 
-                     if (isSuspended.suspensionStatus !== undefined) {
+                     if (isSuspended.suspensionStatus === "suspended") {
                         noteDiv.remove();
                      }
                   })
