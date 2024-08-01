@@ -3159,7 +3159,7 @@ if (pathName === "/u.html" || pathName === "/u") {
 
                            sendNotification(profileUserUid, {
                               type: "Follow",
-                              whp: currentUserUid,
+                              who: currentUserUid,
                            });
 
                            unlockAchievement("The Social Butterfly");
