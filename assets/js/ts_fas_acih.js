@@ -336,18 +336,12 @@ if (pathName !== "/suspended.html" || pathName !== "/suspended") {
          suspensionRef.on("value", (snapshot) => {
             const data = snapshot.val();
 
-            if (data.suspensionStatus === null || data.suspensionStatus === undefined) {
-               return false; // That means they aren't suspended/never have been and can use TransSocial as intended.
-            } else if (data.suspensionStatus === "allowed") {
-               return false; // This means that they have been suspended before but currently aren't. Allow them to continue.
-            } else if (data.suspensionStatus === "suspended") {
+            if (data.suspensionStatus === "suspended") {
                if (pathName !== "/suspended" && pathName !== "/suspended.html") {
-                  window.location.replace("/suspended"); // They are suspended. Redirect them to let them know.
+                  window.location.replace("/suspended");
                }
             }
          })
-      } else {
-         return false; // User isn't logged in, there is no way for them to be suspended.
       }
    });
 };
@@ -361,18 +355,14 @@ if (pathName === "/suspended.html" || pathName === "/suspended") {
             const data = snapshot.val();
             //console.log(data);
 
-            if (data.suspensionStatus === null || data.suspensionStatus === undefined) {
-               window.location.replace("/"); // That means they aren't suspended and can use TransSocial as intended.
-            } else if (data.suspensionStatus === "allowed") {
-               window.location.replace("/"); // This means that they have been suspended before but currently aren't. Allow them to continue.
-            } else if (data.suspensionStatus === "suspended") {
+            if (data.suspensionStatus === "suspended") {
                document.getElementById("reasonForBeingSuspended").textContent = data.suspensionNotes.reason;
                document.getElementById("suspensionExpiration").textContent = data.suspensionNotes.expiration;
-            }
+            } else 
+               window.location.replace("/");
          })
       } else {
          window.location.replace("/");
-         return false;
       }
    });
 }
