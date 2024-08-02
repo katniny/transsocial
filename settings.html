@@ -39,20 +39,25 @@
         </div>
 
         <!-- Header -->
-        <div class="header" id="header">
-         <div class="left">
-            <button id="hamburgerMenu"><i class="fa-solid fa-bars"></i></button> <a href="/"><img class="headerLogo" id="transsocialHeaderLogo" src="/assets/imgs/All_transparent.png" draggable="false" /></a>
-         </div>
-
-         <div class="right">
-            <a href="/download"><button style="margin-right: 20px; transform: translateY(-23px);" id="headerGetApp">Get App</button></a> <a href="/notifications"><i class="fa-solid fa-bell fa-lg"></i></a> <a href="/achievements"><i class="fa-solid fa-trophy fa-lg" style="margin-right: 0px;"></i></a> <img src="" alt="Your profile picture" draggable="false" id="userPfp-header" onclick="accountManager()" />
-         </div>
-         <div class="accountManager" id="accountManager" style="display: none;">
-            <h3 id="greetingManager">Hello, {user}</h3>
-            <a href="/settings"><button><i class="fa-solid fa-gear"></i> Settings</button></a>
-            <a href="/achievements"><button><i class="fa-solid fa-award"></i> Achievements</button></a>
-         </div>
+        <!-- Header -->
+   <div class="header" id="header">
+      <div class="left">
+         <button id="hamburgerMenu"><i class="fa-solid fa-bars"></i></button> <a href="/"><img class="headerLogo" id="transsocialHeaderLogo" src="/assets/imgs/All_transparent.png" draggable="false" /></a>
       </div>
+
+      <div class="center">
+         <input id="searchBar" placeholder="Search TransSocial" />
+      </div>
+
+      <div class="right">
+         <a href="/download"><button style="margin-right: 20px; transform: translateY(-23px);" id="headerGetApp">Get App</button></a> <a href="/notifications"><i class="fa-solid fa-bell fa-lg"></i></a> <a href="/achievements"><i class="fa-solid fa-trophy fa-lg" style="margin-right: 0px;"></i></a> <img src="" alt="Your profile picture" draggable="false" id="userPfp-header" onclick="accountManager()" />
+      </div>
+      <div class="accountManager" id="accountManager" style="display: none;">
+         <h3 id="greetingManager">Hello, {user}</h3>
+         <a href="/settings"><button><i class="fa-solid fa-gear"></i> Settings</button></a>
+         <a href="/achievements"><button><i class="fa-solid fa-award"></i> Achievements</button></a>
+      </div>
+   </div>
 
       <!-- Bottom Nav (mobile) -->
       <div class="mobileBottomNav" id="mobileBottomNav">
@@ -66,7 +71,7 @@
             <!-- Navigation Buttons -->
             <a href="/"><button style="margin-top: 15px;"><i class="fa-solid fa-house"></i> Home</button></a>
             <a href="/notifications" id="notificationsSidebar"><button><i class="fa-solid fa-bell"></i> Notifications</button></a> <a href="/notifications"><p id="notificationsCount">0</p></a>
-            <!--<a href="/search"><button><i class="fa-solid fa-magnifying-glass"></i> Explore</button></a>-->
+            <a href="/search"><button><i class="fa-solid fa-magnifying-glass"></i> Explore</button></a>
             <a href="/messages" id="messagesSidebar"><button><i class="fa-solid fa-envelope"></i> Messages (0)</button></a>
             <!--<a href="/help" id="enchantedSidebar"><button><i class="fa-solid fa-wand-sparkles"></i> Get Enchanted</button></a>-->
             <a href="/settings" id="settingsSidebar"><button class="settings active"><i class="fa-solid fa-gear"></i> Settings</button></a>
