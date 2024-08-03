@@ -26,7 +26,7 @@ const pathName = pageURL.pathname;
 let isOnDesktopApp = null;
 
 // TransSocial Version
-let transsocialVersion = "v2024.8.1";
+let transsocialVersion = "v2024.8.3";
 let transsocialReleaseVersion = "indev";
 
 const notices = document.getElementsByClassName("version-notice");
@@ -3696,6 +3696,30 @@ async function publishNote() {
             alt: document.getElementById("altText_input").value
          }
 
+         const usernameRegex = /@(\w+)/g;
+         const matches = [...noteContent.matchAll(usernameRegex)];
+         if (matches.length > 0) {
+            const usernames = matches.map(match => match[1]);
+            usernames.forEach(username => {
+               const user = firebase.auth().currentUser;
+               
+               // check if it's a username
+               firebase.database().ref(`taken-usernames/${username}`).once("value", (snapshot) => {
+                  if (snapshot.exists()) {
+                     const userId = snapshot.val();
+
+                     sendNotification(userId.user, {
+                        type: "Mention",
+                        who: user.uid,
+                        postId: newNoteKey,
+                     });
+                  }
+               });
+            });
+         } else {
+            
+         }
+
          if (renotingNote !== null) {
             postData.quoting = renotingNote;
          }
@@ -4807,6 +4831,14 @@ if (pathName === "/notifications" || pathName === "/notifications.html") {
                         const user = snapshot.val();
 
                         newNotificationDiv.innerHTML = `<img class="notificationPfp" draggable=false src="https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${notification.who}%2F${user.pfp}?alt=media" /> @${user.username} renoted your note!`;
+                     })
+                  } else if (notification.type === "Mention") {
+                     newNotificationDiv.setAttribute("onclick", `window.location.href="/note?id=${notification.postId}"`);
+
+                     firebase.database().ref(`users/${notification.who}`).on("value", (snapshot) => {
+                        const user = snapshot.val();
+
+                        newNotificationDiv.innerHTML = `<img class="notificationPfp" draggable=false src="https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${notification.who}%2F${user.pfp}?alt=media" /> @${user.username} mentioned you!`;
                      })
                   } else {
                      // Handle other notification types...
