@@ -42,7 +42,7 @@
         <!-- Header -->
    <div class="header" id="header">
       <div class="left">
-         <button id="hamburgerMenu"><i class="fa-solid fa-bars"></i></button> <a href="/"><img class="headerLogo" id="transsocialHeaderLogo" src="/assets/imgs/All_transparent.png" draggable="false" /></a>
+         <button id="hamburgerMenu"><i class="fa-solid fa-bars"></i></button> <a href="/home"><img class="headerLogo" id="transsocialHeaderLogo" src="/assets/imgs/All_transparent.png" draggable="false" /></a>
       </div>
 
       <div class="center">
@@ -62,14 +62,14 @@
       <!-- Bottom Nav (mobile) -->
       <div class="mobileBottomNav" id="mobileBottomNav">
          <div class="nav">
-            <a href="/" style="margin-left: 20px;"><i class="fa-solid fa-house fa-xl"></i></a> <a href="/notifications"><i class="fa-solid fa-bell fa-xl"></i></a> <a href="/settings" class="active"><i class="fa-solid fa-gear fa-xl"></i></a> <a href="javascript:void();" onclick="createNotePopup()"><i class="fa-solid fa-pen-to-square fa-xl"></i></a>
+            <a href="/home" style="margin-left: 20px;"><i class="fa-solid fa-house fa-xl"></i></a> <a href="/notifications"><i class="fa-solid fa-bell fa-xl"></i></a> <a href="/settings" class="active"><i class="fa-solid fa-gear fa-xl"></i></a> <a href="javascript:void();" onclick="createNotePopup()"><i class="fa-solid fa-pen-to-square fa-xl"></i></a>
          </div>
       </div>
 
         <!-- Sidebar -->
         <header class="sidebar" id="sidebar">
             <!-- Navigation Buttons -->
-            <a href="/"><button style="margin-top: 15px;"><i class="fa-solid fa-house"></i> Home</button></a>
+            <a href="/home"><button style="margin-top: 15px;"><i class="fa-solid fa-house"></i> Home</button></a>
             <a href="/notifications" id="notificationsSidebar"><button><i class="fa-solid fa-bell"></i> Notifications</button></a> <a href="/notifications"><p id="notificationsCount">0</p></a>
             <a href="/search"><button><i class="fa-solid fa-magnifying-glass"></i> Explore</button></a>
             <a href="/messages" id="messagesSidebar"><button><i class="fa-solid fa-envelope"></i> Messages (0)</button></a>
@@ -79,7 +79,7 @@
             <a href="/contributors"><button><i class="fa-solid fa-face-smile-beam"></i> Contributors</button></a>
                         <a href="/achievements" id="achievementsSidebar"><button><i class="fa-solid fa-award"></i> Achievements</button></a>
             <a href="/favorites" id="favoritesSidebar"><button><i class="fa-solid fa-bookmark"></i> Favorites</button></a>
-            <a href="/" id="linkToAcc"><button><i class="fa-solid fa-user"></i> Your Profile</button></a>
+            <a href="/u" id="linkToAcc"><button><i class="fa-solid fa-user"></i> Your Profile</button></a>
             <button onclick="createNotePopup()" class="createNote-sidebar" id="createNote-sidebar"><i class="fa-solid fa-pen-to-square"></i> Create</button>
 
             <br />
@@ -331,7 +331,7 @@
                 <!-- Me :3 -->
                 <div class="katniny">
                     <img class="recommendAcc-pfp" src="" id="katninyPfp" draggable="false" /> <p id="katninyDisplay"></p>
-                    <br /> <a href="/" id="followBtn-1"><button class="followBtn">Follow</button></a>
+                    <br /> <a href="/u" id="followBtn-1"><button class="followBtn">Follow</button></a>
                     <p id="katninyUser-pronouns"></p>
                 </div>
 
@@ -340,7 +340,7 @@
                 <!-- TransSocial -->
                 <div class="transsocial">
                     <img class="recommendAcc-pfp" src="" id="transsocialPfp" draggable="false" /> <p id="transsocialDisplay"></p>
-                    <br /> <a href="/" id="followBtn-2"><button class="followBtn">Follow</button></a>
+                    <br /> <a href="/u" id="followBtn-2"><button class="followBtn">Follow</button></a>
                     <p id="transsocialUser-pronouns"></p>
                 </div>
 
@@ -349,7 +349,7 @@
                 <!-- Katniny Studios -->
                 <div class="katninystudios">
                     <img class="recommendAcc-pfp" src="" id="katninystudiosPfp" draggable="false" /> <p id="katninystudiosDisplay"></p>
-                    <br /> <a href="/" id="followBtn-3"><button class="followBtn">Follow</button></a>
+                    <br /> <a href="/u" id="followBtn-3"><button class="followBtn">Follow</button></a>
                     <p id="katninystudiosUser-pronouns"></p>
                 </div>
             </div>
@@ -455,7 +455,7 @@
             <br /> You may continue using TransSocial.
          </p>
 
-         <a href="/"><button>Okay</button></a>
+         <a href="/home"><button>Okay</button></a>
         </dialog>
 
         <dialog id="createNote-popup">

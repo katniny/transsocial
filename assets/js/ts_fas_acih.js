@@ -48,7 +48,7 @@ function quoteRenote(id) {
 
 // Read cookies
 if (localStorage.getItem("acceptedCookies") !== null) {
-   if (pathName === "/" || pathName === "/index.html" || pathName === "/index") {
+   if (pathName === "/home" || pathName === "/home.html") {
       document.getElementById("cookie-notice").style.display = "none";
    }
 }
@@ -102,7 +102,7 @@ if (browserName === "Mozilla Firefox") {
       }
    } else {
       if (pathName === "/unsupported") {
-         window.location.replace("/");
+         window.location.replace("/home");
       }
    }
 }
@@ -119,7 +119,7 @@ if (browserName === "Samsung Browser") {
       }
    } else {
       if (pathName === "/unsupported") {
-         window.location.replace("/");
+         window.location.replace("/home");
       }
    }
 }
@@ -136,7 +136,7 @@ if (browserName === "Opera") {
       }
    } else {
       if (pathName === "/unsupported") {
-         window.location.replace("/");
+         window.location.replace("/home");
       }
    }
 }
@@ -153,7 +153,7 @@ if (browserName === "Microsoft Edge") {
       }
    } else {
       if (pathName === "/unsupported") {
-         window.location.replace("/");
+         window.location.replace("/home");
       }
    }
 }
@@ -170,7 +170,7 @@ if (browserName === "Google Chrome") {
       }
    } else {
       if (pathName === "/unsupported") {
-         window.location.replace("/");
+         window.location.replace("/home");
       }
    }
 }
@@ -187,7 +187,7 @@ if (browserName === "Apple Safari") {
       }
    } else {
       if (pathName === "/unsupported") {
-         window.location.replace("/");
+         window.location.replace("/home");
       }
    }
 }
@@ -359,10 +359,10 @@ if (pathName === "/suspended.html" || pathName === "/suspended") {
                document.getElementById("reasonForBeingSuspended").textContent = data.suspensionNotes.reason;
                document.getElementById("suspensionExpiration").textContent = data.suspensionNotes.expiration;
             } else 
-               window.location.replace("/");
+               window.location.replace("/home");
          })
       } else {
-         window.location.replace("/");
+         window.location.replace("/home");
       }
    });
 }
@@ -660,7 +660,7 @@ function login() {
 
       firebase.auth().signInWithEmailAndPassword(email, password)
          .then(() => {
-            window.location.replace("/");
+            window.location.replace("/home");
          }).catch((error) => {
             document.getElementById("errorTxt").style.display = "block";
             document.getElementById("errorTxt").textContent = error.message;
@@ -673,7 +673,7 @@ function login() {
 // Sign Out User
 function signOut() {
    firebase.auth().signOut().then(() => {
-      window.location.replace("/");
+      window.location.replace("/home");
    }).catch((error) => {
       alert("There was an unknown error signing out. Please refresh the page and try again.");
    })
@@ -726,7 +726,7 @@ function signedOutCheck() {
       if (user) {
          // ...
       } else {
-         window.location.replace("/");
+         window.location.replace("/home");
       }
    })
 }
@@ -734,7 +734,7 @@ function signedOutCheck() {
 function signedInCheck() {
    firebase.auth().onAuthStateChanged((user) => {
       if (user) {
-         window.location.replace('/');
+         window.location.replace('/home');
       } else {
          return;
       }
@@ -1540,7 +1540,7 @@ let isLoading = false;
 let lastVisibleNoteId = null;
 let loadedNotesId = [];
 
-if (pathName === "/" || pathName === "/index.html" || pathName === "/index" || pathName === "/u" || pathName === "/u.html" || pathName === "/note" || pathName === "/note.html" || pathName === "/favorites") {
+if (pathName === "/home" || pathName === "/home.html" || pathName === "/u" || pathName === "/u.html" || pathName === "/note" || pathName === "/note.html" || pathName === "/favorites") {
    // Reload page
    function loadNotesFromButton() {
       window.location.reload();
@@ -2017,7 +2017,7 @@ if (pathName === "/" || pathName === "/index.html" || pathName === "/index" || p
             })
 
             // If all is okay, do it fine.
-            if (pathName === "/") {
+            if (pathName === "/home") {
                if (noteContent.replyingTo === undefined) {
                   if (noteContent.isDeleted !== true) {
                      notesContainer.appendChild(noteDiv);
@@ -2063,7 +2063,7 @@ if (pathName === "/" || pathName === "/index.html" || pathName === "/index" || p
    firebase.database().ref("notes/").on("child_added", (snapshot) => {
       const isReply = snapshot.val();
       if (isReply.replyingTo === undefined) {
-         if (pathName === "/" || pathName === "/index" || pathName === "/index.html") {
+         if (pathName === "/home" || pathName === "/home.html") {
             document.getElementById("newNotesAvailable").style.display = "block";
          }
       }
@@ -3975,7 +3975,7 @@ if (pathName === "/settings" || pathName === "/settings.html") {
             })
          })
       } else {
-         window.location.replace("/");
+         window.location.replace("/home");
       }
    })
 
@@ -4768,7 +4768,7 @@ if (pathName === "/settings" || pathName === "/settings.html") {
 
 // Accept cookies
 function acceptCookies() {
-   if (pathName === "/" || pathName === "/index" || pathName === "/index.html") {
+   if (pathName === "/home" || pathName === "/home.html") {
       localStorage.setItem("acceptedCookies", "true");
       document.getElementById("cookie-notice").style.display = "none";
    }
@@ -5114,7 +5114,7 @@ function reportType_other_finish() {
 }
 
 // Edit/Deleting Notes
-if (pathName === "/" || pathName === "/index" || pathName === "/note" || pathName === "/note.html" || pathName === "/u" || pathName === "/u.html") {
+if (pathName === "/home" || pathName === "/home.html" || pathName === "/note" || pathName === "/note.html" || pathName === "/u" || pathName === "/u.html") {
    let editingNote = null;
 
    // Getting the note and making sure it actually belongs to the user
