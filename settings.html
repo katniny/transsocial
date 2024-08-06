@@ -9,6 +9,7 @@
         <link rel="manifest" href="/manifest.json">
         <script src="https://kit.fontawesome.com/be7c331826.js" crossorigin="anonymous"></script>
         <script src="/assets/js/twemoji.js" crossorigin="anonymous"></script>
+        <script src="https://js.stripe.com/v3/"></script>
     </head>
     
     <body onload="loadEverything() + signedOutCheck()">
@@ -60,11 +61,11 @@
    </div>
 
       <!-- Bottom Nav (mobile) -->
-      <div class="mobileBottomNav" id="mobileBottomNav">
+      <!--<div class="mobileBottomNav" id="mobileBottomNav">
          <div class="nav">
             <a href="/home" style="margin-left: 20px;"><i class="fa-solid fa-house fa-xl"></i></a> <a href="/notifications"><i class="fa-solid fa-bell fa-xl"></i></a> <a href="/settings" class="active"><i class="fa-solid fa-gear fa-xl"></i></a> <a href="javascript:void();" onclick="createNotePopup()"><i class="fa-solid fa-pen-to-square fa-xl"></i></a>
          </div>
-      </div>
+      </div>-->
 
         <!-- Sidebar -->
         <header class="sidebar" id="sidebar">
@@ -147,7 +148,7 @@
 
                         <p>Profile Picture</p>
                         <img src="" draggable="false" alt="Your Katniny profile picture" id="profilePicture_settings" class="profilePicture" /> <button onclick="changePfp()" style="transform: translateY(-20px); margin-left: 5px;" id="changePfp">Change Picture</button>
-                        <input type="file" id="fileInput" accept="image/png, image/jpeg, image/webp" style="display: none;" />
+                        <input type="file" id="fileInput" accept="image/png, image/jpeg, image/webp, image/gif" style="display: none;" />
                         <p id="errorUploadingPfp" style="color: var(--error-text); display: none;"></p>
 
                         <br />
@@ -288,9 +289,64 @@
                 <!-- Tab #4 (Subscription) -->
                 <div id="profileTab-subscription" style="display: none;">
                     <h2>Subscription</h2>
-                    <p style="color: var(--text-semi-transparent); font-size: 14.5px;">Help us keep the lights on! Currently, there is no functionality for subscribing (though a planned feature), but we still highly appreciate it!</p>
+                    <p style="color: var(--text-semi-transparent); font-size: 14.5px;">Help us keep the lights on! We now offer subscription benefits! Note that payment is powered and securely processed by Stripe, and your payment details are never saved in TransSocial's database. We appreciate your support! :D</p>
 
-                    <a href="https://patreon.com/katniny/membership"><button>Support TransSocial on Patreon</button></a>
+                     <br />
+
+                     <!-- Fetching -->
+                     <div id="fetchingSubscriptionStatus">
+                        <p><i class="fa-solid fa-circle-notch fa-spin"></i> We're fetching your subscription data...</p>
+                     </div>
+
+                     <!-- Inactive -->
+                     <div id="subscribe" style="display: none;">
+                        <h3>Get Katniny+ for $4.99USD/month!</h3>
+                        <p style="font-size: 13px; color: var(--text-semi-transparent);">+plus applicable tax. Price is in United States Dollars and may differ depending on your location.</p>
+
+                        <br />
+
+                        <form id="subscription-form">
+                           <div id="card-element"></div>
+                           <div id="card-errors" role="alert" style="color: var(--error-text); font-size: 14px;"></div>
+                           <br />
+                           <button id="submitSubBtn">Subscribe</button>
+                        </form>
+
+                        <br />
+
+                        <h3>Why subscribe?</h3>
+                        <p>Get exclusive benefits such as,</p>
+                        <ul>
+                           <li>Upload files up to 15MB</li>
+                           <!--<li>Set a custom background on your profile</li> (TO:DO)-->
+                           <li>Set a .gif file as your profile picture</li>
+                           <li>Get a special badge on your profile!</li>
+                        </ul>
+                        <p>and more benefits coming soon!</p>
+                     </div>
+
+                     <!-- Active -->
+                     <div id="thanksForSubscribing" style="display: none;">
+                        <h3>Thank you for subscribing!</h3>
+                        <p style="font-size: 14px; color: var(--text-semi-transparent);">Thank you for subscribing to Katniny+ and helping TransSocial stay afloat! Enjoy your benefits!</p>
+                        <p style="font-size: 14px; color: var(--error-text); display: none;" id="overdueBill">Your subscription is overdue and you'll lose your benefits soon.</p>
+                        <ul>
+                           <li>Upload files up to 15MB</li>
+                           <!--<li>Set a custom background on your profile</li> (TO:DO)-->
+                           <li>Set a .gif file as your profile picture</li>
+                           <li>Get a special badge on your profile!</li>
+                        </ul>
+                        <p>and more benefits coming soon!</p>
+
+                        <br />
+
+                        <p id="subMemberSince">You've been subscribed since MM/DD/YY</p>
+                        <p id="subRenewalDay">Your subscription gets renewed on MM/DD/YY</p>
+
+                        <br />
+
+                        <button onclick="cancelSubscription()">Cancel Subscription</button>
+                     </div>
                 </div>
 
                 <div id="profileTab-environment" style="display: none;">
@@ -541,6 +597,17 @@
             <br />
 
             <button onclick="document.getElementById('prideFlagModal').close();">Finish</button>
+        </dialog>
+
+        <dialog id="cancelSubscription">
+            <h2>Cancel subscription?</h2>
+            <p>Are you sure you want to cancel your subscription? If you cancel your subscription, you'll lose all your benefits at the end of your billing period.</p>
+            <p id="errorCancelSub" style="color: var(--error-text); display: none;">error.</p>
+
+            <br />
+
+            <button onclick="cancelSubscription_Confirm()" style="width: 100%; padding: 5px;">Yes, I'm sure</button>
+            <button onclick="document.getElementById('cancelSubscription').close()" style="width: 100%; padding: 5px;">Nevermind</button>
         </dialog>
 
         <dialog id="signInPrompt">

@@ -9,6 +9,7 @@
         <link rel="manifest" href="/manifest.json">
         <script src="https://kit.fontawesome.com/be7c331826.js" crossorigin="anonymous"></script>
         <script src="/assets/js/twemoji.js" crossorigin="anonymous"></script>
+        <script src="https://js.stripe.com/v3/"></script>
     </head>
     
     <body onload="loadEverything()">
@@ -56,11 +57,11 @@
    </div>
 
       <!-- Bottom Nav (mobile) -->
-      <div class="mobileBottomNav" id="mobileBottomNav">
+      <!--<div class="mobileBottomNav" id="mobileBottomNav">
          <div class="nav">
             <a href="/home" style="margin-left: 20px;"><i class="fa-solid fa-house fa-xl"></i></a> <a href="/notifications"><i class="fa-solid fa-bell fa-xl"></i></a> <a href="/settings"><i class="fa-solid fa-gear fa-xl"></i></a> <a href="javascript:void();" onclick="createNotePopup()"><i class="fa-solid fa-pen-to-square fa-xl"></i></a>
          </div>
-      </div>
+      </div>-->
 
         <!-- Sidebar -->
         <header class="sidebar" id="sidebar">
@@ -129,7 +130,7 @@
 
                <div class="blogStyle" style="margin: 15px;">
                   <h1>Privacy Policy</h1>
-                  <p style="color: var(--text-semi-transparent);">Last Updated: 4/17/2024</p>
+                  <p style="color: var(--text-semi-transparent);">Last Updated: 8/6/2024</p>
 
                   <br />
 
@@ -153,6 +154,7 @@
                   <br />
 
                   <h2>Information Sharing</h2>
+                  <li><b>Payments:</b> All payments are handled through <a href="https://stripe.com/" target="_blank" style="color: var(--main-color)">Stripe</a>. TransSocial does not store or process payment information. <a href="https://stripe.com/privacy" target="_blank" style="color: var(--main-color);">Stripe's privacy policy</a> governs how payment data is managed.</li>
                   <li><b>We do NOT share your personal information with third parties for their marketing or advertising purposes.</b></li>
                   <li><b>Service Providers:</b> In very limited circumstances, we may share necessary information with trusted service providers who assist us in operating TransSocial (e.g. web hosting). These providers are bound to protect your information.</li>
                   <li><b>Legal Compliance:</b> We may disclose your information if required to do so by law or if we believe, in good faith, that such disclosure is necessary to protect our rights or safety, investigate fraud, or comply with a legal process.</li>

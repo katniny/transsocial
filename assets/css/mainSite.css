@@ -729,6 +729,14 @@ body {
    text-decoration: underline;
 }
 
+.note .noteDisplay i.fa-solid.fa-circle-check.fa-sm {
+   margin-left: 0px;
+}
+
+.note .noteDisplay i {
+   margin-left: 3px;
+}
+
 .note .noteUsername {
    color: var(--text-semi-transparent);
    margin-left: 10px;
@@ -2873,4 +2881,12 @@ footer .footerBottom {
    margin-top: 20px;
    border-top: 1px solid var(--note-seperator);
    padding-top: 10px;
+}
+
+/* Subscription Tab */
+@-moz-document url-prefix() {
+   #thanksForSubscribing li,
+   #subscribe li {
+      margin-left: 15px;
+   }
 }

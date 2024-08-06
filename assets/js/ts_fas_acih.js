@@ -26,7 +26,7 @@ const pathName = pageURL.pathname;
 let isOnDesktopApp = null;
 
 // TransSocial Version
-let transsocialVersion = "v2024.8.3";
+let transsocialVersion = "v2024.8.6";
 let transsocialReleaseVersion = "indev";
 
 const notices = document.getElementsByClassName("version-notice");
@@ -52,6 +52,10 @@ if (localStorage.getItem("acceptedCookies") !== null) {
       document.getElementById("cookie-notice").style.display = "none";
    }
 }
+
+// subscription status
+let isSubscribed = null;
+let hasBeenNotifiedOfSubscriptionIssue = false;
 
 // get browser and browser version
 const userAgent = navigator.userAgent;
@@ -1740,12 +1744,15 @@ if (pathName === "/home" || pathName === "/home.html" || pathName === "/u" || pa
                displayName.textContent = fetchedUser.display;
                displayName.href = `/u?id=${fetchedUser.username}`;
 
+               const badges = document.createElement("span");
                if (fetchedUser.isVerified === true) {
-                  const badges = document.createElement("span");
                   badges.innerHTML = `<i class="fa-solid fa-circle-check fa-sm"></i>`;
                   badges.classList.add("noteBadges");
-                  displayName.appendChild(badges);
                }
+               if (fetchedUser.isSubscribed === true) {
+                  badges.innerHTML = `${badges.innerHTML}<i class="fa-solid fa-heart fa-sm"></i>`;
+               }
+               displayName.appendChild(badges);
             })
             noteDiv.appendChild(displayName);
 
@@ -2371,7 +2378,7 @@ if (pathName !== "/auth/login.html" && pathName !== "/auth/register.html" && pat
       const data = snapshot.val();
       if (data !== null) {
          document.getElementById(`katninyPfp`).src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2FG6GaJr8vPpeVdvenAntjOFYlbwr2%2F${data.pfp}?alt=media`;
-         document.getElementById(`katninyDisplay`).innerHTML = data.display + ` <i class="fa-solid fa-circle-check" style="color: var(--main-color);"></i>`;
+         document.getElementById(`katninyDisplay`).innerHTML = data.display + ` <i class="fa-solid fa-circle-check" style="color: var(--main-color);"></i> <i class="fa-solid fa-heart" style="color: var(--main-color);"></i>`;
          document.getElementById(`followBtn-1`).href = `/u?id=${data.username}`;
          document.getElementById(`katninyUser-pronouns`).textContent = `@${data.username}`;
       }
@@ -2416,13 +2423,16 @@ if (pathName === "/u.html" || pathName === "/u") {
             document.getElementById(`melissa`).style.display = "block";
             document.getElementById(`userImage-profile`).src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${profileExists.user}%2F${profileData.pfp}?alt=media`;
             document.getElementById(`display-profile`).textContent = profileData.display;
+            const verifiedBadge = document.createElement("span");
             if (profileData.isVerified) {
-               const verifiedBadge = document.createElement("span");
                verifiedBadge.innerHTML = `<i class="fa-solid fa-circle-check"></i>`;
                verifiedBadge.classList.add("noteBadges");
                verifiedBadge.style.marginLeft = "7px";
-               document.getElementById(`display-profile`).appendChild(verifiedBadge);
             }
+            if (profileData.isSubscribed === true) {
+               verifiedBadge.innerHTML = `${verifiedBadge.innerHTML}<i class="fa-solid fa-heart" style="margin-left: 3px;"></i>`;
+            }
+            document.getElementById(`display-profile`).appendChild(verifiedBadge);
             document.getElementById(`username-profile`).textContent = `@${profileData.username}`;
 
             document.getElementById("interactingWithWho").textContent = `User Actions for @${profileData.username}`;
@@ -2734,12 +2744,15 @@ if (pathName === "/u.html" || pathName === "/u") {
                      displayName.textContent = fetchedUser.display;
                      displayName.href = `/u?id=${fetchedUser.username}`;
 
+                     const badges = document.createElement("span");
                      if (fetchedUser.isVerified === true) {
-                        const badges = document.createElement("span");
                         badges.innerHTML = `<i class="fa-solid fa-circle-check fa-sm"></i>`;
                         badges.classList.add("noteBadges");
-                        displayName.appendChild(badges);
                      }
+                     if (fetchedUser.isSubscribed === true) {
+                        badges.innerHTML = `${badges.innerHTML}<i class="fa-solid fa-heart fa-sm"></i>`;
+                     }
+                     displayName.appendChild(badges);
                   })
                   noteDiv.appendChild(displayName);
 
@@ -3250,42 +3263,59 @@ function uploadImage() {
 
          let file = event.target.files[0];
          if (file) {
-            const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024;
+            let MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024;
 
-            if (file.size > MAX_FILE_SIZE_BYTES) {
-               document.getElementById("uploadingImage").textContent = "File size is over the file size limit (5MB).";
-               document.getElementById("uploadingImage").style.display = "block";
-               document.getElementById("uploadingImage").style.color = "var(--error-text)";
-               document.getElementById("imageUploadInput").value = "";
-               document.getElementById("imgToBeUploaded").style.display = "none";
-            } else {
-               if (extension !== "mp4") {
-                  const reader = new FileReader();
+            firebase.auth().onAuthStateChanged((user) => {
+               if (user) {
+                  firebase.database().ref(`users/${user.uid}`).once("value", (snapshot) => {
+                     const hi = snapshot.val();
 
-                  reader.addEventListener("load", (event) => {
-                     document.getElementById("imgToBeUploaded").src = event.target.result;
-                     document.getElementById("imgToBeUploaded").style.display = "block";
-                     document.getElementById("hasntBeenUploadedNotice").style.display = "block";
-                     document.getElementById("removeUploadedImage").style.display = "block";
-                     document.getElementById("addAltTextToImage").style.display = "block";
-                  });
+                     if (hi.isSubscribed === true) {
+                        // if subscribed, make their limit 15MB as promised
+                        MAX_FILE_SIZE_BYTES = 15 * 1024 * 1024;
+                     }
 
-                  reader.readAsDataURL(file);
-               } else {
-                  const reader = new FileReader();
-
-                  reader.addEventListener("load", (event) => {
-                     document.getElementById("vidToBeUploaded").src = event.target.result;
-                     document.getElementById("vidToBeUploaded").style.display = "block";
-                     document.getElementById("vidToBeUploaded").style.display = "block";
-                     document.getElementById("hasntBeenUploadedNotice").style.display = "block";
-                     document.getElementById("removeUploadedImage").style.display = "block";
-                     document.getElementById("addAltTextToImage").style.display = "block";
-                  });
-
-                  reader.readAsDataURL(file);
+                     if (file.size > MAX_FILE_SIZE_BYTES) {
+                        if (MAX_FILE_SIZE_BYTES === 15 * 1024 * 1024) {
+                           document.getElementById("uploadingImage").textContent = "File size is over the file size limit (15MB).";
+                        } else {
+                           document.getElementById("uploadingImage").textContent = "File size is over the file size limit (5MB). You can increase the file size limit with a Katniny+ subscription.";
+                        }
+                        document.getElementById("uploadingImage").style.display = "block";
+                        document.getElementById("uploadingImage").style.color = "var(--error-text)";
+                        document.getElementById("imageUploadInput").value = "";
+                        document.getElementById("imgToBeUploaded").style.display = "none";
+                     } else {
+                        if (extension !== "mp4") {
+                           const reader = new FileReader();
+         
+                           reader.addEventListener("load", (event) => {
+                              document.getElementById("imgToBeUploaded").src = event.target.result;
+                              document.getElementById("imgToBeUploaded").style.display = "block";
+                              document.getElementById("hasntBeenUploadedNotice").style.display = "block";
+                              document.getElementById("removeUploadedImage").style.display = "block";
+                              document.getElementById("addAltTextToImage").style.display = "block";
+                           });
+         
+                           reader.readAsDataURL(file);
+                        } else {
+                           const reader = new FileReader();
+         
+                           reader.addEventListener("load", (event) => {
+                              document.getElementById("vidToBeUploaded").src = event.target.result;
+                              document.getElementById("vidToBeUploaded").style.display = "block";
+                              document.getElementById("vidToBeUploaded").style.display = "block";
+                              document.getElementById("hasntBeenUploadedNotice").style.display = "block";
+                              document.getElementById("removeUploadedImage").style.display = "block";
+                              document.getElementById("addAltTextToImage").style.display = "block";
+                           });
+         
+                           reader.readAsDataURL(file);
+                        }
+                     }
+                  })
                }
-            }
+            })
          }
       }
    })
@@ -3399,12 +3429,15 @@ if (pathName === "/note.html" || pathName === "/note") {
             document.getElementById(`userImage-profile`).setAttribute("onclick", `window.location.href="/u?id=${profileData.username}"`);
             document.getElementById(`display-profile`).textContent = profileData.display;
             document.getElementById(`display-profile`).setAttribute("onclick", `window.location.href="/u?id=${profileData.username}"`);
+            const verifiedBadge = document.createElement("span");
             if (profileData.isVerified) {
-               const verifiedBadge = document.createElement("span");
                verifiedBadge.innerHTML = `<i class="fa-solid fa-circle-check fa-sm"></i>`;
                verifiedBadge.classList.add("noteBadges");
                document.getElementById("display-profile").appendChild(verifiedBadge);
                verifiedBadge.style.marginLeft = "7px";
+            }
+            if (profileData.isSubscribed) {
+               verifiedBadge.innerHTML = `${verifiedBadge.innerHTML}<i class="fa-solid fa-heart fa-sm" style="margin-left: 3px;"></i>`
             }
             document.getElementById(`username-profile`).textContent = `@${profileData.username}`;
             document.getElementById(`username-profile`).setAttribute("onclick", `window.location.href="/u?id=${profileData.username}"`);
@@ -4653,47 +4686,62 @@ if (pathName === "/settings" || pathName === "/settings.html") {
          const file = event.target.files[0];
 
          if (file) {
-            const allowedTypes = ["image/png", "image/jpeg", "image/webp"];
-            if (file.size <= 5 * 1024 * 1024) {
-               if (allowedTypes.includes(file.type)) {
-                  const storageRef = firebase.storage().ref();
-                  const fileRef = storageRef.child(`images/pfp/${user.uid}/${file.name}`);
+            firebase.database().ref(`users/${user.uid}`).once("value", (snapshot) => {
+               const data = snapshot.val();
 
-                  fileRef.put(file).then(function (snapshot) {
-                     snapshot.ref.getDownloadURL().then(function (downloadURL) {
-                        firebase.database().ref(`users/${user.uid}/pfp`).once("value", (snapshot) => {
+               let allowedTypes = [];
+               if (data.isSubscribed === true) {
+                  allowedTypes = ["image/png", "image/jpeg", "image/webp", "image/gif"];
+               } else {
+                  allowedTypes = ["image/png", "image/jpeg", "image/webp"];
+               }
+
+               if (file.size <= 5 * 1024 * 1024) {
+                  if (allowedTypes.includes(file.type)) {
+                     const storageRef = firebase.storage().ref();
+                     const fileRef = storageRef.child(`images/pfp/${user.uid}/${file.name}`);
+   
+                     fileRef.put(file).then(function (snapshot) {
+                        snapshot.ref.getDownloadURL().then(function (downloadURL) {
                            firebase.database().ref(`users/${user.uid}/pfp`).once("value", (snapshot) => {
-                              const oldPfpName = snapshot.val();
-
-                              firebase.database().ref(`users/${user.uid}`).update({
-                                 pfp: file.name
-                              })
-                                 .then(() => {
-                                    if (oldPfpName) {
-                                       const oldFileRef = storageRef.child(`images/pfp/${user.uid}/${oldPfpName}`);
-                                       oldFileRef.delete().then(() => {
-                                          // :D
-                                       }).catch((error) => {
-                                          document.getElementById("errorUploadingPfp").style.display = "block";
-                                          document.getElementById("errorUploadingPfp").textContent = `Failed to upload profile picture: ${error.message}`;
-                                       })
-                                    }
+                              firebase.database().ref(`users/${user.uid}/pfp`).once("value", (snapshot) => {
+                                 const oldPfpName = snapshot.val();
+   
+                                 firebase.database().ref(`users/${user.uid}`).update({
+                                    pfp: file.name
                                  })
+                                    .then(() => {
+                                       if (oldPfpName) {
+                                          const oldFileRef = storageRef.child(`images/pfp/${user.uid}/${oldPfpName}`);
+                                          oldFileRef.delete().then(() => {
+                                             // :D
+                                          }).catch((error) => {
+                                             document.getElementById("errorUploadingPfp").style.display = "block";
+                                             document.getElementById("errorUploadingPfp").textContent = `Failed to upload profile picture: ${error.message}`;
+                                          })
+                                       }
+                                    })
+                              })
                            })
-                        })
-                     });
-                  }).catch(function (error) {
-                     document.getElementById("errorUploadingPfp").style.display = "block";
-                     document.getElementById("errorUploadingPfp").textContent = `Failed to upload profile picture: ${error.message}`;
-                  })
+                        });
+                     }).catch(function (error) {
+                        document.getElementById("errorUploadingPfp").style.display = "block";
+                        document.getElementById("errorUploadingPfp").textContent = `Failed to upload profile picture: ${error.message}`;
+                     })
+                  } else {
+                     if (file.type === "image/gif") {
+                        document.getElementById("errorUploadingPfp").style.display = "block";
+                        document.getElementById("errorUploadingPfp").textContent = `You need a Katniny+ subscription to use a GIF as your profile picture!`;
+                     } else {
+                        document.getElementById("errorUploadingPfp").style.display = "block";
+                        document.getElementById("errorUploadingPfp").textContent = `Invalid image type. Please select a .png, .jpg (.jpeg), or .webp file.`;
+                     }
+                  }
                } else {
                   document.getElementById("errorUploadingPfp").style.display = "block";
-                  document.getElementById("errorUploadingPfp").textContent = `Invalid image type. Please select a .png, .jpg (.jpeg), or .webp file.`;
+                  document.getElementById("errorUploadingPfp").textContent = `Image exceeds 5MB. Please choose a smaller image.`;
                }
-            } else {
-               document.getElementById("errorUploadingPfp").style.display = "block";
-               document.getElementById("errorUploadingPfp").textContent = `Image exceeds 5MB. Please choose a smaller image.`;
-            }
+            });
          }
       })
    })
@@ -7081,12 +7129,15 @@ if (pathName === "/search") {
                      displayName.textContent = fetchedUser.display;
                      displayName.href = `/u?id=${fetchedUser.username}`;
 
+                     const badges = document.createElement("span");
                      if (fetchedUser.isVerified === true) {
-                        const badges = document.createElement("span");
                         badges.innerHTML = `<i class="fa-solid fa-circle-check fa-sm"></i>`;
                         badges.classList.add("noteBadges");
-                        displayName.appendChild(badges);
                      }
+                     if (fetchedUser.isSubscribed === true) {
+                        badges.innerHTML = `${badges.innerHTML}<i class="fa-solid fa-heart fa-sm"></i>`;
+                     }
+                     displayName.appendChild(badges);
                   })
                   noteDiv.appendChild(displayName);
 
@@ -7373,3 +7424,214 @@ document.getElementById("searchBar").addEventListener("keydown", (event) => {
       window.location.replace(`/search?q=${document.getElementById("searchBar").value}`);
    }
 });
+
+// init stripe & allow users to create a subscription
+// also yes. this key is safe to have out. this wasn't an accident lol. however, if you have your own, trade it out :p
+// "pk_live" = "published_key_live(environment)"
+const stripe = Stripe("REPLACE");
+const elements = stripe.elements();
+
+if (document.getElementById("subscription-form")) {
+   // this styles the forms
+   const style = {
+      base: {
+         color: "#fff",
+         fontFamily: '"Gabarito", sans-serif',
+         fontSize: '15px',
+         '::placeholder': {
+            color: '#b7b7b7'
+         }
+      },
+      invalid: {
+         color: '#ff0000',
+         iconColor: '#ff0000'
+      }
+   };
+
+   const card = elements.create("card", { style });
+   card.mount("#card-element");
+
+   const form = document.getElementById("subscription-form");
+
+   // this creates a subscription
+   firebase.auth().onAuthStateChanged((user) => {
+      form.addEventListener("submit", async (event) => {
+         if (document.getElementById("submitSubBtn").classList.contains("disabled")) {
+            return; // already running.
+         }
+
+         document.getElementById("submitSubBtn").innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> Subscribing...`;
+         document.getElementById("submitSubBtn").classList.add("disabled");
+         document.getElementById("card-errors").textContent = "";
+
+         event.preventDefault();
+
+         const { paymentMethod, error } = await stripe.createPaymentMethod("card", card);
+
+         if (error) {
+            document.getElementById("card-errors").textContent = error.message;
+
+            document.getElementById("submitSubBtn").innerHTML = `Subscribe`;
+            document.getElementById("submitSubBtn").classList.remove("disabled");
+         } else {
+            // handle successful payment method creation
+            const subscriptionData = {
+               paymentMethodId: paymentMethod.id,
+               customerEmail: user.email
+            };
+
+            fetch("https://dev-api.transs.social/api/create-subscription", {
+               method: "POST",
+               headers: { "Content-Type": "application/json" },
+               body: JSON.stringify(subscriptionData)
+            }).then(response => response.json())
+               .then(result => {
+                  if (result.error) {
+                     document.getElementById("card-errors").textContent = result.error;
+                     document.getElementById("submitSubBtn").innerHTML = `Subscribe`;
+                     document.getElementById("submitSubBtn").classList.remove("disabled");
+                  } else {
+                     document.getElementById("submitSubBtn").innerHTML = `Subscribe`;
+                     document.getElementById("submitSubBtn").classList.remove("disabled");
+                     checkSubscription(); // check if successful or not
+                  }
+               })
+            }
+      })
+   })
+}
+
+// this checks the users subscription status
+const checkSubscription = () => {
+   firebase.auth().onAuthStateChanged((user) => {
+      fetch('https://dev-api.transs.social/api/check-subscription', {
+         method: 'POST',
+         headers: {
+            'Content-Type': 'application/json'
+         },
+         body: JSON.stringify({ customerEmail: `${user.email}` })
+      }).then(response => response.json())
+         .then(data => {
+            if (data.error) {
+               // this means they have NEVER subscribed
+               // that or another error but we successfully send it to the api, so 9 times out of 10, its the above reason
+               if (pathName === "/settings") {
+                  document.getElementById("subscribe").style.display = "block";
+                  document.getElementById("fetchingSubscriptionStatus").style.display = "none";
+               }
+               firebase.database().ref(`users/${user.uid}`).update({
+                  isSubscribed : false
+               });
+            } else {
+               // if subscription status is "incomplete", their payment method was unsuccessful
+               if (data.status === "incomplete") {
+                  if (pathName === "/settings") {
+                     document.getElementById("subscribe").style.display = "block";
+                     document.getElementById("fetchingSubscriptionStatus").style.display = "none";
+                     if (hasBeenNotifiedOfSubscriptionIssue === false) {
+                        document.getElementById("card-errors").textContent = "We were unable to process your payment. This usually occurs due to a lack of funds.";
+                        hasBeenNotifiedOfSubscriptionIssue = true; // so it doesn't occur when attempting to change it
+                        document.getElementById("submit").innerHTML = `Subscribe`;
+                        document.getElementById("submit").classList.remove("disabled");
+                     }
+                  }
+                  firebase.database().ref(`users/${user.uid}`).update({
+                     isSubscribed : true
+                  });
+               // if subscription status is "Incomplete_expired" or "Canceled", their subscription is inactive
+               // "Canceled" is when the billing date comes, not as soon as they click "Cancel Subscription"
+               } else if (data.status === "incomplete_expired" || data.status === "canceled") {
+                  if (pathName === "/settings") {
+                     document.getElementById("subscribe").style.display = "block";
+                     document.getElementById("fetchingSubscriptionStatus").style.display = "none";
+                  }
+                  firebase.database().ref(`users/${user.uid}`).update({
+                     isSubscribed : false
+                  });
+               // bill past due, but subscription is still active
+               } else if (data.status === "past_due") {
+                  if (pathName === "/settings") {
+                     document.getElementById("overdueBill").style.display = "block";
+                     document.getElementById("thanksForSubscribing").style.display = "block";
+                     document.getElementById("fetchingSubscriptionStatus").style.display = "none";
+                  }
+
+                  isSubscribed = true;
+                  firebase.database().ref(`users/${user.uid}`).update({
+                     isSubscribed : true
+                  });
+               // user never paid their subscription
+               } else if (data.status === "unpaid") {
+                  if (pathName === "/settings") {
+                     document.getElementById("subscribe").style.display = "block";
+                     document.getElementById("fetchingSubscriptionStatus").style.display = "none";
+                     if (hasBeenNotifiedOfSubscriptionIssue === false) {
+                        document.getElementById("card-errors").textContent = "We were unable to process your payment. This usually occurs due to a lack of funds.";
+                        hasBeenNotifiedOfSubscriptionIssue = true;
+                     }
+                  }
+                  firebase.database().ref(`users/${user.uid}`).update({
+                     isSubscribed : false
+                  });
+               // user subscription is active :D
+               } else if (data.status === "active") {
+                  if (pathName === "/settings") {
+                     document.getElementById("thanksForSubscribing").style.display = "block";
+                     document.getElementById("fetchingSubscriptionStatus").style.display = "none";
+
+                     if (document.getElementById("subscribe")) {
+                        document.getElementById("subscribe").remove();
+                     }
+
+                     // show user since when they've been subscribed and when their subscription renews
+                     document.getElementById("subMemberSince").textContent = `You've been subscribed since ${convertUnixTimestampToDate(data.current_period_start)}`;
+                     document.getElementById("subRenewalDay").textContent = `Your subscription gets renewed on ${convertUnixTimestampToDate(data.current_period_end)} (unless you canceled your subscription)`;
+                  }
+
+                  isSubscribed = true;
+                  firebase.database().ref(`users/${user.uid}`).update({
+                     isSubscribed : true
+                  });
+               }
+            }
+         })
+         .catch(error => console.error('Error:', error));
+   })
+}
+
+// run immediately, then run every 15 seconds
+checkSubscription();
+setInterval(checkSubscription, 15000);
+
+// this cancels subscription
+function cancelSubscription() {
+   document.getElementById("cancelSubscription").showModal();
+}
+
+function cancelSubscription_Confirm() {
+   fetch("https://dev-api.transs.social/api/cancel-subscription", {
+      method: "POST",
+      headers: {
+         "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ customerEmail: "okuwu1680@gmail.com" })
+   }).then(response => response.json())
+      .then(data => {
+         if (data.message) {
+            document.getElementById("cancelSubscription").close();
+         } else {
+            document.getElementById("errorCancelSub").textContent = data.error;
+         }
+      })
+      .catch(error => console.error("Error: ", error));
+}
+
+// convert (standard) unix timestamp to readable date
+function convertUnixTimestampToDate(unixTimestamp) {
+   const date = new Date(unixTimestamp * 1000); // convert to miliseconds
+   const month = date.getMonth() + 1;
+   const day = date.getDate();
+   const year = date.getFullYear();
+
+   return `${month}/${day}/${year}`;
+}
