@@ -2390,7 +2390,7 @@ if (pathName !== "/auth/login.html" && pathName !== "/auth/register.html" && pat
    database.ref("users/80vDnNb0rJbSjCvbiTF9EtvqtXw1").once("value", (snapshot) => {
       const data = snapshot.val();
       if (data !== null) {
-         document.getElementById(`transsocialPfp`).src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}//o/images%2Fpfp%2F80vDnNb0rJbSjCvbiTF9EtvqtXw1%2F${data.pfp}?alt=media`;
+         document.getElementById(`transsocialPfp`).src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F80vDnNb0rJbSjCvbiTF9EtvqtXw1%2F${data.pfp}?alt=media`;
          document.getElementById(`transsocialDisplay`).innerHTML = data.display + ` <i class="fa-solid fa-circle-check" style="color: var(--main-color);"></i>`;
          document.getElementById(`followBtn-2`).href = `/u?id=${data.username}`;
          document.getElementById(`transsocialUser-pronouns`).textContent = `@${data.username}`;
