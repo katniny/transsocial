@@ -1747,11 +1747,14 @@ if (pathName === "/home" || pathName === "/home.html" || pathName === "/u" || pa
                const badges = document.createElement("span");
                if (fetchedUser.isVerified === true) {
                   badges.innerHTML = `<i class="fa-solid fa-circle-check fa-sm"></i>`;
-                  badges.classList.add("noteBadges");
                }
                if (fetchedUser.isSubscribed === true) {
                   badges.innerHTML = `${badges.innerHTML}<i class="fa-solid fa-heart fa-sm"></i>`;
                }
+               if (fetchedUser.activeContributor === true) {
+                  badges.innerHTML = `${badges.innerHTML}<i class="fa-solid fa-handshake-angle fa-sm"></i>`;
+               }
+               badges.classList.add("noteBadges");
                displayName.appendChild(badges);
             })
             noteDiv.appendChild(displayName);
@@ -2426,12 +2429,15 @@ if (pathName === "/u.html" || pathName === "/u") {
             const verifiedBadge = document.createElement("span");
             if (profileData.isVerified) {
                verifiedBadge.innerHTML = `<i class="fa-solid fa-circle-check"></i>`;
-               verifiedBadge.classList.add("noteBadges");
                verifiedBadge.style.marginLeft = "7px";
             }
             if (profileData.isSubscribed === true) {
                verifiedBadge.innerHTML = `${verifiedBadge.innerHTML}<i class="fa-solid fa-heart" style="margin-left: 3px;"></i>`;
             }
+            if (profileData.activeContributor === true) {
+               verifiedBadge.innerHTML = `${verifiedBadge.innerHTML}<i class="fa-solid fa-handshake-angle fa-sm"></i>`;
+            }
+            verifiedBadge.classList.add("noteBadges");
             document.getElementById(`display-profile`).appendChild(verifiedBadge);
             document.getElementById(`username-profile`).textContent = `@${profileData.username}`;
 
@@ -2751,6 +2757,9 @@ if (pathName === "/u.html" || pathName === "/u") {
                      }
                      if (fetchedUser.isSubscribed === true) {
                         badges.innerHTML = `${badges.innerHTML}<i class="fa-solid fa-heart fa-sm"></i>`;
+                     }
+                     if (fetchedUser.activeContributor === true) {
+                        badges.innerHTML = `${badges.innerHTML}<i class="fa-solid fa-handshake-angle fa-sm"></i>`;
                      }
                      displayName.appendChild(badges);
                   })
@@ -3430,15 +3439,18 @@ if (pathName === "/note.html" || pathName === "/note") {
             document.getElementById(`display-profile`).textContent = profileData.display;
             document.getElementById(`display-profile`).setAttribute("onclick", `window.location.href="/u?id=${profileData.username}"`);
             const verifiedBadge = document.createElement("span");
-            if (profileData.isVerified) {
+            if (profileData.isVerified === true) {
                verifiedBadge.innerHTML = `<i class="fa-solid fa-circle-check fa-sm"></i>`;
                verifiedBadge.classList.add("noteBadges");
-               document.getElementById("display-profile").appendChild(verifiedBadge);
                verifiedBadge.style.marginLeft = "7px";
             }
-            if (profileData.isSubscribed) {
+            if (profileData.isSubscribed === true) {
                verifiedBadge.innerHTML = `${verifiedBadge.innerHTML}<i class="fa-solid fa-heart fa-sm" style="margin-left: 3px;"></i>`
             }
+            if (profileData.activeContributor === true) {
+               verifiedBadge.innerHTML = `${verifiedBadge.innerHTML}<i class="fa-solid fa-handshake-angle fa-sm" style="margin-left: 3px;"></i>`;
+            }
+            document.getElementById("display-profile").appendChild(verifiedBadge);
             document.getElementById(`username-profile`).textContent = `@${profileData.username}`;
             document.getElementById(`username-profile`).setAttribute("onclick", `window.location.href="/u?id=${profileData.username}"`);
             if (profileData.pronouns === undefined || profileData.pronouns === null || profileData.pronouns === "") {
@@ -7137,6 +7149,9 @@ if (pathName === "/search") {
                      if (fetchedUser.isSubscribed === true) {
                         badges.innerHTML = `${badges.innerHTML}<i class="fa-solid fa-heart fa-sm"></i>`;
                      }
+                     if (fetchedUser.activeContributor === true) {
+                        badges.innerHTML = `${verifiedBadge.innerHTML}<i class="fa-solid fa-handshake-angle fa-sm"></i>`;
+                     }
                      displayName.appendChild(badges);
                   })
                   noteDiv.appendChild(displayName);
@@ -7536,7 +7551,7 @@ const checkSubscription = () => {
                      }
                   }
                   firebase.database().ref(`users/${user.uid}`).update({
-                     isSubscribed : true
+                     isSubscribed : false
                   });
                // if subscription status is "Incomplete_expired" or "Canceled", their subscription is inactive
                // "Canceled" is when the billing date comes, not as soon as they click "Cancel Subscription"
@@ -7609,21 +7624,23 @@ function cancelSubscription() {
 }
 
 function cancelSubscription_Confirm() {
-   fetch("https://dev-api.transs.social/api/cancel-subscription", {
-      method: "POST",
-      headers: {
-         "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ customerEmail: "okuwu1680@gmail.com" })
-   }).then(response => response.json())
-      .then(data => {
-         if (data.message) {
-            document.getElementById("cancelSubscription").close();
-         } else {
-            document.getElementById("errorCancelSub").textContent = data.error;
-         }
-      })
-      .catch(error => console.error("Error: ", error));
+   firebase.auth().onAuthStateChanged((user) => {
+      fetch("https://dev-api.transs.social/api/cancel-subscription", {
+         method: "POST",
+         headers: {
+            "Content-Type": "application/json"
+         },
+         body: JSON.stringify({ customerEmail: user.email })
+      }).then(response => response.json())
+         .then(data => {
+            if (data.message) {
+               document.getElementById("cancelSubscription").close();
+            } else {
+               document.getElementById("errorCancelSub").textContent = data.error;
+            }
+         })
+         .catch(error => console.error("Error: ", error));
+   })
 }
 
 // convert (standard) unix timestamp to readable date

@@ -725,6 +725,10 @@ body {
    text-decoration: none;
 }
 
+.note .noteDisplay .noteBadges i {
+   color: var(--main-color);
+}
+
 .note .noteDisplay:hover {
    text-decoration: underline;
 }
@@ -755,6 +759,11 @@ body {
 
 .noteBadges i {
    color: var(--main-color);
+   margin-left: 5px;
+}
+
+.noteBadges i.fa-solid.fa-circle-check {
+   margin-left: 0px;
 }
 
 .note .likeBtn {
@@ -2889,4 +2898,9 @@ footer .footerBottom {
    #subscribe li {
       margin-left: 15px;
    }
+}
+
+/* make contributor badge the main color */
+.fa-solid.fa-handshake-angle.fa-sm {
+   color: var(--main-color);
 }
