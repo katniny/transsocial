@@ -1253,7 +1253,7 @@ function sanitizeAndLinkify(text) {
 //             // Create elements for user info
 //             const userImage = document.createElement("img");
 //             userImage.classList.add("notePfp");
-//             userImage.src = `https://firebasestorage.googleapis.com/v0/b/chat-transsocial-test.appspot.com/o/images/pfp/${uid}/${userData.pfp}?alt=media`;
+//             userImage.src = `https://firebasestorage.googleapis.com/v0/b/chat-transsocial-test.appspot.com/o/images%2Fpfp%2F${uid}%2F${userData.pfp}?alt=media`;
 
 //             const displayNameElement = document.createElement("a");
 //             displayNameElement.textContent = userData.display;
@@ -1729,7 +1729,7 @@ if (pathName === "/home" || pathName === "/home.html" || pathName === "/u" || pa
             userPfp.classList.add("notePfp");
             firebase.database().ref("users/" + noteContent.whoSentIt).once("value", (snapshot) => {
                const fetchedUser = snapshot.val();
-               userPfp.src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images/pfp/${noteContent.whoSentIt}/${fetchedUser.pfp}?alt=media`;
+               userPfp.src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${noteContent.whoSentIt}%2F${fetchedUser.pfp}?alt=media`;
                userPfp.setAttribute("draggable", "false");
                userPfp.setAttribute("loading", "lazy");
             });
@@ -1867,7 +1867,7 @@ if (pathName === "/home" || pathName === "/home.html" || pathName === "/u" || pa
                      const quotePfp = document.createElement("img");
                      quotePfp.classList.add("quotePfp");
                      quotePfp.setAttribute("draggable", "false");
-                     quotePfp.src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images/pfp/${quoteData.whoSentIt}/${quoteUser.pfp}?alt=media`;
+                     quotePfp.src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${quoteData.whoSentIt}%2F${quoteUser.pfp}?alt=media`;
 
                      const quoteContent = document.createElement("div");
                      quoteContent.classList.add("quoteContent");
@@ -2310,7 +2310,7 @@ function createNotePopup() {
          firebase.database().ref(`users/${noteData.whoSentIt}`).once("value", (snapshot) => {
             const userData = snapshot.val();
 
-            document.getElementById("notePopupQuotePfp").src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images/pfp/${noteData.whoSentIt}/${userData.pfp}?alt=media`;
+            document.getElementById("notePopupQuotePfp").src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${noteData.whoSentIt}%2F${userData.pfp}?alt=media`;
             document.getElementById("notePopupQuoteDisplay").textContent = userData.display;
             document.getElementById("notePopupQuoteUsername").textContent = `@${userData.username}`;
             document.getElementById("notePopupQuoteText").textContent = noteData.text;
@@ -2380,7 +2380,7 @@ if (pathName !== "/auth/login.html" && pathName !== "/auth/register.html" && pat
    database.ref("users/G6GaJr8vPpeVdvenAntjOFYlbwr2").once("value", (snapshot) => {
       const data = snapshot.val();
       if (data !== null) {
-         document.getElementById(`katninyPfp`).src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images/pfp/G6GaJr8vPpeVdvenAntjOFYlbwr2/${data.pfp}?alt=media`;
+         document.getElementById(`katninyPfp`).src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2FG6GaJr8vPpeVdvenAntjOFYlbwr2%2F${data.pfp}?alt=media`;
          document.getElementById(`katninyDisplay`).innerHTML = data.display + ` <i class="fa-solid fa-circle-check" style="color: var(--main-color);"></i> <i class="fa-solid fa-heart" style="color: var(--main-color);"></i>`;
          document.getElementById(`followBtn-1`).href = `/u?id=${data.username}`;
          document.getElementById(`katninyUser-pronouns`).textContent = `@${data.username}`;
@@ -2390,7 +2390,7 @@ if (pathName !== "/auth/login.html" && pathName !== "/auth/register.html" && pat
    database.ref("users/80vDnNb0rJbSjCvbiTF9EtvqtXw1").once("value", (snapshot) => {
       const data = snapshot.val();
       if (data !== null) {
-         document.getElementById(`transsocialPfp`).src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images/pfp/80vDnNb0rJbSjCvbiTF9EtvqtXw1/${data.pfp}?alt=media`;
+         document.getElementById(`transsocialPfp`).src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}//o/images%2Fpfp%2F80vDnNb0rJbSjCvbiTF9EtvqtXw1%2F${data.pfp}?alt=media`;
          document.getElementById(`transsocialDisplay`).innerHTML = data.display + ` <i class="fa-solid fa-circle-check" style="color: var(--main-color);"></i>`;
          document.getElementById(`followBtn-2`).href = `/u?id=${data.username}`;
          document.getElementById(`transsocialUser-pronouns`).textContent = `@${data.username}`;
@@ -2400,7 +2400,7 @@ if (pathName !== "/auth/login.html" && pathName !== "/auth/register.html" && pat
    database.ref("users/4luqDI8627asR5EV8hOqb0YrRQF3").once("value", (snapshot) => {
       const data = snapshot.val();
       if (data !== null) {
-         document.getElementById(`katninystudiosPfp`).src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images/pfp/4luqDI8627asR5EV8hOqb0YrRQF3/${data.pfp}?alt=media`;
+         document.getElementById(`katninystudiosPfp`).src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F4luqDI8627asR5EV8hOqb0YrRQF3%2F${data.pfp}?alt=media`;
          document.getElementById(`katninystudiosDisplay`).innerHTML = data.display + ` <i class="fa-solid fa-circle-check" style="color: var(--main-color);"></i>`;
          document.getElementById(`followBtn-3`).href = `/u?id=${data.username}`;
          document.getElementById(`katninystudiosUser-pronouns`).textContent = `@${data.username}`;
@@ -2424,7 +2424,7 @@ if (pathName === "/u.html" || pathName === "/u") {
             profileData = snapshot.val();
             document.title = `${profileData.display} (@${profileData.username}) | TransSocial`;
             document.getElementById(`melissa`).style.display = "block";
-            document.getElementById(`userImage-profile`).src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images/pfp/${profileExists.user}/${profileData.pfp}?alt=media`;
+            document.getElementById(`userImage-profile`).src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${profileExists.user}%2F${profileData.pfp}?alt=media`;
             document.getElementById(`display-profile`).textContent = profileData.display;
             const verifiedBadge = document.createElement("span");
             if (profileData.isVerified) {
@@ -2735,7 +2735,7 @@ if (pathName === "/u.html" || pathName === "/u") {
                   userPfp.classList.add("notePfp");
                   firebase.database().ref("users/" + noteContent.whoSentIt).once("value", snapshot => {
                      const fetchedUser = snapshot.val();
-                     userPfp.src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images/pfp/${noteContent.whoSentIt}/${fetchedUser.pfp}?alt=media`;
+                     userPfp.src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${noteContent.whoSentIt}%2F${fetchedUser.pfp}?alt=media`;
                      userPfp.setAttribute("draggable", "false");
                      userPfp.setAttribute("loading", "lazy");
                   });
@@ -2876,7 +2876,7 @@ if (pathName === "/u.html" || pathName === "/u") {
                            const quotePfp = document.createElement("img");
                            quotePfp.classList.add("quotePfp");
                            quotePfp.setAttribute("draggable", "false");
-                           quotePfp.src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images/pfp/${quoteData.whoSentIt}/${quoteUser.pfp}?alt=media`;
+                           quotePfp.src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${quoteData.whoSentIt}%2F${quoteUser.pfp}?alt=media`;
 
                            const quoteContent = document.createElement("div");
                            quoteContent.classList.add("quoteContent");
@@ -3395,7 +3395,7 @@ if (pathName === "/note.html" || pathName === "/note") {
                firebase.database().ref(`users/${quoteData.whoSentIt}`).once("value", (snapshot) => {
                   const quoteUser = snapshot.val();
 
-                  document.getElementById("noteQuotePfp").src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images/pfp/${quoteData.whoSentIt}/${quoteUser.pfp}?alt=media`;
+                  document.getElementById("noteQuotePfp").src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${quoteData.whoSentIt}%2F${quoteUser.pfp}?alt=media`;
                   document.getElementById("noteQuoteDisplay").textContent = quoteUser.display;
                   document.getElementById("noteQuoteUsername").textContent = `@${quoteUser.username}`;
                   document.getElementById("noteQuoteText").innerHTML = sanitizeAndLinkify(quoteData.text);
@@ -3434,7 +3434,7 @@ if (pathName === "/note.html" || pathName === "/note") {
             const profileData = snapshot.val();
             document.title = `"${noteData.text}" / @${profileData.username} on TransSocial`;
             document.getElementById(`melissa`).style.display = "block";
-            document.getElementById(`userImage-profile`).src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images/pfp/${noteData.whoSentIt}/${profileData.pfp}?alt=media`;
+            document.getElementById(`userImage-profile`).src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${noteData.whoSentIt}%2F${profileData.pfp}?alt=media`;
             document.getElementById(`userImage-profile`).setAttribute("onclick", `window.location.href="/u?id=${profileData.username}"`);
             document.getElementById(`display-profile`).textContent = profileData.display;
             document.getElementById(`display-profile`).setAttribute("onclick", `window.location.href="/u?id=${profileData.username}"`);
@@ -3936,7 +3936,7 @@ if (pathName === "/settings" || pathName === "/settings.html") {
 
             // Set user profile picture
             if (userData.pfp !== undefined) {
-               document.getElementById("profilePicture_settings").src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images/pfp/${user.uid}/${userData.pfp}?alt=media`;
+               document.getElementById("profilePicture_settings").src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${user.uid}%2F${userData.pfp}?alt=media`;
             }
 
             // Display name
@@ -4865,7 +4865,7 @@ if (pathName === "/notifications" || pathName === "/notifications.html") {
                      firebase.database().ref(`users/${notification.who}`).on("value", (snapshot) => {
                         const user = snapshot.val();
 
-                        newNotificationDiv.innerHTML = `<img class="notificationPfp" draggable=false src="https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images/pfp/${notification.who}/${user.pfp}?alt=media" /> @${user.username} followed you!`;
+                        newNotificationDiv.innerHTML = `<img class="notificationPfp" draggable=false src="https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${notification.who}%2F${user.pfp}?alt=media" /> @${user.username} followed you!`;
                         newNotificationDiv.setAttribute("onclick", `window.location.href="/u?id=${user.username}"`);
                      })
                   } else if (notification.type === "Reply") {
@@ -4874,7 +4874,7 @@ if (pathName === "/notifications" || pathName === "/notifications.html") {
                      firebase.database().ref(`users/${notification.who}`).on("value", (snapshot) => {
                         const user = snapshot.val();
 
-                        newNotificationDiv.innerHTML = `<img class="notificationPfp" draggable=false src="https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images/pfp/${notification.who}/${user.pfp}?alt=media" /> @${user.username} replied to your note!`;
+                        newNotificationDiv.innerHTML = `<img class="notificationPfp" draggable=false src="https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${notification.who}%2F${user.pfp}?alt=media" /> @${user.username} replied to your note!`;
                      })
                   } else if (notification.type === "Love") {
                      newNotificationDiv.setAttribute("onclick", `window.location.href="/note?id=${notification.postId}"`);
@@ -4882,7 +4882,7 @@ if (pathName === "/notifications" || pathName === "/notifications.html") {
                      firebase.database().ref(`users/${notification.who}`).on("value", (snapshot) => {
                         const user = snapshot.val();
 
-                        newNotificationDiv.innerHTML = `<img class="notificationPfp" draggable=false src="https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images/pfp/${notification.who}/${user.pfp}?alt=media" /> @${user.username} loved your note!`;
+                        newNotificationDiv.innerHTML = `<img class="notificationPfp" draggable=false src="https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${notification.who}%2F${user.pfp}?alt=media" /> @${user.username} loved your note!`;
                      })
                   } else if (notification.type === "Renote") {
                      newNotificationDiv.setAttribute("onclick", `window.location.href="/note?id=${notification.postId}"`);
@@ -4890,7 +4890,7 @@ if (pathName === "/notifications" || pathName === "/notifications.html") {
                      firebase.database().ref(`users/${notification.who}`).on("value", (snapshot) => {
                         const user = snapshot.val();
 
-                        newNotificationDiv.innerHTML = `<img class="notificationPfp" draggable=false src="https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images/pfp/${notification.who}/${user.pfp}?alt=media" /> @${user.username} renoted your note!`;
+                        newNotificationDiv.innerHTML = `<img class="notificationPfp" draggable=false src="https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${notification.who}%2F${user.pfp}?alt=media" /> @${user.username} renoted your note!`;
                      })
                   } else if (notification.type === "Mention") {
                      newNotificationDiv.setAttribute("onclick", `window.location.href="/note?id=${notification.postId}"`);
@@ -4898,7 +4898,7 @@ if (pathName === "/notifications" || pathName === "/notifications.html") {
                      firebase.database().ref(`users/${notification.who}`).on("value", (snapshot) => {
                         const user = snapshot.val();
 
-                        newNotificationDiv.innerHTML = `<img class="notificationPfp" draggable=false src="https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images/pfp/${notification.who}/${user.pfp}?alt=media" /> @${user.username} mentioned you!`;
+                        newNotificationDiv.innerHTML = `<img class="notificationPfp" draggable=false src="https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${notification.who}%2F${user.pfp}?alt=media" /> @${user.username} mentioned you!`;
                      })
                   } else {
                      // Handle other notification types...
@@ -5312,7 +5312,7 @@ if (pathName === "/messages") {
                            const otherPerson = snapshot.val();
 
                            // Get pfp
-                           otherPersonPfp.src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images/pfp/${dmData.user2}/${otherPerson.pfp}?alt=media`;
+                           otherPersonPfp.src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${dmData.user2}%2F${otherPerson.pfp}?alt=media`;
                            otherPersonPfp.setAttribute("draggable", "false");
                            otherPersonPfp.classList.add("pfp");
                            dmDiv.appendChild(otherPersonPfp);
@@ -5343,7 +5343,7 @@ if (pathName === "/messages") {
                            const otherPerson = snapshot.val();
 
                            // Get pfp
-                           otherPersonPfp.src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images/pfp/${dmData.user1}/${otherPerson.pfp}?alt=media`;
+                           otherPersonPfp.src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${dmData.user1}%2F${otherPerson.pfp}?alt=media`;
                            otherPersonPfp.setAttribute("draggable", "false");
                            otherPersonPfp.classList.add("pfp");
                            dmDiv.appendChild(otherPersonPfp);
@@ -5397,7 +5397,7 @@ if (pathName === "/messages") {
 
                      // Get user pfp
                      const userId_pfp = document.createElement("img");
-                     userId_pfp.src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images/pfp/${userId}/${data.pfp}?alt=media`;
+                     userId_pfp.src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${userId}%2F${data.pfp}?alt=media`;
                      userId_pfp.classList.add("selectUser-pfp");
                      userId_pfp.setAttribute("draggable", "false");
                      profileHolder.appendChild(userId_pfp);
@@ -5602,7 +5602,7 @@ firebase.auth().onAuthStateChanged((user) => {
          const data = snapshot.val();
 
          if (document.getElementById("userPfp-header")) {
-            document.getElementById("userPfp-header").src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images/pfp/${user.uid}/${data.pfp}?alt=media`;
+            document.getElementById("userPfp-header").src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${user.uid}%2F${data.pfp}?alt=media`;
          }
       })
    } else {
@@ -6929,7 +6929,7 @@ if (pathName === "/search") {
 
                      const pfp = document.createElement("img");
                      pfp.classList.add("notePfp");
-                     pfp.src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images/pfp/${uid}/${userData.pfp}?alt=media`
+                     pfp.src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${uid}%2F${userData.pfp}?alt=media`
                      pfp.setAttribute("draggable", "false");
                      pfp.setAttribute("loading", "lazy");
                      
@@ -7126,7 +7126,7 @@ if (pathName === "/search") {
                   userPfp.classList.add("notePfp");
                   firebase.database().ref("users/" + noteContent.whoSentIt).once("value", (snapshot) => {
                      const fetchedUser = snapshot.val();
-                     userPfp.src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images/pfp/${noteContent.whoSentIt}/${fetchedUser.pfp}?alt=media`;
+                     userPfp.src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${noteContent.whoSentIt}%2F${fetchedUser.pfp}?alt=media`;
                      userPfp.setAttribute("draggable", "false");
                      userPfp.setAttribute("loading", "lazy");
                   });
@@ -7264,7 +7264,7 @@ if (pathName === "/search") {
                            const quotePfp = document.createElement("img");
                            quotePfp.classList.add("quotePfp");
                            quotePfp.setAttribute("draggable", "false");
-                           quotePfp.src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images/pfp/${quoteData.whoSentIt}/${quoteUser.pfp}?alt=media`;
+                           quotePfp.src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${quoteData.whoSentIt}%2F${quoteUser.pfp}?alt=media`;
 
                            const quoteContent = document.createElement("div");
                            quoteContent.classList.add("quoteContent");
