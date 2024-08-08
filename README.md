@@ -34,6 +34,7 @@ MEASUREMENT_ID="REPLACE"
 Then replace all "REPLACE" values with your own.
 - Start the project\
 Open the project somehow. I use <a href="https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer">Live Server by Ritwick Dey</a> but you can use anything that works for you.\
+(For a more in-depth tutorial, see our <a href="https://github.com/katniny/transsocial/wiki/How-to-Setup-TransSocial-&-Firebase">GitHub Wiki tutorial</a>).
 
 <br />
 
