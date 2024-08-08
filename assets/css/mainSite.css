@@ -1729,6 +1729,13 @@ button.disabled {
    opacity: 0.5;
 }
 
+.dangerButton {
+   border: 1px solid var(--error-text);
+}
+.dangerButton:hover {
+   background: var(--error-text);
+}
+
 input {
    background: transparent;
    font-size: 18px;

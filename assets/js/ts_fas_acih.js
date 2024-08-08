@@ -4306,25 +4306,66 @@ if (pathName === "/settings" || pathName === "/settings.html") {
       }
    }
 
-   // small utility functions to help wipe data
-   // function isReplyTo(possibleReply, repliedToId) {
-   //    // if (possibleReply.id === repliedToId) throw new Error("Same Note");
-   //    // if (!possibleReply.replyingTo) throw new Error("Note isn't a reply");
-   //    if (possibleReply.replyingTo === repliedToId) return true;
-   //    return false; // no else needed because we return early
-   // }
-   //
-   // function deleteNoteReally(note) {
-   //    const noteId = note.id;
-   //    const senderId = note.whoSentIt;
-   //
-   //    if (note.image) {
-   //       firebase.storage().ref(`images/notes/${noteId}`).delete();
-   //    }
-   //
-   //    firebase.database().ref(`users/${senderId}/posts/${noteId}`).remove();
-   //    firebase.database().ref(`notes/${noteId}`).remove();
-   // }
+   // delete notes (properly)
+   // you should not call this function by itself, call deleteNoteWithReplies instead
+   function deleteNoteReally(noteId) {
+      const noteRef = firebase.database().ref(`notes/${noteId}`);
+      let note = null;
+      noteRef.once('value', (note1) => note = note1.val());
+      const senderId = note.whoSentIt;
+
+      if (note.image)
+         firebase.storage().ref(`images/notes/${noteId}`).delete();
+
+      noteRef.child(`whoRenoted`).get().then((whoRenoted) => {
+         whoRenoted.forEach((userId) => {
+            firebase.database().ref(`users/${userId.key}/posts/${noteId}`).remove();
+         })
+      })
+
+      firebase.database().ref(`users/${senderId}/posts/${noteId}`).remove();
+
+      noteRef.remove();
+   }
+   function deleteNoteWithReplies(noteId) {
+      // TODO: delete quotes too
+      firebase.database().ref(`notes`).get().then((notes) => {
+         notes.forEach((note) => {
+            if (note.val().replyingTo === noteId) deleteNoteReally(note.key);
+         })
+      })
+      deleteNoteReally(noteId);
+   }
+   function deleteNotesPerUser(userId) {
+      // FIXME: something isn't working here and no notes get deleted
+      firebase.database().ref(`users/${userId}/posts`).get().then((notes) => {
+         notes.forEach((note) => {
+            firebase.database().ref(`notes/${note.key}`).get().then((val) => {
+               if (val.val().whoSentIt === userId) deleteNoteWithReplies(note.key);
+            })
+         })
+      })
+   }
+
+   // delete themes
+   function deleteTheme(themeId) {
+      // uninstalling themes is currently untested but should work
+      firebase.database().ref(`users`).get().then((users) => {
+         users.forEach((user) => {
+            if (user.child(`installedThemes/${themeId}`).exists())
+               user.child(`installedThemes/${themeId}`).remove();
+         })
+      })
+      firebase.database().ref(`themes/${themeId}`).remove();
+   }
+   function deleteThemesPerUser(userId) {
+      firebase.database().ref(`themes`).get().then((themes) => {
+         themes.forEach((theme) => {
+            if (theme.val().creator === userId)
+               deleteTheme(theme.key);
+         })
+      })
+   }
 
    // delete account
    function deleteAccount() {
@@ -4332,35 +4373,62 @@ if (pathName === "/settings" || pathName === "/settings.html") {
       const uid = user.uid;
       const userDbRef = firebase.database().ref(`users/${uid}`);
 
+      function log(logMessage, isError = false) {
+         const logElement = document.getElementById("deleteAccountLog");
+         console.log((isError ? "Error: " : "") + logMessage);
+         logElement.textcontent = logMessage;
+         if (isError) logElement.style.color = "var(--error-text)";
+      }
+
       const email = user.email;
-      const password = document.getElementById("deleteAccountPassword").content;
+      const password = document.getElementById("deleteAccountPassword").value;
+      if (!password) {
+         log("No password provided", true);
+         return;
+      }
       const credential = firebase.auth.EmailAuthProvider.credential(email, password);
 
-      user.reauthenticateWithCredential(credential).then(() => {
+      const yesPleaseDeleteMyAccount = document.getElementById("yesPleaseDeleteMyAccount").value;
+      if (yesPleaseDeleteMyAccount !== "Yes, please delete my account") {
+         log("Phrase \"Yes, please delete my account\" not entered", true);
+         return;
+      }
 
-         // delete notes
-         // firebase.database().ref(`notes`).once("value", (snapshot) => {
-         //    const notes = snapshot.val();
-         //    let notesToDelete = [];
-         //    
-         //    notesToDelete.forEach((note) => deleteNoteReally(note.id));
-         // });
+      log("Authenticating...")
+      user.reauthenticateWithCredential(credential).catch((err) => { 
+         log(err.message, true);
+         return;
+      });
 
-         firebase.storage().ref(`images/pfp/${uid}`).delete();
+      log("Starting data deletion, please do not close the tab");
 
+      // TODO: remove interactions
 
-         userDbRef.once("value", (snapshot) => {
-            const data = snapshot.val();
-            const username = data.username;
-            firebase.storage().ref(`taken-usernames/${username}`).delete();
-         });
+      log("Deleting themes, please do not close the tab");
+      deleteThemesPerUser(uid);
 
-         userDbRef.remove();
+      log("Deleting notes, please do not close the tab");
+      deleteNotesPerUser(uid);
 
+      userDbRef.once('value', (val) => {
+         const userData = val.val()
 
-         user.delete();
+         log("Deleting profile picture, please do not close the tab");
+         // cant just delete the whole images/pfp/uid prefix because firebase storage is a fuck, but this is good enough
+         firebase.storage().ref(`images/pfp/${uid}/${userData.pfp}`).delete();
 
-      }).catch((error) => console.log(error));
+         log("Freeing username, please do not close the tab");
+         firebase.database().ref(`taken-usernames/${userData.username}`).remove();
+      })
+
+      log("Deleting user data, please do not close the tab");
+      userDbRef.remove();
+
+      // FIXME: this currently doesn't happen for whatever reason
+      log("Deleting authentication, please do not close the tab");
+      user.delete();
+
+      window.location.reload();
    }
 
    // theme selection
