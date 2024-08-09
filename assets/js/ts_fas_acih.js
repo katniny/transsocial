@@ -1545,6 +1545,34 @@ let lastVisibleNoteId = null;
 let loadedNotesId = [];
 
 if (pathName === "/home" || pathName === "/home.html" || pathName === "/u" || pathName === "/u.html" || pathName === "/note" || pathName === "/note.html" || pathName === "/favorites") {
+   let userAutoplayPreference = null;
+
+   // function to fetch and cache user's autoplay pref
+   function fetchAutoplayPreference() {
+      return new Promise((resolve, reject) => {
+         firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+               firebase.database().ref(`users/${user.uid}/autoplayVideos`).once("value", (snapshot) => {
+                  const evenExists = snapshot.exists();
+                  const pref = snapshot.val();
+
+                  if (evenExists === true) {
+                     userAutoplayPreference = (pref === "true"); // this sets it to their preference
+                  } else {
+                     userAutoplayPreference = true;
+                  }
+                  resolve(userAutoplayPreference);
+               }).catch(reject);
+            } else {
+               userAutoplayPreference = true;
+               resolve(userAutoplayPreference);
+            }
+         });
+      });
+   }
+   
+   fetchAutoplayPreference(); // call on start
+
    // Reload page
    function loadNotesFromButton() {
       window.location.reload();
@@ -1557,6 +1585,23 @@ if (pathName === "/home" || pathName === "/home.html" || pathName === "/u" || pa
       noteDiv.setAttribute("id", `${noteContent.id}`);
       return noteDiv;
    }
+
+   // observer to only show images/videos/etc. when about to be visible for performance
+   const mediaObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+         if (entry.isIntersecting) {
+            entry.target.style.visibility = "visible";
+            entry.target.style.opacity = "1";
+         } else {
+            entry.target.style.visibility = "hidden";
+            entry.target.style.opacity = "0";
+         }
+      });
+   }, {
+      root: null,
+      rootMargin: "0px",
+      threshold: 0.1
+   });
 
    // retrieve data from the "notes" node
    notesRef.once('value')
@@ -1734,6 +1779,7 @@ if (pathName === "/home" || pathName === "/home.html" || pathName === "/u" || pa
                userPfp.setAttribute("loading", "lazy");
             });
             noteDiv.appendChild(userPfp);
+            mediaObserver.observe(userPfp); // observe pfp
 
             // Create the user's display name
             // Also check for badges (verified, mod, Enchanted, etc.)
@@ -1800,14 +1846,12 @@ if (pathName === "/home" || pathName === "/home.html" || pathName === "/u" || pa
             noteDiv.appendChild(text);
 
             // If image has image/video, render a video/image
-            if (noteContent.image === undefined) {
-               // No need to run anything
-            } else {
+            if (noteContent.image !== undefined) {
                let imageFileName = noteContent.image;
                let imageExtension = imageFileName.split(".").pop();
                const url = imageExtension;
                const cleanUrl = url.split('?')[0];
-
+            
                if (cleanUrl === "mp4") {
                   const video = document.createElement("video");
                   video.src = noteContent.image;
@@ -1816,30 +1860,16 @@ if (pathName === "/home" || pathName === "/home.html" || pathName === "/u" || pa
                   video.muted = true;
                   video.loop = true;
                   video.setAttribute("loading", "lazy");
-                  firebase.auth().onAuthStateChanged((user) => {
-                     if (user) {
-                        firebase.database().ref(`users/${user.uid}/autoplayVideos`).once("value", (snapshot) => {
-                           const evenExists = snapshot.exists();
-                           const pref = snapshot.val();
-
-                           if (evenExists === true) {
-                              if (pref === "true") {
-                                 video.autoplay = true;
-                              } else if (pref === false) {
-                                 video.autoplay = false;
-                              } else {
-                                 video.autoplay = true;
-                              }
-                           } else {
-                              video.autoplay = true;
-                           }
-                        })
-                     } else {
-                        video.autoplay = true;
-                     }
-                  })
+                  video.style.visibility = "hidden"; // Start hidden
+                  video.style.opacity = "0";
+            
+                  video.autoplay = userAutoplayPreference;
+            
                   video.setAttribute("alt", `${noteContent.alt}`);
                   noteDiv.appendChild(video);
+            
+                  // observe image
+                  mediaObserver.observe(video);
                } else {
                   const image = document.createElement("img");
                   image.src = noteContent.image;
@@ -1847,7 +1877,13 @@ if (pathName === "/home" || pathName === "/home.html" || pathName === "/u" || pa
                   image.classList.add("uploadedImg");
                   image.setAttribute("alt", `${noteContent.alt}`);
                   image.setAttribute("loading", "lazy");
+                  image.style.visibility = "hidden"; // Start hidden
+                  image.style.opacity = "0";
+            
                   noteDiv.appendChild(image);
+            
+                  // observe image
+                  mediaObserver.observe(image);
                }
             }
 
