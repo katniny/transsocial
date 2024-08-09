@@ -343,7 +343,7 @@ body {
    padding: 8px 12px;
    font-size: 16.5px;
    background: var(--button-background);
-   border-radius: 12px; 
+   border-radius: 5000px; 
    border: 1px solid var(--sidebar-button-border);
    cursor: pointer;
    text-align: left;
