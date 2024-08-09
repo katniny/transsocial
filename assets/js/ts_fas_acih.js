@@ -26,7 +26,7 @@ const pathName = pageURL.pathname;
 let isOnDesktopApp = null;
 
 // TransSocial Version
-let transsocialVersion = "v2024.8.6";
+let transsocialVersion = "v2024.8.8";
 let transsocialReleaseVersion = "indev";
 
 const notices = document.getElementsByClassName("version-notice");
@@ -5613,16 +5613,10 @@ firebase.auth().onAuthStateChanged((user) => {
 })
 
 // account manager (header) 
-function accountManager() {
-   if (document.getElementById("accountManager").style.display === "none") {
-      document.getElementById("accountManager").style.display = "block";
-      document.getElementById("greetingManager").textContent = `Hello, ${document.getElementById("displayName-sidebar").textContent}!`;
-   }
-}
-
 document.body.addEventListener('click', function (event) {
    if (document.getElementById("accountManager").contains(event.target) || document.getElementById("userPfp-header").contains(event.target)) {
       document.getElementById("accountManager").style.display = "block";
+      document.getElementById("greetingManager").textContent = `Hello, ${document.getElementById("displayName-sidebar").textContent}!`;
    } else {
       document.getElementById("accountManager").style.display = "none";
    }
@@ -7652,3 +7646,12 @@ function convertUnixTimestampToDate(unixTimestamp) {
 
    return `${month}/${day}/${year}`;
 }
+
+// more button in sidebar
+document.body.addEventListener('click', function (event) {
+   if (document.getElementById("showMoreContent").contains(event.target) || document.getElementById("moreContent").contains(event.target)) {
+      document.getElementById("moreContent").style.display = "block";
+   } else {
+      document.getElementById("moreContent").style.display = "none";
+   }
+});
