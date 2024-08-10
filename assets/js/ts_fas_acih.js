@@ -2313,7 +2313,7 @@ function hideSidebarButtons() {
          profile.style.display = "none";
          notifications.style.display = "none";
          messages.style.display = "none";
-         // enchanted.style.display = "none";
+         enchanted.style.display = "none";
          settings.style.display = "none";
          createNote.style.display = "none";
       }
@@ -3308,7 +3308,7 @@ function uploadImage() {
 
          let file = event.target.files[0];
          if (file) {
-            let MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024;
+            let MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024;
 
             firebase.auth().onAuthStateChanged((user) => {
                if (user) {
@@ -3316,15 +3316,15 @@ function uploadImage() {
                      const hi = snapshot.val();
 
                      if (hi.isSubscribed === true) {
-                        // if subscribed, make their limit 15MB as promised
-                        MAX_FILE_SIZE_BYTES = 15 * 1024 * 1024;
+                        // if subscribed, make their limit 35MB as promised
+                        MAX_FILE_SIZE_BYTES = 35 * 1024 * 1024;
                      }
 
                      if (file.size > MAX_FILE_SIZE_BYTES) {
-                        if (MAX_FILE_SIZE_BYTES === 15 * 1024 * 1024) {
-                           document.getElementById("uploadingImage").textContent = "File size is over the file size limit (15MB).";
+                        if (MAX_FILE_SIZE_BYTES === 35 * 1024 * 1024) {
+                           document.getElementById("uploadingImage").textContent = "File size is over the file size limit (35MB).";
                         } else {
-                           document.getElementById("uploadingImage").textContent = "File size is over the file size limit (5MB). You can increase the file size limit with a Katniny+ subscription.";
+                           document.getElementById("uploadingImage").textContent = "File size is over the file size limit (10MB). You can increase the file size limit with a Katniny+ subscription.";
                         }
                         document.getElementById("uploadingImage").style.display = "block";
                         document.getElementById("uploadingImage").style.color = "var(--error-text)";
@@ -3884,6 +3884,30 @@ async function publishNote() {
 
 // Settings Page
 if (pathName === "/settings" || pathName === "/settings.html") {
+   // see if the browser url is trying to open a tab
+   const url = new URL(window.location.href);
+   const tabParm = url.searchParams.get("tab");
+
+   if (tabParm) {
+      switch (tabParm) {
+         case "profile":
+            profileTab();
+            break;
+         case "account":
+            accountTab();
+            break;
+         case "personalization":
+            personalizationTab();
+            break;
+         case "subscription":
+            subscriptionTab();
+            break;
+         case "environment":
+            environmentTab();
+            break;
+      }
+   }
+
    // Swap tabs
    function profileTab() {
       // Set active tab & set others inactive

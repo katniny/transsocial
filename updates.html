@@ -70,7 +70,7 @@
          <a href="/notifications" id="notificationsSidebar"><button><i class="fa-solid fa-bell"></i> Notifications</button></a> <a href="/notifications"><p id="notificationsCount">0</p></a>
          <a href="/search"><button><i class="fa-solid fa-magnifying-glass"></i> Explore</button></a>
          <a href="/messages" id="messagesSidebar"><button><i class="fa-solid fa-envelope"></i> Messages (0)</button></a>
-         <!--<a href="/help" id="enchantedSidebar"><button><i class="fa-solid fa-wand-sparkles"></i> Get Enchanted</button></a>-->
+         <a href="/settings?tab=subscription" id="enchantedSidebar"><button><i class="fa-solid fa-heart"></i> Get Katniny+</button></a>
          <a href="/updates"><button class="active"><i class="fa-solid fa-wrench"></i> Updates</button></a>
          <a href="/u" id="linkToAcc"><button><i class="fa-solid fa-user"></i> Your Profile</button></a>
          <a href="javascript:void(0);"><button id="showMoreContent"><i class="fa-solid fa-ellipsis"></i> More</button></a>
@@ -146,6 +146,9 @@
                            <h3 style="color: var(--text-semi-transparent);">Released: August 9, 2024</h3>
                               <li>Images/videos in notes will no longer render when off-screen, increasing performance</li>
                               <li>Autoplay preference is now called only once, fixing freezes when loading TransSocial</li>
+                              <li>Increased file size limits to 10MB for standard users, and 35MB for paid users</li>
+                              <li>Added subscription button in sidebar (hope you don't mind!)</li>
+                              <li>Adding a ?tab= param to /settings (e.g. "/settings?tab=account") will now take you to the corresponding tab</li>
                         </div>
                         
                         <br />
