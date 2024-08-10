@@ -7625,6 +7625,8 @@ const checkSubscription = () => {
                      document.getElementById("fetchingSubscriptionStatus").style.display = "none";
                   }
 
+                  document.getElementById("enchantedSidebar").style.display = "none";
+
                   isSubscribed = true;
                   firebase.database().ref(`users/${user.uid}`).update({
                      isSubscribed : true
@@ -7656,6 +7658,8 @@ const checkSubscription = () => {
                      document.getElementById("subMemberSince").textContent = `You've been subscribed since ${convertUnixTimestampToDate(data.current_period_start)}`;
                      document.getElementById("subRenewalDay").textContent = `Your subscription gets renewed on ${convertUnixTimestampToDate(data.current_period_end)} (unless you canceled your subscription)`;
                   }
+
+                  document.getElementById("enchantedSidebar").style.display = "none";
 
                   isSubscribed = true;
                   firebase.database().ref(`users/${user.uid}`).update({

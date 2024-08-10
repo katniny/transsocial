@@ -446,6 +446,24 @@
             <button onclick="window.location.reload()">Okay</button>
         </dialog>
 
+        <dialog id="accountWarning">
+            <h2>Account Warning</h2>
+            <p>Your behavior on TransSocial has been in violation of our <a href="/policies/terms" style="color: var(--main-color);">Terms of Service</a>, therefore has received a warning. Repeat offenses can result in account suspension or other account related punishments.</p>
+
+            <br />
+
+            <p style="color: var(--text-semi-transparent);">Reason: <span id="warningReason"></span></p>
+
+            <br />
+            <p>Please abide by TransSocial's <a href="/policies/guidelines" style="color: var(--main-color);">Community Guidelines</a> so TransSocial remains a safe place for everyone.</p>
+            <p>You can continue using TransSocial after agreeing to our Terms of Service.</p>
+
+            <input type="checkbox" id="warningAgreeToTerms" style="width: 15px;"> I agree
+            <p style="color: var(--error-text); display: none;" id="warningAcknowledge">Please agree to the Terms before continuing.</p>
+            <br />
+            <button onclick="acknowledgeWarning()">Continue using TransSocial</button>
+        </dialog>
+
         <dialog id="userActions-dialog">
             <h2 id="interactingWithWho"></h2>
             <p id="interactingWithWho_desc">Would you like to block this user or report them?</p>

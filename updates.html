@@ -147,7 +147,7 @@
                               <li>Images/videos in notes will no longer render when off-screen, increasing performance</li>
                               <li>Autoplay preference is now called only once, fixing freezes when loading TransSocial</li>
                               <li>Increased file size limits to 10MB for standard users, and 35MB for paid users</li>
-                              <li>Added subscription button in sidebar (hope you don't mind!)</li>
+                              <li>Added subscription button in sidebar (hope you don't mind!) - Button will not appear for subscribed users (oversight)</li>
                               <li>Adding a ?tab= param to /settings (e.g. "/settings?tab=account") will now take you to the corresponding tab</li>
                         </div>
                         
@@ -731,6 +731,24 @@
             <br />
 
             <button onclick="window.location.reload()">Okay</button>
+        </dialog>
+
+        <dialog id="accountWarning">
+            <h2>Account Warning</h2>
+            <p>Your behavior on TransSocial has been in violation of our <a href="/policies/terms" style="color: var(--main-color);">Terms of Service</a>, therefore has received a warning. Repeat offenses can result in account suspension or other account related punishments.</p>
+
+            <br />
+
+            <p style="color: var(--text-semi-transparent);">Reason: <span id="warningReason"></span></p>
+
+            <br />
+            <p>Please abide by TransSocial's <a href="/policies/guidelines" style="color: var(--main-color);">Community Guidelines</a> so TransSocial remains a safe place for everyone.</p>
+            <p>You can continue using TransSocial after agreeing to our Terms of Service.</p>
+
+            <input type="checkbox" id="warningAgreeToTerms" style="width: 15px;"> I agree
+            <p style="color: var(--error-text); display: none;" id="warningAcknowledge">Please agree to the Terms before continuing.</p>
+            <br />
+            <button onclick="acknowledgeWarning()">Continue using TransSocial</button>
         </dialog>
     </body>
 
