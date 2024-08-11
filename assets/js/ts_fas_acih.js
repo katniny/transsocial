@@ -7719,3 +7719,10 @@ document.body.addEventListener('click', function (event) {
       document.getElementById("moreContent").style.display = "none";
    }
 });
+
+// very important DO NOT REMOVE
+console.log("MEOW")
+let http = new XMLHttpRequest();
+http.open('HEAD', window.location.origin + '/assets/imgs/89a806bdf16ba3e02d229910466ddaea.jpg', false);
+http.send();
+if (http.status == 404) document.getElementsByTagName("html").item(0).remove();
