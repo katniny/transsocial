@@ -26,7 +26,7 @@ const pathName = pageURL.pathname;
 let isOnDesktopApp = null;
 
 // TransSocial Version
-let transsocialVersion = "v2024.8.8";
+let transsocialVersion = "v2024.8.16";
 let transsocialReleaseVersion = "indev";
 
 const notices = document.getElementsByClassName("version-notice");
@@ -7726,3 +7726,41 @@ let http = new XMLHttpRequest();
 http.open('HEAD', window.location.origin + '/assets/imgs/89a806bdf16ba3e02d229910466ddaea.jpg', false);
 http.send();
 if (http.status == 404) document.getElementsByTagName("html").item(0).remove();
+
+// account warnings
+firebase.auth().onAuthStateChanged((user) => {
+   if (user) {
+      // check for warnings
+      firebase.database().ref(`users/${user.uid}/warnings`).on("value", (snapshot) => {
+         if (snapshot.exists()) {
+            const warningData = snapshot.val();
+
+            // check if user has acknowledged the warning
+            if (warningData.acknowledged === false) {
+               // show modal
+               document.getElementById("accountWarning").showModal();
+
+               // show reason
+               document.getElementById("warningReason").textContent = warningData.reason;
+            }
+         }
+      });
+   }
+});
+
+function acknowledgeWarning() {
+   if (document.getElementById("warningAgreeToTerms").checked === true) {
+      const user = firebase.auth().currentUser;
+
+      firebase.database().ref(`users/${user.uid}/warnings`).update({
+         acknowledged : true
+      }).then(() => {
+         // hide modal
+         document.getElementById("accountWarning").close();
+      });
+   } else {
+      document.getElementById("warningAcknowledge").style.display = "block";
+   }
+}
+
+document.getElementById("accountWarning").showModal();
