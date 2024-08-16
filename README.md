@@ -46,6 +46,6 @@ TransSocial uses the <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/
 ## Thank you to everyone that's contributed to TransSocial
 (This list can also be found at https://transs.social/contributors)
 * katniny (The main developer of TransSocial)
-* BackHDLP (<a href="https://github.com/katniny/transsocial/commits?author=BackHDLP">See her commits</a>)
+* miku4k (<a href="https://github.com/katniny/transsocial/commits?author=miku4k">See her commits</a>)
 * Mok Swagger (Helped test TransSocial before an update released)
 * cryssyboo_ (Created the pride logo)
