@@ -1761,8 +1761,9 @@ input:focus {
 
 /* Notification Center */
 .notification {
+   display: flex;
+   align-items: center;
    padding: 15px;
-   padding-bottom: 20px;
    cursor: pointer;
    border: 1px solid var(--main-color);
    margin-bottom: 10px;
@@ -1772,14 +1773,20 @@ input:focus {
 
 .notification:hover {
    background: var(--reply-hovered-background);
+   transform: translateY(-3px);
 }
 
 .notification .notificationPfp {
-   width: 25px;
-   height: 25px;
+   width: 35px;
+   height: 35px;
    border-radius: 50%;
-   transform: translateY(6px);
-   margin-right: 3px;
+   margin-right: 10px;
+   border: 2px solid var(--main-color);
+   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.notification i {
+   margin-right: 10px;
 }
 
 /* Experiments */
