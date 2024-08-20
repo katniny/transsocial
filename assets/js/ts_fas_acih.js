@@ -3,7 +3,7 @@
 const firebaseConfig = {
    apiKey: "REPLACE",
    authDomain: "REPLACE",
-   databaseURL: "REPLACE",
+   databaseURL: "REPPLACE",
    projectId: "REPLACE",
    storageBucket: "REPLACE",
    messagingSenderId: "REPLACE",
@@ -3751,17 +3751,18 @@ async function publishNote() {
 
          const noteContent = document.getElementById("noteContent-textarea").value;
 
-         if (isTextareaEmpty(noteContent)) {
-            document.getElementById("noteError").textContent = "You can't create notes without text! Try adding some content!";
+         const imageUploadInput = document.getElementById("imageUploadInput");
+         const file = imageUploadInput.files[0];
+
+         if (isTextareaEmpty(noteContent) && !file) {
+            document.getElementById("noteError").textContent = "You can't create notes without content! Try adding an image, text or both!";
+            document.getElementById("coverCreateANote").style.display = "none";
             return;
          }
 
          const renoteData = {
             isRenote: false,
          }
-
-         const imageUploadInput = document.getElementById("imageUploadInput");
-         const file = imageUploadInput.files[0];
 
          const postData = {
             text: noteContent,
@@ -3875,6 +3876,7 @@ async function publishNote() {
             }, 3000);
          } catch (error) {
             document.getElementById("noteError").textContent = "Error publishing note: " + error.message;
+            document.getElementById("coverCreateANote").style.display = "none";
          }
       } else {
          loginPrompt();
@@ -7495,9 +7497,9 @@ document.getElementById("searchBar").addEventListener("keydown", (event) => {
 });
 
 // init stripe & allow users to create a subscription
-// also yes. this key is safe to have out. this wasn't an accident lol. however, if you have your own, trade it out :p
+// also yes. this key is safe to have out. this wasn't an accident lol. (wait, you cant do that, it would violate our license)
 // "pk_live" = "published_key_live(environment)"
-const stripe = Stripe("REPLACE");
+const stripe = Stripe("pk_live_51Pkc30J2LcM1skRbKkfR1gcdbky4xCquhxca1TGOC30SfJmWfYuoACaMyeK2EJXRWRzfSv8i6uU8dVz4epMoKeRI00l2gmgIUU");
 const elements = stripe.elements();
 
 if (document.getElementById("subscription-form")) {
