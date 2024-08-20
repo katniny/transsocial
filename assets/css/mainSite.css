@@ -2951,3 +2951,12 @@ footer .footerBottom {
 .fa-solid.fa-handshake-angle.fa-sm {
    color: var(--main-color);
 }
+
+/* danger button */
+.danger {
+   border: 1px solid var(--error-text);
+}
+
+.danger:hover {
+   background: var(--error-text);
+}

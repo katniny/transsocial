@@ -216,6 +216,12 @@
                         <!--<option value="Lolcat">Lolcat</option>-->
                     </select> <i class="fa-solid fa-caret-down"></i>
 
+                    <br />
+                    <br />
+
+                    <p>Data & Privacy</p>
+                    <button onclick="seePersonalData()">See or Download My Data</button>
+
                     <!--<br />
                     <br />
 
@@ -847,6 +853,36 @@
 
             <button onclick="changeEmail()">Apply</button> <button onclick="document.getElementById('editEmailThisTime').close(); document.getElementById('newEmail').value = '';">Nevermind</button>
         </dialog>
+
+      <dialog id="seeData">
+         <h2>Sensitive Action</h2>
+         <p>To see your account information, please confirm your identity.</p>
+         <input type="password" id="password_reauth_data" placeholder="Enter your password" />
+         <p style="font-size: 14.5px; color: var(--error-text); display: none;" id="errorWithReauthenticating_email"></p>
+
+         <br />
+         <br />
+
+         <button onclick="seeData_reauth()" id="verifyEmail_verification">Verify</button> <button onclick='document.getElementById("editEmail").close()' id="cancelEmailReauthentication">Nevermind</button>
+      </dialog>
+
+      <dialog id="data">
+         <h2>Your Account Data</h2>
+         <p>We know it looks like a lot, but note that most of these are to provide TransSocial to you. You can download this data as a JSON file. (On smaller screens, when you click "Show", please note that it'll show up on the right, so please scroll to the right to see the shown data)</p>
+         <button onclick="downloadData()" class="downloadData">Download my Data</button> <button onclick="document.getElementById('data').close()">Close</button>
+
+         <br />
+         <br />
+
+         <p id="dataDisplay">
+            <i class="fa-solid fa-spinner fa-spin-pulse"></i> Fetching data...
+         </p>
+
+         <br />
+         <br />
+
+         <button onclick="downloadData()" id="downloadData">Download my Data</button> <button onclick="document.getElementById('data').close()">Close</button>
+      </dialog>
 
         <dialog id="editPfp">
             <h2>Edit Profile Picture</h2>

@@ -3,7 +3,7 @@
 const firebaseConfig = {
    apiKey: "REPLACE",
    authDomain: "REPLACE",
-   databaseURL: "REPPLACE",
+   databaseURL: "REPLACE",
    projectId: "REPLACE",
    storageBucket: "REPLACE",
    messagingSenderId: "REPLACE",
@@ -7763,4 +7763,116 @@ function acknowledgeWarning() {
    } else {
       document.getElementById("warningAcknowledge").style.display = "block";
    }
+}
+
+// allow users to see/download their data (to be GDPR compliant & transparent)
+function seePersonalData() {
+   document.getElementById("seeData").showModal();
+}
+
+function seeData_reauth() {
+   firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+         firebase.database().ref(`users/${user.uid}`).once("value", (snapshot) => {
+            const stuff = snapshot.val();
+            const currentUser = firebase.auth().currentUser; // renamed to avoid conflict
+            const email = stuff.email;
+            const passwordInput = document.getElementById("password_reauth_data");
+
+            if (!passwordInput) {
+               console.error('Element with id "password_reauth_data" not found. This is a developer issue!');
+               return;
+            }
+
+            const password = passwordInput.value;
+
+            if (!password) {
+               document.getElementById("errorWithReauthenticating_email").textContent = "Password cannot be empty.";
+               document.getElementById("errorWithReauthenticating_email").style.display = "block";
+               return;
+            }
+
+            const credential = firebase.auth.EmailAuthProvider.credential(email, password);
+
+            currentUser.reauthenticateWithCredential(credential)
+               .then(() => {
+                  // show/close appropriate modals
+                  document.getElementById("seeData").close();
+                  document.getElementById("data").showModal();
+
+                  // throw the entirety of the user's user data into a text blob
+                  // this just makes it easier for everyone so we dont have to constantly update this everytime we add more stuff
+                  firebase.auth().onAuthStateChanged((user) => {
+                     if (user) {
+                        firebase.database().ref(`users/${user.uid}`).once("value", (snapshot) => {
+                           const data = snapshot.val();
+                           const tableHTML = objectToTable(data);
+                           document.getElementById("dataDisplay").innerHTML = tableHTML;
+                        });
+                     }
+                  });
+               })
+               .catch((error) => {
+                  document.getElementById("errorWithReauthenticating_email").textContent = `Failed to reauthenticate: ${error.message}`;
+                  document.getElementById("errorWithReauthenticating_email").style.display = "block";
+               });
+         });
+      }
+   });
+}
+
+function objectToTable(data, level = 0) {
+   let html = '<table border="1" style="border-collapse: collapse; width: 100%;">';
+   
+   for (const [key, value] of Object.entries(data)) {
+      html += `<tr><td style="padding: 8px; border: 1px solid #ddd;"><strong>${key}:</strong></td>`;
+       
+      if (typeof value === 'object' && value !== null) {
+         html += `<td style="padding: 8px; border: 1px solid #ddd;">${level > 0 ? '' : '<button onclick="toggleVisibility(this)">Show</button>'}<div style="display: ${level > 0 ? 'block' : 'none'};">${objectToTable(value, level + 1)}</div></td></tr>`;
+      } else {
+         html += `<td style="padding: 8px; border: 1px solid #ddd;">${value}</td></tr>`;
+      }
+   }
+   
+   html += '</table>';
+   return html;
+}
+
+function toggleVisibility(button) {
+   const td = button.parentElement; // <td> element
+   const div = td.querySelector('div'); // Find the <div> inside the <td>
+   if (div) {
+      if (div.style.display === 'none') {
+         div.style.display = 'block';
+         button.textContent = 'Hide';
+      } else {
+         div.style.display = 'none';
+         button.textContent = 'Show';
+      }
+   } else {
+      console.error("The div element was not found.");
+   }
+}
+
+function downloadData() {
+   firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+         firebase.database().ref(`users/${user.uid}`).once("value", (snapshot) => {
+            const data = snapshot.val();
+
+            const jsonData = JSON.stringify(data, null, 2); // format as pretty-printed json
+            const blob = new Blob([jsonData], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+
+            // create link and trigger download
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = `user_data_${data.username}.json`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url); // clean up
+         });
+      }
+   });
 }
