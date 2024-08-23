@@ -1,3 +1,6 @@
+// my lsp wont stfu about those
+// deno-lint-ignore-file no-inner-declarations no-unused-vars
+
 // katniny Firebase Configuration
 // before pushing to git, always make sure the firebase config doesn't expose yours
 const firebaseConfig = {
@@ -4307,64 +4310,114 @@ if (pathName === "/settings" || pathName === "/settings.html") {
    }
 
    // delete notes (properly)
-   // you should not call this function by itself, call deleteNoteWithReplies instead
+   // dont call this function by itself, call deleteNoteWithReplies instead
    function deleteNoteReally(noteId) {
       const noteRef = firebase.database().ref(`notes/${noteId}`);
-      let note = null;
-      noteRef.once('value', (note1) => note = note1.val());
-      const senderId = note.whoSentIt;
 
-      if (note.image)
-         firebase.storage().ref(`images/notes/${noteId}`).delete();
+      noteRef.once('value').then((noteSnapshot) => {
+         const note = noteSnapshot.val();
+         if (!note) {
+            console.error("Note not found");
+            return;
+         }
 
-      noteRef.child(`whoRenoted`).get().then((whoRenoted) => {
-         whoRenoted.forEach((userId) => {
-            firebase.database().ref(`users/${userId.key}/posts/${noteId}`).remove();
-         })
-      })
+         const senderId = note.whoSentIt;
 
-      firebase.database().ref(`users/${senderId}/posts/${noteId}`).remove();
+         // delete the image (if it exists)
+         if (note.image) {
+            firebase.storage().ref(`images/notes/${noteId}`).delete()
+               .catch((err) => {
+                  console.error("Error deleting image: ", err.message);
+               });
+         }
 
-      noteRef.remove();
+         // remove note ref from users who renoted it
+         noteRef.child(`whoRenoted`).get()
+            .then((snapshot) => {
+               snapshot.forEach((snapshot) => {
+                  const userId = snapshot.key;
+                  firebase.database().ref(`users/${userId}/posts/${noteId}`).remove()
+                     .catch((err) => {
+                        console.error("Error removing note from user's posts: ", err.message);
+                     });
+               });
+            })
+            .catch((err) => {
+               console.error("Error getting whoRenoted: ", err.message);
+            });
+
+         // remove note reference from sender
+         firebase.database().ref(`users/${senderId}/posts/${noteId}`).remove()
+            .catch((err) => {
+               console.error("Error removing note from sender's posts: ", err.message);
+            });
+
+         // remove the note itself
+         noteRef.remove()
+            .catch((err) => {
+               console.error("Error removing note: ", err.message);
+            });
+      }).catch((err) => {
+         console.error("Error fetching note data: ", err.message);
+      });
    }
    function deleteNoteWithReplies(noteId) {
-      // TODO: delete quotes too
-      firebase.database().ref(`notes`).get().then((notes) => {
-         notes.forEach((note) => {
-            if (note.val().replyingTo === noteId) deleteNoteReally(note.key);
+      firebase.database().ref(`notes`).get()
+         .then((notes) => {
+            notes.forEach((note) => {
+               if (note.val().replyingTo === noteId || 
+                  note.val().quoting === noteId) {
+                  deleteNoteWithReplies(note.key); // yeah sorry recursion
+               };
+            })
          })
-      })
+
       deleteNoteReally(noteId);
    }
    function deleteNotesPerUser(userId) {
-      // FIXME: something isn't working here and no notes get deleted
-      firebase.database().ref(`users/${userId}/posts`).get().then((notes) => {
-         notes.forEach((note) => {
-            firebase.database().ref(`notes/${note.key}`).get().then((val) => {
-               if (val.val().whoSentIt === userId) deleteNoteWithReplies(note.key);
-            })
-         })
+      firebase.auth().onAuthStateChanged((user) => {
+         firebase.database().ref(`users/${user.uid}/posts`).get().then((snapshot) => {
+            // check if snapshot exists and has data
+            if (snapshot.exists()) {
+               const notes = snapshot.val();
+
+               const deletePromises = Object.keys(notes).map((noteKey) => {
+                  return firebase.database().ref(`notes/${noteKey}`).get()
+                     .then((note) => {
+                        if (note.exists() && note.val().whoSentIt === userId) {
+                           return deleteNoteWithReplies(noteKey);
+                        };
+                     });
+               });
+               // wait for all delete promises to complete before continuing
+               return Promise.all(deletePromises);
+            }
+         });
       })
    }
 
    // delete themes
    function deleteTheme(themeId) {
       // uninstalling themes is currently untested but should work
-      firebase.database().ref(`users`).get().then((users) => {
-         users.forEach((user) => {
-            if (user.child(`installedThemes/${themeId}`).exists())
-               user.child(`installedThemes/${themeId}`).remove();
-         })
-      })
+      firebase.database().ref(`users`).get()
+         .then((users) => {
+            users.forEach((user) => {
+               if (user.child(`installedThemes/${themeId}`).exists()) {
+                  user.child(`installedThemes/${themeId}`).remove();
+               };
+            });
+         });
       firebase.database().ref(`themes/${themeId}`).remove();
    }
    function deleteThemesPerUser(userId) {
-      firebase.database().ref(`themes`).get().then((themes) => {
-         themes.forEach((theme) => {
-            if (theme.val().creator === userId)
-               deleteTheme(theme.key);
-         })
-      })
+      firebase.database().ref(`themes`).get()
+         .then((themes) => {
+            themes.forEach((theme) => {
+               if (theme.val().creator === userId) {
+                  deleteTheme(theme.key);
+               };
+            });
+         });
    }
 
    // delete account
@@ -4375,9 +4428,16 @@ if (pathName === "/settings" || pathName === "/settings.html") {
 
       function log(logMessage, isError = false) {
          const logElement = document.getElementById("deleteAccountLog");
-         console.log((isError ? "Error: " : "") + logMessage);
-         logElement.textcontent = logMessage;
-         if (isError) logElement.style.color = "var(--error-text)";
+         logElement.textContent = logMessage;
+         if (isError) {
+            logElement.style.color = "var(--error-text)";
+         };
+
+         if (isError) {
+            console.error(logMessage);
+         } else {
+            console.log(logMessage);
+         };
       }
 
       const email = user.email;
@@ -4394,41 +4454,75 @@ if (pathName === "/settings" || pathName === "/settings.html") {
          return;
       }
 
-      log("Authenticating...")
-      user.reauthenticateWithCredential(credential).catch((err) => { 
-         log(err.message, true);
-         return;
+      log("Authenticating...");
+      user.reauthenticateWithCredential(credential).then(() => {
+         log("Starting data deletion, please do not close the tab");
+
+         // get user data first
+         return userDbRef.once('value').then((val) => {
+            const userData = val.val();
+            if (!userData) {
+               throw new Error("User data not found");
+            }
+
+            // use Promise.all to wait for all async operations to complete
+            return Promise.all([
+               new Promise((resolve) => {
+                  log("Deleting themes, please do not close the tab");
+                  deleteThemesPerUser(uid);
+                  resolve(); // ensure deleteThemesPerUser is synchronous
+               }),
+               new Promise((resolve) => {
+                  log("Deleting notes, please do not close the tab");
+                  deleteNotesPerUser(uid);
+                  resolve(); // ensure deleteNotesPerUser is synchronous
+               }),
+               new Promise((resolve) => {
+                  log("Deleting profile picture, please do not close the tab");
+                  if (userData.pfp) {
+                     firebase.storage().ref(`images/pfp/${uid}/${userData.pfp}`).delete()
+                        .then(resolve)
+                        .catch((err) => {
+                           log("Error deleting profile picture: " + err.message, true);
+                           resolve(); // ensure it continues even when failed
+                        });
+                  } else {
+                     resolve(); // resolve immediately if no profile picture
+                  }
+               }),
+               new Promise((resolve) => {
+                  log("Freeing username, please do not close the tab");
+                  firebase.database().ref(`taken-usernames/${userData.username}`).remove()
+                     .then(resolve)
+                     .catch((err) => {
+                        log("Error freeing username: " + err.message, true);
+                        resolve(); // ensure it continues even when failed
+                     });
+               }),
+            ]).then(() => {
+               log("Deleting user data, please do not close the tab");
+               return userDbRef.remove()
+                  .catch((err) => {
+                     log("Error deleting user data: " + err.message, true);
+                  });
+            }).then(() => {
+               log("Deleting authentication, please do not close the tab");
+               return user.delete()
+                  .then(() => { 
+                     window.location.reload(); 
+                  })
+                  .catch((err) => {
+                     log("Error deleting authentication: " + err.message, true);
+                  });
+            }).catch((err) => {
+               log("Error in cleanup process: " + err.message, true);
+            });
+         }).catch((err) => {
+            log("Error retrieving user data: " + err.message, true);
+         });
+      }).catch((err) => {
+         log("Reauthentication failed: " + err.message, true);
       });
-
-      log("Starting data deletion, please do not close the tab");
-
-      // TODO: remove interactions
-
-      log("Deleting themes, please do not close the tab");
-      deleteThemesPerUser(uid);
-
-      log("Deleting notes, please do not close the tab");
-      deleteNotesPerUser(uid);
-
-      userDbRef.once('value', (val) => {
-         const userData = val.val()
-
-         log("Deleting profile picture, please do not close the tab");
-         // cant just delete the whole images/pfp/uid prefix because firebase storage is a fuck, but this is good enough
-         firebase.storage().ref(`images/pfp/${uid}/${userData.pfp}`).delete();
-
-         log("Freeing username, please do not close the tab");
-         firebase.database().ref(`taken-usernames/${userData.username}`).remove();
-      })
-
-      log("Deleting user data, please do not close the tab");
-      userDbRef.remove();
-
-      // FIXME: this currently doesn't happen for whatever reason
-      log("Deleting authentication, please do not close the tab");
-      user.delete();
-
-      window.location.reload();
    }
 
    // theme selection
