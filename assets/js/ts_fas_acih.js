@@ -4,14 +4,14 @@
 // katniny Firebase Configuration
 // before pushing to git, always make sure the firebase config doesn't expose yours
 const firebaseConfig = {
-   apiKey: "AIzaSyBQCCenYC79-jUfQY8QereD7vYvhGZ3qvg",
-   authDomain: "transsocial-miku.firebaseapp.com",
-   databaseURL: "https://transsocial-miku-default-rtdb.europe-west1.firebasedatabase.app",
-   projectId: "transsocial-miku",
-   storageBucket: "transsocial-miku.appspot.com",
-   messagingSenderId: "975969015952",
-   appId: "1:975969015952:web:52361dcf9c74fb9fe5a015",
-   measurementId: "G-P03HF9L87X"
+   apiKey: "REPLACE",
+   authDomain: "REPLACE",
+   databaseURL: "REPLACE",
+   projectId: "REPLACE",
+   storageBucket: "REPLACE",
+   messagingSenderId: "REPLACE",
+   appId: "REPLACE",
+   measurementId: "REPLACE"
 };
 
 // Initialize Firebase
