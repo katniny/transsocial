@@ -2362,7 +2362,6 @@ dialog .coverCreateANote {
 .quoteContainer {
    display: flex;
    align-items: flex-start;
-   height: 150px;
    width: 50%;
    border: 1px solid var(--main-color);
    margin-left: 10px;
@@ -2370,6 +2369,7 @@ dialog .coverCreateANote {
    margin-bottom: 5px;
    transition: all 0.1s linear;
    padding: 10px;
+   flex-direction: row;
 }
 
 .quoteContainer:hover {
@@ -2378,7 +2378,7 @@ dialog .coverCreateANote {
 
 @media (max-width: 596px) {
    .quoteContainer {
-      width: 93%;
+       width: 93%;
    }
 }
 
@@ -2392,6 +2392,7 @@ dialog .coverCreateANote {
 .quoteContent {
    display: flex;
    flex-direction: column;
+   flex: 1; 
 }
 
 .quoteHeader {
@@ -2417,7 +2418,7 @@ dialog .coverCreateANote {
    word-wrap: break-word;
    word-break: break-word;
    overflow: hidden;
-   transform: translateX(-50px);
+   transform: translateX(-45px);
 }
 
 .quoteText .emoji {
@@ -2966,4 +2967,41 @@ footer .footerBottom {
 
 .danger:hover {
    background: var(--error-text);
+}
+
+/* Contributors */
+/* because they deserve more than just plain text 😔 */
+.contributor {
+   display: flex;
+   align-items: center;
+   margin-bottom: 20px;
+   border: 1px solid var(--note-background);
+   padding: 15px;
+   border-radius: 15px;
+   transition: transform 0.2s ease;
+   cursor: pointer;
+}
+
+.contributor:hover {
+   transform: translateY(-3px);
+}
+
+.profilePic {
+   width: 50px;
+   height: 50px;
+   border-radius: 50%;
+   margin-right: 10px;
+}
+
+.contributorInfo {
+   display: flex;
+   flex-direction: column;
+}
+
+.contributor .badge {
+   background: var(--main-color-darker);
+   padding: 2px 8px;
+   border-radius: 12px;
+   font-size: 0.8em;
+   margin-left: 5px;
 }

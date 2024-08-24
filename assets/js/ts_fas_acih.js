@@ -30,12 +30,12 @@ let isOnDesktopApp = null;
 
 // TransSocial Version
 let transsocialVersion = "v2024.8.24";
-let transsocialReleaseVersion = "indev";
+let transsocialReleaseVersion = "pre-alpha";
 
 const notices = document.getElementsByClassName("version-notice");
 const loaderVersions = document.getElementsByClassName("loaderVersion");
 for (let notice of notices) {
-   notice.innerHTML = `TransSocial is currently in the InDev stage (version ${transsocialVersion}). A lot of features are missing or are in development and will be added with updates. <a href="/indev">Learn more</a>.`;
+   notice.innerHTML = `TransSocial is currently in the pre-alpha stage (version ${transsocialVersion}). A lot of features are missing or are in development and will be added with updates. <a href="/indev">Learn more</a>.`;
 }
 for (let loader of loaderVersions) {
    loader.innerHTML = `TransSocial ${transsocialVersion}_${transsocialReleaseVersion}`;
@@ -409,7 +409,7 @@ firebase.auth().onAuthStateChanged((user) => {
       firebase.database().ref(`users/${user.uid}`).on("value", (snapshot) => {
          const hasDoneIt = snapshot.val();
 
-         if (hasDoneIt.readnewUpdateLog === undefined || hasDoneIt.readnewUpdateLog === false) {
+         if (hasDoneIt.readprealphaUpdateLog === undefined || hasDoneIt.readprealphaUpdateLog === false) {
             if (document.getElementById("newestUpdates")) {
                document.getElementById("newestUpdates").showModal();
             }
@@ -431,7 +431,7 @@ function closeUploadLog() {
       firebase.auth().onAuthStateChanged((user) => {
          if (user) {
             firebase.database().ref(`users/${user.uid}`).update({
-               readnewUpdateLog: true,
+               readprealphaUpdateLog: true,
             })
          }
       })
@@ -4110,7 +4110,12 @@ if (pathName === "/settings" || pathName === "/settings.html") {
                   display: document.getElementById("displayName-text").value
                })
                   .then(() => {
-                     window.location.reload();
+                     document.getElementById("errorUsingDisplay").textContent = `Saved successfully! This change will apply across TransSocial.`;
+                     document.getElementById("errorUsingDisplay").style.display = "block";
+                     document.getElementById("errorUsingDisplay").style.color = `var(--success-color)`;
+                     document.getElementById("saveDisplay").innerHTML = `Save`;
+                     document.getElementById("saveDisplay").style.display = "none";
+                     document.getElementById("saveDisplay").classList.remove("disabled");
                   }).catch((error) => {
                      document.getElementById("errorUsingDisplay").textContent = `Error saving display name: ${error.message}`;
                      document.getElementById("errorUsingDisplay").style.display = "block";
@@ -4198,7 +4203,9 @@ if (pathName === "/settings" || pathName === "/settings.html") {
                   pronouns: document.getElementById("pronouns-text").value
                })
                   .then(() => {
-                     window.location.reload();
+                     document.getElementById("savePronouns").innerHTML = `Save`;
+                     document.getElementById("savePronouns").classList.remove("disabled");
+                     document.getElementById("savePronouns").style.display = "none";
                   })
             })
          }
@@ -4216,7 +4223,9 @@ if (pathName === "/settings" || pathName === "/settings.html") {
                bio: document.getElementById("bioText").value
             })
                .then(() => {
-                  window.location.reload();
+                  document.getElementById("saveBio").innerHTML = `<i class="fa-solid fa-spinner fa-spin-pulse"></i> Updating bio...`;
+                  document.getElementById("saveBio").classList.remove("disabled");
+                  document.getElementById("saveBio").style.display = `none`;
                })
          })
       }
