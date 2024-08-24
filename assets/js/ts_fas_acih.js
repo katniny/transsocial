@@ -1,3 +1,6 @@
+// my lsp wont stfu about those
+// deno-lint-ignore-file no-inner-declarations no-unused-vars
+
 // katniny Firebase Configuration
 // before pushing to git, always make sure the firebase config doesn't expose yours
 const firebaseConfig = {
@@ -26,7 +29,7 @@ const pathName = pageURL.pathname;
 let isOnDesktopApp = null;
 
 // TransSocial Version
-let transsocialVersion = "v2024.8.20";
+let transsocialVersion = "v2024.8.24";
 let transsocialReleaseVersion = "indev";
 
 const notices = document.getElementsByClassName("version-notice");
@@ -4306,6 +4309,222 @@ if (pathName === "/settings" || pathName === "/settings.html") {
       }
    }
 
+   // delete notes (properly)
+   // dont call this function by itself, call deleteNoteWithReplies instead
+   function deleteNoteReally(noteId) {
+      const noteRef = firebase.database().ref(`notes/${noteId}`);
+
+      noteRef.once('value').then((noteSnapshot) => {
+         const note = noteSnapshot.val();
+         if (!note) {
+            console.error("Note not found");
+            return;
+         }
+
+         const senderId = note.whoSentIt;
+
+         // delete the image (if it exists)
+         if (note.image) {
+            firebase.storage().ref(`images/notes/${noteId}`).delete()
+               .catch((err) => {
+                  console.error("Error deleting image: ", err.message);
+               });
+         }
+
+         // remove note ref from users who renoted it
+         noteRef.child(`whoRenoted`).get()
+            .then((snapshot) => {
+               snapshot.forEach((snapshot) => {
+                  const userId = snapshot.key;
+                  firebase.database().ref(`users/${userId}/posts/${noteId}`).remove()
+                     .catch((err) => {
+                        console.error("Error removing note from user's posts: ", err.message);
+                     });
+               });
+            })
+            .catch((err) => {
+               console.error("Error getting whoRenoted: ", err.message);
+            });
+
+         // remove note reference from sender
+         firebase.database().ref(`users/${senderId}/posts/${noteId}`).remove()
+            .catch((err) => {
+               console.error("Error removing note from sender's posts: ", err.message);
+            });
+
+         // remove the note itself
+         noteRef.remove()
+            .catch((err) => {
+               console.error("Error removing note: ", err.message);
+            });
+      }).catch((err) => {
+         console.error("Error fetching note data: ", err.message);
+      });
+   }
+   function deleteNoteWithReplies(noteId) {
+      firebase.database().ref(`notes`).get()
+         .then((notes) => {
+            notes.forEach((note) => {
+               if (note.val().replyingTo === noteId || 
+                  note.val().quoting === noteId) {
+                  deleteNoteWithReplies(note.key); // yeah sorry recursion
+               };
+            })
+         })
+
+      deleteNoteReally(noteId);
+   }
+   function deleteNotesPerUser(userId) {
+      firebase.auth().onAuthStateChanged((user) => {
+         firebase.database().ref(`users/${user.uid}/posts`).get().then((snapshot) => {
+            // check if snapshot exists and has data
+            if (snapshot.exists()) {
+               const notes = snapshot.val();
+
+               const deletePromises = Object.keys(notes).map((noteKey) => {
+                  return firebase.database().ref(`notes/${noteKey}`).get()
+                     .then((note) => {
+                        if (note.exists() && note.val().whoSentIt === userId) {
+                           return deleteNoteWithReplies(noteKey);
+                        };
+                     });
+               });
+               // wait for all delete promises to complete before continuing
+               return Promise.all(deletePromises);
+            }
+         });
+      })
+   }
+
+   // delete themes
+   function deleteTheme(themeId) {
+      // uninstalling themes is currently untested but should work
+      firebase.database().ref(`users`).get()
+         .then((users) => {
+            users.forEach((user) => {
+               if (user.child(`installedThemes/${themeId}`).exists()) {
+                  user.child(`installedThemes/${themeId}`).remove();
+               };
+            });
+         });
+      firebase.database().ref(`themes/${themeId}`).remove();
+   }
+   function deleteThemesPerUser(userId) {
+      firebase.database().ref(`themes`).get()
+         .then((themes) => {
+            themes.forEach((theme) => {
+               if (theme.val().creator === userId) {
+                  deleteTheme(theme.key);
+               };
+            });
+         });
+   }
+
+   // delete account
+   function deleteAccount() {
+      const user = firebase.auth().currentUser;
+      const uid = user.uid;
+      const userDbRef = firebase.database().ref(`users/${uid}`);
+
+      function log(logMessage, isError = false) {
+         const logElement = document.getElementById("deleteAccountLog");
+         logElement.textContent = logMessage;
+         if (isError) {
+            logElement.style.color = "var(--error-text)";
+         };
+
+         if (isError) {
+            console.error(logMessage);
+         } else {
+            console.log(logMessage);
+         };
+      }
+
+      const email = user.email;
+      const password = document.getElementById("deleteAccountPassword").value;
+      if (!password) {
+         log("No password provided", true);
+         return;
+      }
+      const credential = firebase.auth.EmailAuthProvider.credential(email, password);
+
+      const yesPleaseDeleteMyAccount = document.getElementById("yesPleaseDeleteMyAccount").value;
+      if (yesPleaseDeleteMyAccount !== "Yes, please delete my account") {
+         log("Phrase \"Yes, please delete my account\" not entered", true);
+         return;
+      }
+
+      log("Authenticating...");
+      user.reauthenticateWithCredential(credential).then(() => {
+         log("Starting data deletion, please do not close the tab");
+
+         // get user data first
+         return userDbRef.once('value').then((val) => {
+            const userData = val.val();
+            if (!userData) {
+               throw new Error("User data not found");
+            }
+
+            // use Promise.all to wait for all async operations to complete
+            return Promise.all([
+               new Promise((resolve) => {
+                  log("Deleting themes, please do not close the tab");
+                  deleteThemesPerUser(uid);
+                  resolve(); // ensure deleteThemesPerUser is synchronous
+               }),
+               new Promise((resolve) => {
+                  log("Deleting notes, please do not close the tab");
+                  deleteNotesPerUser(uid);
+                  resolve(); // ensure deleteNotesPerUser is synchronous
+               }),
+               new Promise((resolve) => {
+                  log("Deleting profile picture, please do not close the tab");
+                  if (userData.pfp) {
+                     firebase.storage().ref(`images/pfp/${uid}/${userData.pfp}`).delete()
+                        .then(resolve)
+                        .catch((err) => {
+                           log("Error deleting profile picture: " + err.message, true);
+                           resolve(); // ensure it continues even when failed
+                        });
+                  } else {
+                     resolve(); // resolve immediately if no profile picture
+                  }
+               }),
+               new Promise((resolve) => {
+                  log("Freeing username, please do not close the tab");
+                  firebase.database().ref(`taken-usernames/${userData.username}`).remove()
+                     .then(resolve)
+                     .catch((err) => {
+                        log("Error freeing username: " + err.message, true);
+                        resolve(); // ensure it continues even when failed
+                     });
+               }),
+            ]).then(() => {
+               log("Deleting user data, please do not close the tab");
+               return userDbRef.remove()
+                  .catch((err) => {
+                     log("Error deleting user data: " + err.message, true);
+                  });
+            }).then(() => {
+               log("Deleting authentication, please do not close the tab");
+               return user.delete()
+                  .then(() => { 
+                     window.location.reload(); 
+                  })
+                  .catch((err) => {
+                     log("Error deleting authentication: " + err.message, true);
+                  });
+            }).catch((err) => {
+               log("Error in cleanup process: " + err.message, true);
+            });
+         }).catch((err) => {
+            log("Error retrieving user data: " + err.message, true);
+         });
+      }).catch((err) => {
+         log("Reauthentication failed: " + err.message, true);
+      });
+   }
+
    // theme selection
    function selectTheme() {
       document.getElementById("themeSelect").showModal();
@@ -4922,10 +5141,14 @@ if (pathName === "/notifications" || pathName === "/notifications.html") {
                   const newNotificationDiv = document.createElement("div");
                   newNotificationDiv.classList.add("notification");
 
+                  const fakeUserData = {
+                     username: "Deleted User",
+                  };
+
                   // Customize notification content based on 'type'
                   if (notification.type === "Follow") {
                      firebase.database().ref(`users/${notification.who}`).on("value", (snapshot) => {
-                        const user = snapshot.val();
+                        const user = snapshot.exists() ? snapshot.val() : fakeUserData;
 
                         newNotificationDiv.innerHTML = `<i class="fa-solid fa-user-plus fa-lg" style="color: var(--main-color);"></i> <img class="notificationPfp" draggable=false src="https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${notification.who}%2F${user.pfp}?alt=media" /> @${user.username} followed you!`;
                         newNotificationDiv.setAttribute("onclick", `window.location.href="/u?id=${user.username}"`);
@@ -4934,7 +5157,7 @@ if (pathName === "/notifications" || pathName === "/notifications.html") {
                      newNotificationDiv.setAttribute("onclick", `window.location.href="/note?id=${notification.postId}"`);
 
                      firebase.database().ref(`users/${notification.who}`).on("value", (snapshot) => {
-                        const user = snapshot.val();
+                        const user = snapshot.exists() ? snapshot.val() : fakeUserData;
 
                         newNotificationDiv.innerHTML = `<i class="fa-solid fa-comment fa-lg" style="color: var(--main-color);"></i> <img class="notificationPfp" draggable=false src="https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${notification.who}%2F${user.pfp}?alt=media" /> @${user.username} replied to your note!`;
                      })
@@ -4942,7 +5165,7 @@ if (pathName === "/notifications" || pathName === "/notifications.html") {
                      newNotificationDiv.setAttribute("onclick", `window.location.href="/note?id=${notification.postId}"`);
 
                      firebase.database().ref(`users/${notification.who}`).on("value", (snapshot) => {
-                        const user = snapshot.val();
+                        const user = snapshot.exists() ? snapshot.val() : fakeUserData;
 
                         newNotificationDiv.innerHTML = `<i class="fa-solid fa-heart fa-lg" style="color: var(--like-color);"></i> <img class="notificationPfp" draggable=false src="https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${notification.who}%2F${user.pfp}?alt=media" /> @${user.username} loved your note!`;
                      })
@@ -4950,7 +5173,7 @@ if (pathName === "/notifications" || pathName === "/notifications.html") {
                      newNotificationDiv.setAttribute("onclick", `window.location.href="/note?id=${notification.postId}"`);
 
                      firebase.database().ref(`users/${notification.who}`).on("value", (snapshot) => {
-                        const user = snapshot.val();
+                        const user = snapshot.exists() ? snapshot.val() : fakeUserData;
 
                         newNotificationDiv.innerHTML = `<i class="fa-solid fa-retweet fa-lg" style="color: var(--renote-color);"></i> <img class="notificationPfp" draggable=false src="https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${notification.who}%2F${user.pfp}?alt=media" /> @${user.username} renoted your note!`;
                      })
@@ -4958,7 +5181,7 @@ if (pathName === "/notifications" || pathName === "/notifications.html") {
                      newNotificationDiv.setAttribute("onclick", `window.location.href="/note?id=${notification.postId}"`);
 
                      firebase.database().ref(`users/${notification.who}`).on("value", (snapshot) => {
-                        const user = snapshot.val();
+                        const user = snapshot.exists() ? snapshot.val() : fakeUserData;
 
                         newNotificationDiv.innerHTML = `<i class="fa-solid fa-at fa-lg" style="color: var(--main-color);"></i> <img class="notificationPfp" draggable=false src="https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${notification.who}%2F${user.pfp}?alt=media" /> @${user.username} mentioned you!`;
                      })

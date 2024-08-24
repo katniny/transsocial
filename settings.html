@@ -229,6 +229,12 @@
                     <p>Verification</p>
                     <button onclick="verificationRequest()">Get Verified</button>
                     -->
+
+                    <br />
+                    <br />
+
+                    <p style="color: var(--error-text)">Delete Account</p>
+                    <button onclick="document.getElementById('deleteAccountModal').showModal()" class="dangerButton">Delete Account</button>
                 </div>
 
                 <!-- Tab #3 (Personalization) -->
@@ -1148,6 +1154,31 @@
             <br />
 
             <button onclick="document.getElementById('verReqReceived').close();">Okay</button>
+        </dialog>
+
+        <dialog id="deleteAccountModal">
+            <h2>Are you sure you want to delete your account?</h2>
+            <p>
+                This will delete all user data, including all notes and settings. Deleting your account cannot be undone.
+                <br>
+                Your username will be immediately available for anyone to use.
+                <br>
+                <br>
+            </p>
+            <span>
+                Pleae enter your password to proceed:
+            </span>
+            <input type="password" id="deleteAccountPassword" placeholder="Password"/>
+            <br>
+            <br>
+            <span>
+                Pleae also enter the phrase "Yes, please delete my account"
+            </span>
+            <input type="text" id="yesPleaseDeleteMyAccount" name="yesPleaseDeleteMyAccount" placeholder="Yes, please delete my account"/>
+            <br>
+            <p id="deleteAccountLog"></p>
+            <button onclick="document.getElementById('deleteAccountModal').close()">Cancel</button>
+            <button onclick="deleteAccount()" class="dangerButton">Delete</button>
         </dialog>
     </body>
 
