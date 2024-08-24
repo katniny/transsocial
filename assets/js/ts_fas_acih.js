@@ -4,14 +4,14 @@
 // katniny Firebase Configuration
 // before pushing to git, always make sure the firebase config doesn't expose yours
 const firebaseConfig = {
-   apiKey: "REPLACE",
-   authDomain: "REPLACE",
-   databaseURL: "REPLACE",
-   projectId: "REPLACE",
-   storageBucket: "REPLACE",
-   messagingSenderId: "REPLACE",
-   appId: "REPLACE",
-   measurementId: "REPLACE"
+   apiKey: "AIzaSyBQCCenYC79-jUfQY8QereD7vYvhGZ3qvg",
+   authDomain: "transsocial-miku.firebaseapp.com",
+   databaseURL: "https://transsocial-miku-default-rtdb.europe-west1.firebasedatabase.app",
+   projectId: "transsocial-miku",
+   storageBucket: "transsocial-miku.appspot.com",
+   messagingSenderId: "975969015952",
+   appId: "1:975969015952:web:52361dcf9c74fb9fe5a015",
+   measurementId: "G-P03HF9L87X"
 };
 
 // Initialize Firebase
@@ -5141,10 +5141,14 @@ if (pathName === "/notifications" || pathName === "/notifications.html") {
                   const newNotificationDiv = document.createElement("div");
                   newNotificationDiv.classList.add("notification");
 
+                  const fakeUserData = {
+                     username: "Deleted User",
+                  };
+
                   // Customize notification content based on 'type'
                   if (notification.type === "Follow") {
                      firebase.database().ref(`users/${notification.who}`).on("value", (snapshot) => {
-                        const user = snapshot.val();
+                        const user = snapshot.exists() ? snapshot.val() : fakeUserData;
 
                         newNotificationDiv.innerHTML = `<i class="fa-solid fa-user-plus fa-lg" style="color: var(--main-color);"></i> <img class="notificationPfp" draggable=false src="https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${notification.who}%2F${user.pfp}?alt=media" /> @${user.username} followed you!`;
                         newNotificationDiv.setAttribute("onclick", `window.location.href="/u?id=${user.username}"`);
@@ -5153,7 +5157,7 @@ if (pathName === "/notifications" || pathName === "/notifications.html") {
                      newNotificationDiv.setAttribute("onclick", `window.location.href="/note?id=${notification.postId}"`);
 
                      firebase.database().ref(`users/${notification.who}`).on("value", (snapshot) => {
-                        const user = snapshot.val();
+                        const user = snapshot.exists() ? snapshot.val() : fakeUserData;
 
                         newNotificationDiv.innerHTML = `<i class="fa-solid fa-comment fa-lg" style="color: var(--main-color);"></i> <img class="notificationPfp" draggable=false src="https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${notification.who}%2F${user.pfp}?alt=media" /> @${user.username} replied to your note!`;
                      })
@@ -5161,7 +5165,7 @@ if (pathName === "/notifications" || pathName === "/notifications.html") {
                      newNotificationDiv.setAttribute("onclick", `window.location.href="/note?id=${notification.postId}"`);
 
                      firebase.database().ref(`users/${notification.who}`).on("value", (snapshot) => {
-                        const user = snapshot.val();
+                        const user = snapshot.exists() ? snapshot.val() : fakeUserData;
 
                         newNotificationDiv.innerHTML = `<i class="fa-solid fa-heart fa-lg" style="color: var(--like-color);"></i> <img class="notificationPfp" draggable=false src="https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${notification.who}%2F${user.pfp}?alt=media" /> @${user.username} loved your note!`;
                      })
@@ -5169,7 +5173,7 @@ if (pathName === "/notifications" || pathName === "/notifications.html") {
                      newNotificationDiv.setAttribute("onclick", `window.location.href="/note?id=${notification.postId}"`);
 
                      firebase.database().ref(`users/${notification.who}`).on("value", (snapshot) => {
-                        const user = snapshot.val();
+                        const user = snapshot.exists() ? snapshot.val() : fakeUserData;
 
                         newNotificationDiv.innerHTML = `<i class="fa-solid fa-retweet fa-lg" style="color: var(--renote-color);"></i> <img class="notificationPfp" draggable=false src="https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${notification.who}%2F${user.pfp}?alt=media" /> @${user.username} renoted your note!`;
                      })
@@ -5177,7 +5181,7 @@ if (pathName === "/notifications" || pathName === "/notifications.html") {
                      newNotificationDiv.setAttribute("onclick", `window.location.href="/note?id=${notification.postId}"`);
 
                      firebase.database().ref(`users/${notification.who}`).on("value", (snapshot) => {
-                        const user = snapshot.val();
+                        const user = snapshot.exists() ? snapshot.val() : fakeUserData;
 
                         newNotificationDiv.innerHTML = `<i class="fa-solid fa-at fa-lg" style="color: var(--main-color);"></i> <img class="notificationPfp" draggable=false src="https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${notification.who}%2F${user.pfp}?alt=media" /> @${user.username} mentioned you!`;
                      })
