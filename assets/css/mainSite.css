@@ -26,7 +26,7 @@
    --modal-bg: rgba(255, 134, 154, 0.5);
    --like-color: red;
    --renote-color: #84dd00;
-   --content-warning: rgba(29, 29, 29, 0.5);
+   --content-warning: #1d1d1d;
    --skeleton-start: #404040;
    --skeleton-middle: #303030;
    --skeleton-end: #252525;
@@ -907,7 +907,7 @@ body {
 
 .notes .note .contentWarning {
    background: var(--content-warning);
-   backdrop-filter: blur(20px);
+   /*backdrop-filter: blur(20px);*/
    border-radius: 10px;
    position: absolute;
    top: 0;

@@ -118,7 +118,7 @@ firebase.auth().onAuthStateChanged((user) => {
                 document.documentElement.style.setProperty('--modal-background', 'rgba(0, 0, 0, 0.7');
                 document.documentElement.style.setProperty('--like-color', '#dc3545');
                 document.documentElement.style.setProperty('--renote-color', '#28a745');
-                document.documentElement.style.setProperty('--content-warning', 'rgba(255, 255, 255, 0.5');
+                document.documentElement.style.setProperty('--content-warning', 'rgb(255, 255, 255');
                 document.documentElement.style.setProperty('--skeleton-start', '#e0e0e0');
                 document.documentElement.style.setProperty('--skeleton-middle', '#d5d5d5');
                 document.documentElement.style.setProperty('--skeleton-end', '#cccccc');
@@ -149,7 +149,7 @@ firebase.auth().onAuthStateChanged((user) => {
                 document.documentElement.style.setProperty('--modal-background', 'rgba(0, 0, 0, 0.7)');
                 document.documentElement.style.setProperty('--like-color', '#dc3545');
                 document.documentElement.style.setProperty('--renote-color', '#28a745');
-                document.documentElement.style.setProperty('--content-warning', 'rgba(255, 255, 255, 0.5)');
+                document.documentElement.style.setProperty('--content-warning', 'rgb(255, 255, 255)');
                 document.documentElement.style.setProperty('--skeleton-start', '#e0e0e0');
                 document.documentElement.style.setProperty('--skeleton-middle', '#d5d5d5');
                 document.documentElement.style.setProperty('--skeleton-end', '#cccccc');
@@ -182,7 +182,7 @@ firebase.auth().onAuthStateChanged((user) => {
                 document.documentElement.style.setProperty('--modal-background', 'rgba(0, 0, 0, 0.7)');
                 document.documentElement.style.setProperty('--like-color', '#dc3545');
                 document.documentElement.style.setProperty('--renote-color', '#28a745');
-                document.documentElement.style.setProperty('--content-warning', 'rgba(29, 29, 29, 0.5)');
+                document.documentElement.style.setProperty('--content-warning', 'rgb(29, 29, 29)');
                 document.documentElement.style.setProperty('--skeleton-start', '#404040');
                 document.documentElement.style.setProperty('--skeleton-middle', '#303030');
                 document.documentElement.style.setProperty('--skeleton-end', '#252525');
@@ -215,7 +215,7 @@ firebase.auth().onAuthStateChanged((user) => {
                 document.documentElement.style.setProperty('--modal-background', '#222222');
                 document.documentElement.style.setProperty('--like-color', 'limegreen');
                 document.documentElement.style.setProperty('--renote-color', 'yellow');
-                document.documentElement.style.setProperty('--content-warning', 'rgba(0, 0, 0, 0.8)');
+                document.documentElement.style.setProperty('--content-warning', 'rgb(0, 0, 0)');
                 document.documentElement.style.setProperty('--skeleton-start', '#333333');
                 document.documentElement.style.setProperty('--skeleton-middle', '#444444');
                 document.documentElement.style.setProperty('--skeleton-end', '#555555');
@@ -248,7 +248,7 @@ firebase.auth().onAuthStateChanged((user) => {
                 document.documentElement.style.setProperty('--modal-background', '#ffb2a8');
                 document.documentElement.style.setProperty('--like-color', '#e86d6d');
                 document.documentElement.style.setProperty('--renote-color', '#b3e8b3');
-                document.documentElement.style.setProperty('--content-warning', 'rgba(255, 178, 168, 0.5)');
+                document.documentElement.style.setProperty('--content-warning', 'rgb(255, 178, 168)');
                 document.documentElement.style.setProperty('--skeleton-start', '#ffe0d2');
                 document.documentElement.style.setProperty('--skeleton-middle', '#ffd9cb');
                 document.documentElement.style.setProperty('--skeleton-end', '#ffb2a8');
@@ -281,7 +281,7 @@ firebase.auth().onAuthStateChanged((user) => {
                 document.documentElement.style.setProperty('--modal-background', '#2a2535');
                 document.documentElement.style.setProperty('--like-color', '#d362a4');
                 document.documentElement.style.setProperty('--renote-color', '#41d4a5');
-                document.documentElement.style.setProperty('--content-warning', 'rgba(34, 30, 43, 0.6)');
+                document.documentElement.style.setProperty('--content-warning', 'rgb(34, 30, 43)');
                 document.documentElement.style.setProperty('--skeleton-start', '#3d384a');
                 document.documentElement.style.setProperty('--skeleton-middle', '#332e3e');
                 document.documentElement.style.setProperty('--skeleton-end', '#282333');
@@ -314,7 +314,7 @@ firebase.auth().onAuthStateChanged((user) => {
                 document.documentElement.style.setProperty('--modal-background', '#1a1a1a');
                 document.documentElement.style.setProperty('--like-color', '#ff6378');
                 document.documentElement.style.setProperty('--renote-color', '#2ddbff');
-                document.documentElement.style.setProperty('--content-warning', 'rgba(23, 23, 23, 0.6)');
+                document.documentElement.style.setProperty('--content-warning', 'rgb(23, 23, 23)');
                 document.documentElement.style.setProperty('--skeleton-start', '#333333');
                 document.documentElement.style.setProperty('--skeleton-middle', '#282828');
                 document.documentElement.style.setProperty('--skeleton-end', '#202020');
