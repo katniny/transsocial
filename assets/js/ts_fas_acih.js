@@ -1985,6 +1985,10 @@ if (pathName === "/home" || pathName === "/home.html" || pathName === "/u" || pa
                noteDiv.appendChild(contentWarning);
             }
 
+
+            const buttonRow = document.createElement("div");
+            buttonRow.classList.add("buttonRow");
+
             // Add love button
             const loveBtn = document.createElement("p");
             loveBtn.classList.add("likeBtn");
@@ -2000,7 +2004,7 @@ if (pathName === "/home" || pathName === "/home.html" || pathName === "/u" || pa
                loveBtn.innerHTML = `<i class="fa-solid fa-heart"></i> 0`;
             }
             loveBtn.setAttribute("id", `like-${noteContent.id}`);
-            noteDiv.appendChild(loveBtn);
+            buttonRow.appendChild(loveBtn);
 
             // Add renote button
             const renoteBtn = document.createElement("p");
@@ -2017,7 +2021,7 @@ if (pathName === "/home" || pathName === "/home.html" || pathName === "/u" || pa
                renoteBtn.innerHTML = `<i class="fa-solid fa-retweet"></i> 0`;
             }
             renoteBtn.setAttribute("id", `renote-${noteContent.id}`);
-            noteDiv.appendChild(renoteBtn);
+            buttonRow.appendChild(renoteBtn);
 
             // Add reply button
             const replyBtn = document.createElement("p");
@@ -2032,14 +2036,14 @@ if (pathName === "/home" || pathName === "/home.html" || pathName === "/u" || pa
             } else {
                replyBtn.setAttribute("onclick", "replyToNote(this);");
             }
-            noteDiv.appendChild(replyBtn);
+            buttonRow.appendChild(replyBtn);
 
             // Add quote renote button
             const quoteRenote = document.createElement("p");
             quoteRenote.classList.add("quoteRenoteBtn");
             quoteRenote.innerHTML = `<i class="fa-solid fa-quote-left"></i>`;
             quoteRenote.setAttribute("onclick", `quoteRenote("${noteContent.id}")`);
-            noteDiv.appendChild(quoteRenote);
+            buttonRow.appendChild(quoteRenote);
 
             // Add favorite button
             const favorite = document.createElement("p");
@@ -2056,7 +2060,7 @@ if (pathName === "/home" || pathName === "/home.html" || pathName === "/u" || pa
                   });
                }
             });
-            noteDiv.appendChild(favorite);
+            buttonRow.appendChild(favorite);
 
             // If user created the note, allow them to edit/delete
             firebase.auth().onAuthStateChanged((user) => {
@@ -2065,10 +2069,12 @@ if (pathName === "/home" || pathName === "/home.html" || pathName === "/u" || pa
                      const more = document.createElement("p");
                      more.classList.add("more");
                      more.innerHTML = `<i class="fa-solid fa-pen-to-square"></i>`;
-                     noteDiv.appendChild(more);
+                     buttonRow.appendChild(more);
                   }
                }
             })
+
+            noteDiv.appendChild(buttonRow);
 
             // Render note
             // BUT check for certain things first (such as if user is suspended, if user is blocked, etc.)

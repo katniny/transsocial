@@ -658,7 +658,7 @@ body {
    max-width: 99.5%;
    border: 1px solid var(--note-seperator);
    padding-top: 10px;
-   padding-bottom: 30px;
+   padding-bottom: 1em;
    position: relative;
    background: var(--note-seperator);
    cursor: pointer;
@@ -792,11 +792,18 @@ body {
    margin-left: 0px;
 }
 
+.note .buttonRow {
+   display: flex;
+   justify-content: flex-start;
+   align-items: center;
+   gap: 1em;
+   margin-left: 1em;
+   margin-top: 1em;
+   font-size: large;
+}
+
 .note .likeBtn {
-   float: left;
    width: auto;
-   margin-left: 10px;
-   margin-top: 5px;
    cursor: pointer;
 }
 
@@ -819,10 +826,7 @@ body {
 }
 
 .note .renoteBtn {
-   float: left;
    width: auto;
-   margin-left: 10px;
-   margin-top: 5px;
    cursor: pointer;
 }
 
@@ -855,21 +859,13 @@ body {
 }
 
 .note .quoteRenoteBtn {
-   float: left;
    width: auto;
-   margin-left: 10px;
-   margin-top: 3px;
    cursor: pointer;
-   font-size: 19px;
 }
 
 .note .favoriteBtn {
-   float: left;
    width: auto;
-   margin-left: 10px;
-   margin-top: 6px;
    cursor: pointer;
-   font-size: 14px;
 }
 
 #favoriteButton {
@@ -890,18 +886,12 @@ body {
 }
 
 .note .replyBtn {
-   float: left;
    width: auto;
-   margin-left: 10px;
-   margin-top: 5px;
    cursor: pointer;
 }
 
 .note .more {
-   float: left;
    width: auto;
-   margin-left: 10px;
-   margin-top: 5px;
    cursor: pointer;
 }
 
