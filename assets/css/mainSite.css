@@ -802,17 +802,23 @@ body {
    font-size: large;
 }
 
+#buttonRow {
+   display: flex;
+   justify-content: flex-start;
+   align-items: center;
+   gap: 1em;
+   margin-left: 1em;
+   margin-top: 1em;
+   font-size: large;
+}
+
 .note .likeBtn {
    width: auto;
    cursor: pointer;
 }
 
 #likeButton {
-   float: left;
-   font-size: large;
    width: auto;
-   margin-left: 15px;
-   margin-top: 7px;
    cursor: pointer;
    max-width: 50px;
 }
@@ -831,31 +837,21 @@ body {
 }
 
 #renoteButton {
-   float: left;
-   font-size: large;
    width: auto;
-   margin-left: 55px;
    cursor: pointer;
    max-width: 50px;
-   margin-top: -22px;
 }
 
 #quoteRenoteButton {
-   float: left;
-   font-size: large;
    width: auto;
-   margin-left: 97px;
    cursor: pointer;
    max-width: 50px;
-   margin-top: -22px;
 }
 
 #favoriteButton {
-   float: left;
    width: auto;
    cursor: pointer;
    max-width: 50px;
-   transform: translate(-3px, 1px);
 }
 
 .note .quoteRenoteBtn {
@@ -869,12 +865,9 @@ body {
 }
 
 #favoriteButton {
-   float: left;
    width: auto;
-   margin-left: 125px;
    cursor: pointer;
    max-width: 50px;
-   margin-top: -22px;
 }
 
 #renoteButton.renoted .fa-solid.fa-retweet {
