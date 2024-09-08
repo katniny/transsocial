@@ -3003,3 +3003,13 @@ footer .footerBottom {
 .addToNote {
    transform: translateY(-25px);
 }
+
+/* default styling to a tags */
+a {
+   color: var(--main-color);
+}
+
+a:hover {
+   color: var(--main-color-darker);
+   text-decoration: none;
+}
