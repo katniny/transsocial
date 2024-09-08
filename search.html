@@ -256,34 +256,55 @@
 
                 <!-- Settings Tab -->
                 <div class="settingsStuff hidden" id="settingStuff">
-                    <i class="fa-solid fa-arrow-left fa-lg" style="float: left; margin-top: 10px;" onclick="swapNoteTab()"></i>
+            <i class="fa-solid fa-arrow-left fa-lg" style="float: left; margin-top: 10px;" onclick="swapNoteTab('note')"></i>
 
-                    <br />
+            <br />
 
-                    <h2 style="margin-top: 10px;">Add a content warning</h2> 
-                    <p style="font-size: 14px; color: var(--text-semi-transparent);">Add a content warning to this note by selecting a category. This helps people see only the content they want to on TransSocial.</p>
+            <h2 style="margin-top: 10px;">Add a content warning</h2> 
+            <p style="font-size: 14px; color: var(--text-semi-transparent);">Add a content warning to this note by selecting a category. This helps people see only the content they want to on TransSocial.</p>
 
-                    <!-- NSFW Checkbox -->
-                    <input type="checkbox" id="isNsfw" /> <span class="noteContainsNsfwContent">Note contains NSFW content.</span> 
-                    <p class="optionAlt">This may include nudity, intercourse, intense violence, etc.</p>
+            <!-- NSFW Checkbox -->
+            <input type="checkbox" id="isNsfw" /> <span class="noteContainsNsfwContent">Note contains NSFW content.</span> 
+            <p class="optionAlt">This may include nudity, intercourse, intense violence, etc.</p>
 
-                    <!-- Content Warning Checkbox -->
-                    <input type="checkbox" id="isSensitive" /> Note contains sensitive content.
-                    <p class="optionAlt">Select this if your note has potentionally triggering content.</p>
+            <!-- Content Warning Checkbox -->
+            <input type="checkbox" id="isSensitive" /> Note contains sensitive content.
+            <p class="optionAlt">Select this if your note has potentionally triggering content.</p>
 
-                    <!-- Political Checkbox -->
-                    <input type="checkbox" id="isPolitical" /> Note contains political content.
-                    <p class="optionAlt">Select this if your note has political content.</p>
+            <!-- Political Checkbox -->
+            <input type="checkbox" id="isPolitical" /> Note contains political content.
+            <p class="optionAlt">Select this if your note has political content.</p>
 
-                    <br />
-                </div>
+            <br />
+         </div>
+
+         <!-- music tab, lets gooooo -->
+         <div class="hidden" id="musicTab">
+            <i class="fa-solid fa-arrow-left fa-lg" style="float: left; margin-top: 10px;" onclick="swapNoteTab('note')"></i>
+         
+            <br />
+
+            <h2 style="margin-top: 10px;">Add music to your note</h2>
+            <p style="font-size: 14px; color: var(--text-semi-transparent);">Suggest music to people, or just make your note feel more lively!</p>
+
+            <input type="text" placeholder="Search for a song" id="songQuery" />
+            <button onclick="displayTracks(document.getElementById('songQuery').value)">Search</button>
+
+            <br />
+
+            <div id="spotifyPlayer">
+                  <p>Try searching for a song!</p>
+            </div>
+
+            <br />
+         </div>
 
                 <!-- Settings -->
                 <div class="settingsIcons-noteCreation">
-                    <div class="icons">
-                        <i class="fa-solid fa-flag fa-lg" onclick="swapNoteTab()"></i> <i class="fa-solid fa-image fa-lg" onclick="uploadImage()"><input type="file" id="imageUploadInput" accept="image/png, image/jpeg, image/webp, video/mp4, image/gif" style="display: none;"></i>
-                    </div>
-                </div>
+            <div class="icons">
+               <i class="fa-solid fa-flag fa-lg" onclick="swapNoteTab('note')"></i> <i class="fa-solid fa-image fa-lg" onclick="uploadImage()"><input type="file" id="imageUploadInput" accept="image/png, image/jpeg, image/webp, video/mp4, image/gif" style="display: none;"></i> <i class="fa-solid fa-music fa-lg" onclick="swapNoteTab('music')"></i>
+            </div>
+         </div>
             </div>
         </dialog>
 

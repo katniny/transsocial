@@ -49,6 +49,9 @@ function quoteRenote(id) {
    createNotePopup();
 }
 
+// music id
+let pickedMusic = null;
+
 // Read cookies
 if (localStorage.getItem("acceptedCookies") !== null) {
    if (pathName === "/home" || pathName === "/home.html") {
@@ -1890,6 +1893,19 @@ if (pathName === "/home" || pathName === "/home.html" || pathName === "/u" || pa
                }
             }
 
+            // if the note has a song, embed it into the note
+            if (noteContent.music) {
+               const embed = document.createElement("iframe");
+               embed.src = `https://open.spotify.com/embed/track/${noteContent.music}`;
+               embed.width = "98%";
+               embed.height = "100";
+               embed.frameBorder = "0";
+               embed.allowTransparency = "true";
+               embed.allow = "encrypted-media";
+
+               noteDiv.appendChild(embed);
+            }
+
             // If quoting a note, display the note that the note is quoting
             if (noteContent.quoting) {
                const container = document.createElement("div");
@@ -2372,6 +2388,9 @@ function closeCreateNotePopup() {
    document.getElementById("isNsfw").checked = false;
    document.getElementById("isSensitive").checked = false;
    renotingNote = null;
+   document.getElementById("spotifyPlayer").innerHTML = "";
+   document.getElementById("songQuery").value = "";
+   pickedMusic = null;
 
    notePopup.close();
 }
@@ -2379,15 +2398,43 @@ function closeCreateNotePopup() {
 // Swap Note Settings/Creation Tab
 let currentTab = "note";
 
-function swapNoteTab() {
-   if (currentTab == "note") {
-      document.getElementById("mainTab-noteCreation").classList.add("hidden");
-      document.querySelector(".settingsStuff").classList.remove("hidden");
-      currentTab = "settings";
-   } else {
-      document.getElementById("mainTab-noteCreation").classList.remove("hidden");
-      document.querySelector(".settingsStuff").classList.add("hidden");
-      currentTab = "note";
+function swapNoteTab(tab) {
+   if (tab === "note") {
+      if (currentTab === "note") {
+         document.getElementById("mainTab-noteCreation").classList.add("hidden");
+         document.querySelector(".settingsStuff").classList.remove("hidden");
+         document.getElementById("musicTab").classList.add("hidden");
+         currentTab = "settings";
+      } else {
+         document.getElementById("mainTab-noteCreation").classList.remove("hidden");
+         document.querySelector(".settingsStuff").classList.add("hidden");
+         document.getElementById("musicTab").classList.add("hidden");
+         currentTab = "note";
+      }
+   } else if (tab === "settings") {
+      if (currentTab === "settings") {
+         document.getElementById("mainTab-noteCreation").classList.remove("hidden");
+         document.querySelector(".settingsStuff").classList.add("hidden");
+         document.getElementById("musicTab").classList.add("hidden");
+         currentTab = "settings";
+      } else {
+         document.getElementById("mainTab-noteCreation").classList.add("hidden");
+         document.querySelector(".settingsStuff").classList.remove("hidden");
+         document.getElementById("musicTab").classList.add("hidden");
+         currentTab = "note";
+      }
+   } else if (tab === "music") {
+      if (currentTab === "music") {
+         document.getElementById("mainTab-noteCreation").classList.remove("hidden");
+         document.querySelector(".settingsStuff").classList.add("hidden");
+         document.getElementById("musicTab").classList.add("hidden");
+         currentTab = "note";
+      } else {
+         document.getElementById("mainTab-noteCreation").classList.add("hidden");
+         document.querySelector(".settingsStuff").classList.add("hidden");
+         document.getElementById("musicTab").classList.remove("hidden");
+         currentTab = "music";
+      }
    }
 }
 
@@ -2848,14 +2895,12 @@ if (pathName === "/u.html" || pathName === "/u") {
                   noteDiv.appendChild(text);
 
                   // If image has image/video, render a video/image
-                  if (noteContent.image === undefined) {
-                     // No need to run anything
-                  } else {
+                  if (noteContent.image !== undefined) {
                      let imageFileName = noteContent.image;
                      let imageExtension = imageFileName.split(".").pop();
                      const url = imageExtension;
                      const cleanUrl = url.split('?')[0];
-
+                  
                      if (cleanUrl === "mp4") {
                         const video = document.createElement("video");
                         video.src = noteContent.image;
@@ -2864,30 +2909,16 @@ if (pathName === "/u.html" || pathName === "/u") {
                         video.muted = true;
                         video.loop = true;
                         video.setAttribute("loading", "lazy");
-                        firebase.auth().onAuthStateChanged((user) => {
-                           if (user) {
-                              firebase.database().ref(`users/${user.uid}/autoplayVideos`).once("value", (snapshot) => {
-                                 const evenExists = snapshot.exists();
-                                 const pref = snapshot.val();
-
-                                 if (evenExists === true) {
-                                    if (pref === "true") {
-                                       video.autoplay = true;
-                                    } else if (pref === false) {
-                                       video.autoplay = false;
-                                    } else {
-                                       video.autoplay = true;
-                                    }
-                                 } else {
-                                    video.autoplay = true;
-                                 }
-                              })
-                           } else {
-                              video.autoplay = true;
-                           }
-                        })
+                        video.style.visibility = "hidden"; // Start hidden
+                        video.style.opacity = "0";
+                  
+                        video.autoplay = userAutoplayPreference;
+                  
                         video.setAttribute("alt", `${noteContent.alt}`);
                         noteDiv.appendChild(video);
+                  
+                        // observe image
+                        mediaObserver.observe(video);
                      } else {
                         const image = document.createElement("img");
                         image.src = noteContent.image;
@@ -2895,8 +2926,27 @@ if (pathName === "/u.html" || pathName === "/u") {
                         image.classList.add("uploadedImg");
                         image.setAttribute("alt", `${noteContent.alt}`);
                         image.setAttribute("loading", "lazy");
+                        image.style.visibility = "hidden"; // Start hidden
+                        image.style.opacity = "0";
+                  
                         noteDiv.appendChild(image);
+                  
+                        // observe image
+                        mediaObserver.observe(image);
                      }
+                  }
+
+                  // if the note has a song, embed it into the note
+                  if (noteContent.music) {
+                     const embed = document.createElement("iframe");
+                     embed.src = `https://open.spotify.com/embed/track/${noteContent.music}`;
+                     embed.width = "98%";
+                     embed.height = "100";
+                     embed.frameBorder = "0";
+                     embed.allowTransparency = "true";
+                     embed.allow = "encrypted-media";
+
+                     noteDiv.appendChild(embed);
                   }
 
                   // If quoting a note, display the note that the note is quoting
@@ -3455,6 +3505,13 @@ if (pathName === "/note.html" || pathName === "/note") {
             document.getElementById("quotingNote_note").style.display = "none";
          }
 
+         // check if music
+         if (noteData.music) {
+            document.getElementById("songEmbed").src = `https://open.spotify.com/embed/track/${noteData.music}`;
+         } else {
+            document.getElementById("songEmbed").remove();
+         }
+
          // check for favorites
          // also make the favorite button do smth
          document.getElementById("favoriteButton").setAttribute("onclick", `favoriteNoteView("${noteData.id}")`);
@@ -3809,6 +3866,10 @@ async function publishNote() {
             postData.quoting = renotingNote;
          }
 
+         if (pickedMusic !== null) {
+            postData.music = pickedMusic;
+         }
+
          if (isReplying_notehtml === true) {
             unlockAchievement("Chatterbox");
 
@@ -3872,6 +3933,9 @@ async function publishNote() {
             document.getElementById("successfullySent").style.display = "block";
             renotingNote = null;
             document.getElementById("altText_input").value = "";
+            document.getElementById("spotifyPlayer").innerHTML = "";
+            document.getElementById("songQuery").value = "";
+            pickedMusic = null;
             notePopup.close();
 
             setTimeout(function () {
@@ -7485,14 +7549,12 @@ if (pathName === "/search") {
                   noteDiv.appendChild(text);
 
                   // If image has image/video, render a video/image
-                  if (noteContent.image === undefined) {
-                     // No need to run anything
-                  } else {
+                  if (noteContent.image !== undefined) {
                      let imageFileName = noteContent.image;
                      let imageExtension = imageFileName.split(".").pop();
                      const url = imageExtension;
                      const cleanUrl = url.split('?')[0];
-
+                  
                      if (cleanUrl === "mp4") {
                         const video = document.createElement("video");
                         video.src = noteContent.image;
@@ -7501,30 +7563,16 @@ if (pathName === "/search") {
                         video.muted = true;
                         video.loop = true;
                         video.setAttribute("loading", "lazy");
-                        firebase.auth().onAuthStateChanged((user) => {
-                           if (user) {
-                              firebase.database().ref(`users/${user.uid}/autoplayVideos`).once("value", (snapshot) => {
-                                 const evenExists = snapshot.exists();
-                                 const pref = snapshot.val();
-
-                                 if (evenExists === true) {
-                                    if (pref === "true") {
-                                       video.autoplay = true;
-                                    } else if (pref === false) {
-                                       video.autoplay = false;
-                                    } else {
-                                       video.autoplay = true;
-                                    }
-                                 } else {
-                                    video.autoplay = true;
-                                 }
-                              })
-                           } else {
-                              video.autoplay = true;
-                           }
-                        })
+                        video.style.visibility = "hidden"; // Start hidden
+                        video.style.opacity = "0";
+                  
+                        video.autoplay = userAutoplayPreference;
+                  
                         video.setAttribute("alt", `${noteContent.alt}`);
                         noteDiv.appendChild(video);
+                  
+                        // observe image
+                        mediaObserver.observe(video);
                      } else {
                         const image = document.createElement("img");
                         image.src = noteContent.image;
@@ -7532,8 +7580,27 @@ if (pathName === "/search") {
                         image.classList.add("uploadedImg");
                         image.setAttribute("alt", `${noteContent.alt}`);
                         image.setAttribute("loading", "lazy");
+                        image.style.visibility = "hidden"; // Start hidden
+                        image.style.opacity = "0";
+                  
                         noteDiv.appendChild(image);
+                  
+                        // observe image
+                        mediaObserver.observe(image);
                      }
+                  }
+
+                  // if the note has a song, embed it into the note
+                  if (noteContent.music) {
+                     const embed = document.createElement("iframe");
+                     embed.src = `https://open.spotify.com/embed/track/${noteContent.music}`;
+                     embed.width = "98%";
+                     embed.height = "100";
+                     embed.frameBorder = "0";
+                     embed.allowTransparency = "true";
+                     embed.allow = "encrypted-media";
+
+                     noteDiv.appendChild(embed);
                   }
 
                   // If quoting a note, display the note that the note is quoting
@@ -8107,4 +8174,75 @@ function downloadData() {
          });
       }
    });
+}
+
+// spotify 
+// get access token
+async function getAccessToken() {
+   const response = await fetch("https://accounts.spotify.com/api/token", {
+      method: "POST",
+      headers: {
+         "Authorization": "Basic " + btoa("c8ddbc039e5a4f0fb786812d601803dd:52c2a0dbd736474c8c5eb46a61a0e61c"),
+         "Content-Type": "application/x-www-form-urlencoded"
+      },
+      body: new URLSearchParams({
+         "grant_type": "client_credentials"
+      })
+   });
+
+   const data = await response.json();
+   return data.access_token;
+}
+
+// search for spotify tracks
+async function searchTracks(query) {
+   const accessToken = await getAccessToken();
+      const response = await fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=track&limit=10`, {
+         headers: {
+            "Authorization": `Bearer ${accessToken}`
+         }
+      });
+
+   const data = await response.json();
+   //console.log(data);
+   return data.tracks.items;
+}
+
+// display music
+async function displayTracks(query) {
+   const tracks = await searchTracks(query);
+
+   const resultsContainer = document.getElementById("spotifyPlayer");
+   resultsContainer.innerHTML = "";
+
+   if (tracks.length > 0) {
+      tracks.forEach(track => {
+         // create iframe to embed song
+         const embed = document.createElement("iframe");
+         embed.src = `https://open.spotify.com/embed/track/${track.id}`;
+         embed.width = "100%";
+         embed.height = "100";
+         embed.frameBorder = "0";
+         embed.allowTransparency = "true";
+         embed.allow = "encrypted-media";
+
+         // allow users to add the song to their note
+         const addToNote = document.createElement("button");
+         addToNote.textContent = `Add ${track.name} by ${track.artists[0].name}`;
+         addToNote.className = "addToNote";
+         addToNote.setAttribute("onclick", `setNoteMusic("${track.id}")`);
+
+         resultsContainer.appendChild(embed);
+         resultsContainer.appendChild(addToNote);
+      });
+   } else {
+      resultsContainer.innerHTML = "No results found.";
+   }
+}
+
+// let user pick the song
+function setNoteMusic(trackId) {
+   swapNoteTab("note");
+   pickedMusic = trackId;
+   console.log(trackId);
 }

@@ -1111,7 +1111,8 @@ dialog {
    border: 1px solid var(--main-color);
    margin-top: 25px;
    animation: openPopup 0.25s ease;
-   overflow-y: scroll;
+   max-height: 600px;
+   overflow-y: auto;
 }
 
 #newestUpdates {
@@ -1162,7 +1163,8 @@ dialog .mainTab-noteCreation.hidden {
    display: none;
 }
 
-dialog .settingsStuff.hidden {
+dialog .settingsStuff.hidden,
+dialog #musicTab.hidden {
    display: none;
 }
 
@@ -1181,13 +1183,15 @@ dialog .settingsIcons-noteCreation .icons {
 
 dialog .settingsIcons-noteCreation .icons .fa-solid.fa-flag.fa-lg,
 dialog .settingsIcons-noteCreation .icons .fa-solid.fa-image.fa-lg,
-dialog .settingsIcons-noteCreation .icons .fa-solid.fa-comments.fa-lg {
+dialog .settingsIcons-noteCreation .icons .fa-solid.fa-comments.fa-lg,
+dialog .settingsIcons-noteCreation .icons .fa-solid.fa-music.fa-lg {
    transition: all 0.1s linear;
 }
 
 dialog .settingsIcons-noteCreation .icons .fa-solid.fa-flag.fa-lg:hover,
 dialog .settingsIcons-noteCreation .icons .fa-solid.fa-image.fa-lg:hover,
-dialog .settingsIcons-noteCreation .icons .fa-solid.fa-comments.fa-lg:hover {
+dialog .settingsIcons-noteCreation .icons .fa-solid.fa-comments.fa-lg:hover,
+dialog .settingsIcons-noteCreation .icons .fa-solid.fa-music.fa-lg:hover {
    cursor: pointer;
    color: var(--main-color);
 }
@@ -2175,7 +2179,7 @@ dialog .coverCreateANote {
 
 /* Note Creator */
 #createNote-popup {
-   overflow-y: hidden;
+   overflow-y: auto;
    overflow-x: hidden;
 }
 
@@ -3004,4 +3008,15 @@ footer .footerBottom {
    border-radius: 12px;
    font-size: 0.8em;
    margin-left: 5px;
+}
+
+/* spotify player */
+#spotifyPlayer {
+   overflow-y: scroll;
+   margin-top: 15px;
+}
+
+/* add to note */
+.addToNote {
+   transform: translateY(-25px);
 }

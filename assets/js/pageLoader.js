@@ -342,26 +342,13 @@ firebase.auth().onAuthStateChanged((user) => {
                 document.documentElement.style.setProperty('--reply-hovered-background', getTheme.themeColors.replyHoveredBackground);
                 document.documentElement.style.setProperty('--note-background', getTheme.themeColors.noteBackground);
             }
-        })
+        }).then(() => {
+            loader.classList.add("loader-hidden");
 
-        emailVer.once("value")
-            .then(function(snapshot) {
-                const email = snapshot.exists();
-
-                if (email === true) {
-                    loader.classList.add("loader-hidden");
-
-                    loader.addEventListener("transitioned", () => {
-                        document.body.removeChild("loader");
-                    })
-                } else if (email === false) {
-                    loader.classList.add("loader-hidden");
-
-                    loader.addEventListener("transitioned", () => {
-                        document.body.removeChild("loader");
-                    })
-                }
+            loader.addEventListener("transitioned", () => {
+                document.body.removeChild("loader");
             })
+        });
     } else {
       const loader = document.querySelector('.loader');
 
