@@ -749,6 +749,7 @@ body {
    margin-left: 10px;
    font-size: large;
    text-decoration: none;
+   color: var(--text);
 }
 
 .note .noteDisplay .noteBadges i {
