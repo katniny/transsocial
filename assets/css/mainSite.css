@@ -796,10 +796,10 @@ body {
    display: flex;
    justify-content: flex-start;
    align-items: center;
-   gap: 1em;
-   margin-left: 1em;
+   gap: 0.5em;
+   margin-left: 0.8em;
    margin-top: 1em;
-   font-size: large;
+   /* ^ just trying to keep it similar as it was before to keep a familar layout, sorry :( - katty */
 }
 
 #buttonRow {
