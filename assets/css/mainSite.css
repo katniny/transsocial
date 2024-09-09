@@ -35,6 +35,10 @@
    --note-background: #282828;
    --header-shadow: rgba(0, 0, 0, 0.1);
    --zoom-level: 1;
+   --button-text: #fff;
+   --hovered-button-text: #000;
+   --sidebar-create-note-button: #fff;
+   --sidebar-create-note-button-hover: #fff;
 }
 
 /* Styles Everything */
@@ -348,14 +352,15 @@ body {
    cursor: pointer;
    text-align: left;
    margin-top: 4px;
-   color: var(--sidebar-text);
    transition: background 0.3s, border-color 0.3s;
+   color: var(--sidebar-text);
 }
 
 .sidebar button:hover {
    background: var(--sidebar-button-hover);
    border-color: var(--sidebar-button-hover-border);
    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+   color: var(--sidebar-text);
 }
 
 .sidebar .fa-solid {
@@ -388,10 +393,20 @@ body {
 .sidebar #createNote-sidebar {
    background: var(--main-color-darker);
    text-align: center;
+   color: var(--sidebar-create-note-button);
+}
+
+.sidebar #createNote-sidebar i.fa-solid {
+   color: var(--sidebar-create-note-button);
 }
 
 .sidebar #createNote-sidebar:hover {
    background: var(--main-color);
+   color: var(--sidebar-create-note-button-hover);
+}
+
+.sidebar #createNote-sidebar:hover i.fa-solid {
+   color: var(--sidebar-create-note-button-hover);
 }
 
 .fa-brands {
@@ -1710,11 +1725,13 @@ button {
    border: 1px solid var(--main-color);
    margin-top: 5px;
    cursor: pointer;
+   color: var(--button-text);
    transition: all 0.1s linear;
 }
 
 button:hover {
    background: var(--main-color);
+   color: var(--hovered-button-text);
 }
 
 button.disabled {

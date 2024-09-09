@@ -125,6 +125,7 @@ firebase.auth().onAuthStateChanged((user) => {
                 document.documentElement.style.setProperty('--reply-background', '#fafafa');
                 document.documentElement.style.setProperty('--reply-hovered-background', '#e5e5e5');
                 document.documentElement.style.setProperty('--note-background', '#fff');
+                document.documentElement.style.setProperty('--button-text', '#000');
                 if (currentMonth === 6 && getTheme.showPrideFlag === "Yes" || currentMonth === 6 && getTheme.showPrideFlag === undefined) {
                     document.getElementById("transsocialHeaderLogo").src = "/assets/imgs/PrideHeaderLogo.png";
                 }
@@ -156,6 +157,8 @@ firebase.auth().onAuthStateChanged((user) => {
                 document.documentElement.style.setProperty('--reply-background', '#e7f2fa');
                 document.documentElement.style.setProperty('--reply-hovered-background', '#d1e4ef');
                 document.documentElement.style.setProperty('--note-background', '#fff');
+                document.documentElement.style.setProperty("--sidebar-create-note-button-hover", "#000");
+                document.documentElement.style.setProperty('--button-text', '#000');
                 if (currentMonth === 6 && getTheme.showPrideFlag === "Yes" || currentMonth === 6 && getTheme.showPrideFlag === undefined) {
                     document.getElementById("transsocialHeaderLogo").src = "/assets/imgs/PrideHeaderLogo.png";
                 } else {
@@ -189,6 +192,7 @@ firebase.auth().onAuthStateChanged((user) => {
                 document.documentElement.style.setProperty('--reply-background', '#28383e');
                 document.documentElement.style.setProperty('--reply-hovered-background', '#25353a');
                 document.documentElement.style.setProperty('--note-background', 'rgb(40, 40, 40)');
+                document.documentElement.style.setProperty("--sidebar-create-note-button-hover", "#000");
                 if (currentMonth === 6 && getTheme.showPrideFlag === "Yes" || currentMonth === 6 && getTheme.showPrideFlag === undefined) {
                     document.getElementById("transsocialHeaderLogo").src = "/assets/imgs/PrideHeaderLogo.png";
                 } else {
@@ -222,6 +226,7 @@ firebase.auth().onAuthStateChanged((user) => {
                 document.documentElement.style.setProperty('--reply-background', '#404040');
                 document.documentElement.style.setProperty('--reply-hovered-background', '#505050');
                 document.documentElement.style.setProperty('--note-background', '#333333');
+                document.documentElement.style.setProperty("--sidebar-create-note-button-hover", "#000");
                 if (currentMonth === 6 && getTheme.showPrideFlag === "Yes" || currentMonth === 6 && getTheme.showPrideFlag === undefined) {
                     document.getElementById("transsocialHeaderLogo").src = "/assets/imgs/PrideHeaderLogo.png";
                 } else {
@@ -255,6 +260,7 @@ firebase.auth().onAuthStateChanged((user) => {
                 document.documentElement.style.setProperty('--reply-background', '#ffe0d2');
                 document.documentElement.style.setProperty('--reply-hovered-background', '#fff0e8');
                 document.documentElement.style.setProperty('--note-background', '#ffd9cb');
+                document.documentElement.style.setProperty('--button-text', '#000');
                 if (currentMonth === 6 && getTheme.showPrideFlag === "Yes" || currentMonth === 6 && getTheme.showPrideFlag === undefined) {
                     document.getElementById("transsocialHeaderLogo").src = "/assets/imgs/PrideHeaderLogo.png";
                 } else {
@@ -288,6 +294,7 @@ firebase.auth().onAuthStateChanged((user) => {
                 document.documentElement.style.setProperty('--reply-background', '#332e3e');
                 document.documentElement.style.setProperty('--reply-hovered-background', '#3d384a');
                 document.documentElement.style.setProperty('--note-background', '#2c2738');
+                document.documentElement.style.setProperty("--hovered-button-text", "#fff");
                 if (currentMonth === 6 && getTheme.showPrideFlag === "Yes" || currentMonth === 6 && getTheme.showPrideFlag === undefined) {
                     document.getElementById("transsocialHeaderLogo").src = "/assets/imgs/PrideHeaderLogo.png";
                 } else {
@@ -341,6 +348,14 @@ firebase.auth().onAuthStateChanged((user) => {
                 document.documentElement.style.setProperty('--reply-background', getTheme.themeColors.replyBackground);
                 document.documentElement.style.setProperty('--reply-hovered-background', getTheme.themeColors.replyHoveredBackground);
                 document.documentElement.style.setProperty('--note-background', getTheme.themeColors.noteBackground);
+                if (getTheme.themeColors.buttonText) {
+                    document.documentElement.style.setProperty('--button-text', getTheme.themeColors.buttonText);
+                } else {
+                    document.documentElement.style.setProperty('--button-text', getTheme.themeColors.text);
+                }
+                document.documentElement.style.setProperty('--hovered-button-text', getTheme.themeColors.hoveredButtonText);
+                document.documentElement.style.setProperty('--sidebar-create-note-button', getTheme.themeColors.createNoteButton);
+                document.documentElement.style.setProperty('--sidebar-create-note-button-hover', getTheme.themeColors.createNoteButtonHover);
             }
         }).then(() => {
             loader.classList.add("loader-hidden");

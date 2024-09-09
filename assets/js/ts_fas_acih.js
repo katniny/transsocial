@@ -4650,29 +4650,61 @@ if (pathName === "/settings" || pathName === "/settings.html") {
                            firebase.database().ref(`users/${user.uid}`).update({
                               theme : "Custom"
                            }).then(() => {
-                              firebase.database().ref(`users/${user.uid}/themeColors`).update({
-                                 background : themeData.themeColors.background,
-                                 buttonTransparentHover : themeData.themeColors.buttonTransparentHover,
-                                 error : themeData.themeColors.error,
-                                 headerColor : themeData.themeColors.headerColor,
-                                 liked : themeData.themeColors.liked,
-                                 mainColor : themeData.themeColors.mainColor,
-                                 mainColorDarker : themeData.themeColors.mainColorDarker,
-                                 noteBackground : themeData.themeColors.noteBackground,
-                                 noteSeperator : themeData.themeColors.noteSeperator,
-                                 renoted : themeData.themeColors.renoted,
-                                 replyBackground : themeData.themeColors.replyBackground,
-                                 replyHoveredBackground : themeData.themeColors.replyHoveredBackground,
-                                 sidebarButtonHover : themeData.themeColors.sidebarButtonHover,
-                                 sidebarText : themeData.themeColors.sidebarText,
-                                 success : themeData.themeColors.success,
-                                 text : themeData.themeColors.text,
-                                 textHalfTransparent : themeData.themeColors.textHalfTransparent,
-                                 textSemiTransparent : themeData.themeColors.textSemiTransparent,
-                                 warning : themeData.themeColors.warning
-                              }).then(() => {
-                                 window.location.reload();
-                              });
+                              if (themeData.themeColors.buttonText === undefined) {
+                                 firebase.database().ref(`users/${user.uid}/themeColors`).update({
+                                    background : themeData.themeColors.background,
+                                    buttonTransparentHover : themeData.themeColors.buttonTransparentHover,
+                                    error : themeData.themeColors.error,
+                                    headerColor : themeData.themeColors.headerColor,
+                                    liked : themeData.themeColors.liked,
+                                    mainColor : themeData.themeColors.mainColor,
+                                    mainColorDarker : themeData.themeColors.mainColorDarker,
+                                    noteBackground : themeData.themeColors.noteBackground,
+                                    noteSeperator : themeData.themeColors.noteSeperator,
+                                    renoted : themeData.themeColors.renoted,
+                                    replyBackground : themeData.themeColors.replyBackground,
+                                    replyHoveredBackground : themeData.themeColors.replyHoveredBackground,
+                                    sidebarButtonHover : themeData.themeColors.sidebarButtonHover,
+                                    sidebarText : themeData.themeColors.sidebarText,
+                                    success : themeData.themeColors.success,
+                                    text : themeData.themeColors.text,
+                                    textHalfTransparent : themeData.themeColors.textHalfTransparent,
+                                    textSemiTransparent : themeData.themeColors.textSemiTransparent,
+                                    buttonText : themeData.themeColors.buttonText,
+                                    hoveredButtonText : themeData.themeColors.hoveredButtonText,
+                                    createNoteButton : themeData.themeColors.createNoteButton,
+                                    createNoteButtonHover : themeData.themeColors.createNoteButtonHover
+                                 }).then(() => {
+                                    window.location.reload();
+                                 });
+                              } else {
+                                 firebase.database().ref(`users/${user.uid}/themeColors`).update({
+                                    background : themeData.themeColors.background,
+                                    buttonTransparentHover : themeData.themeColors.buttonTransparentHover,
+                                    error : themeData.themeColors.error,
+                                    headerColor : themeData.themeColors.headerColor,
+                                    liked : themeData.themeColors.liked,
+                                    mainColor : themeData.themeColors.mainColor,
+                                    mainColorDarker : themeData.themeColors.mainColorDarker,
+                                    noteBackground : themeData.themeColors.noteBackground,
+                                    noteSeperator : themeData.themeColors.noteSeperator,
+                                    renoted : themeData.themeColors.renoted,
+                                    replyBackground : themeData.themeColors.replyBackground,
+                                    replyHoveredBackground : themeData.themeColors.replyHoveredBackground,
+                                    sidebarButtonHover : themeData.themeColors.sidebarButtonHover,
+                                    sidebarText : themeData.themeColors.sidebarText,
+                                    success : themeData.themeColors.success,
+                                    text : themeData.themeColors.text,
+                                    textHalfTransparent : themeData.themeColors.textHalfTransparent,
+                                    textSemiTransparent : themeData.themeColors.textSemiTransparent,
+                                    buttonText : themeData.themeColors.buttonText,
+                                    hoveredButtonText : themeData.themeColors.hoveredButtonText,
+                                    createNoteButton : themeData.themeColors.createNoteButton,
+                                    createNoteButtonHover : themeData.themeColors.createNoteButtonHover
+                                 }).then(() => {
+                                    window.location.reload();
+                                 });
+                              }
                            });
                         };
                         button.style.width = "100%";
@@ -6293,9 +6325,25 @@ if (pathName === "/create_theme") {
       } else if (targetElement.id === "replyBackgroundHovered") {
          const hexValue = inputValue.startsWith("#") ? inputValue : `#${inputValue}`;
          document.documentElement.style.setProperty("--reply-hovered-background", hexValue);
+      // note background
       } else if (targetElement.id === "noteBackground") {
          const hexValue = inputValue.startsWith("#") ? inputValue : `#${inputValue}`;
          document.documentElement.style.setProperty("--note-background", hexValue);
+      // button text
+      } else if (targetElement.id === "buttonText") {
+         const hexValue = inputValue.startsWith("#") ? inputValue : `#${inputValue}`;
+         document.documentElement.style.setProperty("--button-text", hexValue);
+      // hovered button text
+      } else if (targetElement.id === "buttonTextHovered") {
+         const hexValue = inputValue.startsWith("#") ? inputValue : `#${inputValue}`;
+         document.documentElement.style.setProperty("--hovered-button-text", hexValue);
+      // sidebar create note button
+      } else if (targetElement.id === "sidebarCreateNoteButton") {
+         const hexValue = inputValue.startsWith("#") ? inputValue : `#${inputValue}`;
+         document.documentElement.style.setProperty("--sidebar-create-note-button", hexValue);
+      } else if (targetElement.id === "sidebarCreateNoteButtonHover") {
+         const hexValue = inputValue.startsWith("#") ? inputValue : `#${inputValue}`;
+         document.documentElement.style.setProperty("--sidebar-create-note-button-hover", hexValue);
       }
    });
 
@@ -6344,7 +6392,11 @@ if (pathName === "/create_theme") {
                         renoted : document.getElementById("renoteColor").value,
                         replyBackground : document.getElementById("replyBackground").value,
                         replyHoveredBackground : document.getElementById("replyBackgroundHovered").value,
-                        noteBackground : document.getElementById("noteBackground").value
+                        noteBackground : document.getElementById("noteBackground").value,
+                        buttonText : document.getElementById("buttonText").value,
+                        hoveredButtonText : document.getElementById("buttonTextHovered").value,
+                        createNoteButton : document.getElementById("sidebarCreateNoteButton").value,
+                        createNoteButtonHover : document.getElementById("sidebarCreateNoteButtonHover").value
                      }).then(() => {
                         // successfully saved
                         document.getElementById("saveThemeBtn").classList.remove("disabled");
@@ -6378,6 +6430,10 @@ if (pathName === "/create_theme") {
                               { id: "replyBackground", cssVar: "--reply-background", saveAs: "replyBackground", type: "hex" },
                               { id: "replyBackgroundHovered", cssVar: "--reply-hovered-background", saveAs: "replyHoveredBackground", type: "hex" },
                               { id: "noteBackground", cssVar: "--note-background", saveAs: "noteBackground", type: "hex" },
+                              { id: "buttonText", cssVar: "--button-text", saveAs: "buttonText", type: "hex" },
+                              { id: "buttonTextHovered", cssVar: "--hovered-button-text", saveAs: "hoveredButtonText", type: "hex" },
+                              { id: "sidebarCreateNoteButton", cssVar: "--sidebar-create-note-button", saveAs: "createNoteButton", type: "hex" },
+                              { id: "sidebarCreateNoteButtonHover", cssVar: "--sidebar-create-note-button-hover", saveAs: "createNoteButtonHover", type: "hex" },
                            ];
 
                            inputs.forEach(input => {
@@ -6689,6 +6745,46 @@ if (pathName === "/create_theme") {
                               document.getElementById("noteBackground").dispatchEvent(event);
                            }
 
+                           // set buttonText
+                           if (themeData.buttonText !== "" && themeData.buttonText) {
+                              document.getElementById("buttonText").value = themeData.buttonText;
+                              const event = new Event("input", {
+                                 bubbles: true,
+                                 cancelable: true,
+                              });
+                              document.getElementById("buttonText").dispatchEvent(event);
+                           }
+
+                           // set buttonTextHovered
+                           if (themeData.hoveredButtonText !== "" && themeData.hoveredButtonText) {
+                              document.getElementById("buttonTextHovered").value = themeData.hoveredButtonText;
+                              const event = new Event("input", {
+                                 bubbles: true,
+                                 cancelable: true,
+                              });
+                              document.getElementById("buttonTextHovered").dispatchEvent(event);
+                           }
+
+                           // set sidebarCreateNoteButton
+                           if (themeData.createNoteButton !== "" && themeData.createNoteButton) {
+                              document.getElementById("sidebarCreateNoteButton").value = themeData.createNoteButton;
+                              const event = new Event("input", {
+                                 bubbles: true,
+                                 cancelable: true,
+                              });
+                              document.getElementById("sidebarCreateNoteButton").dispatchEvent(event);
+                           }
+                           
+                           // set sidebarCreateNoteButtonHover
+                           if (themeData.createNoteButtonHover !== "" && themeData.createNoteButtonHover) {
+                              document.getElementById("sidebarCreateNoteButtonHover").value = themeData.createNoteButtonHover;
+                              const event = new Event("input", {
+                                 bubbles: true,
+                                 cancelable: true,
+                              });
+                              document.getElementById("sidebarCreateNoteButtonHover").dispatchEvent(event);
+                           }
+
                            // after setting everything, close the modal and show the "savedThemes" again (just in case)
                            document.getElementById("loadTheme").close();
                            document.getElementById("fetchingThemes").innerHTML = `<i class="fa-solid fa-spinner fa-spin-pulse"></i> Loading themes...`;
@@ -6752,7 +6848,11 @@ if (pathName === "/create_theme") {
             document.getElementById("renoteColor").value !== "" && 
             document.getElementById("replyBackground").value !== "" && 
             document.getElementById("replyBackgroundHovered").value !== "" && 
-         document.getElementById("noteBackground").value !== "") {
+            document.getElementById("noteBackground").value !== "" &&
+            document.getElementById("buttonText").value !== "" &&
+            document.getElementById("buttonTextHovered").value !== "" &&
+            document.getElementById("sidebarCreateNoteButton").value !== "" &&
+            document.getElementById("sidebarCreateNoteButtonHover").value !== "") {
             // add the theme to the database
             firebase.auth().onAuthStateChanged((user) => {
                if (user) {
@@ -6790,6 +6890,10 @@ if (pathName === "/create_theme") {
                      { id: "replyBackground", cssVar: "--reply-background", saveAs: "replyBackground", type: "hex" },
                      { id: "replyBackgroundHovered", cssVar: "--reply-hovered-background", saveAs: "replyHoveredBackground", type: "hex" },
                      { id: "noteBackground", cssVar: "--note-background", saveAs: "noteBackground", type: "hex" },
+                     { id: "buttonText", cssVar: "--button-text", saveAs: "buttonText", type: "hex" },
+                     { id: "buttonTextHovered", cssVar: "--hovered-button-text", saveAs: "hoveredButtonText", type: "hex" },
+                     { id: "sidebarCreateNoteButton", cssVar: "--sidebar-create-note-button", saveAs: "createNoteButton", type: "hex" },
+                     { id: "sidebarCreateNoteButtonHover", cssVar: "--sidebar-create-note-button-hover", saveAs: "createNoteButtonHover", type: "hex" },
                   ];
 
                   inputs.forEach(input => {
