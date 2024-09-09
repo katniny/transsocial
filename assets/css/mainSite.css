@@ -699,6 +699,10 @@ body {
    animation: skeletonLoading 1.5s ease-in-out infinite;
 }
 
+.note iframe {
+   transform: translateY(10px);
+}
+
 @keyframes skeletonLoading {
    0% {
       background-position: -100% 0;
