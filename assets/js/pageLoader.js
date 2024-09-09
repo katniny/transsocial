@@ -327,8 +327,8 @@ firebase.auth().onAuthStateChanged((user) => {
                 document.documentElement.style.setProperty('--main-color-darker', getTheme.themeColors.mainColorDarker);
                 document.documentElement.style.setProperty('--header-color', getTheme.themeColors.headerColor);
                 document.documentElement.style.setProperty('--text', getTheme.themeColors.text);
-                document.documentElement.style.setProperty('--text-half-transparent', getTheme.themeColors.text);
-                document.documentElement.style.setProperty('--text-semi-transparent', getTheme.themeColors.text);
+                document.documentElement.style.setProperty('--text-half-transparent', getTheme.themeColors.textHalfTransparent);
+                document.documentElement.style.setProperty('--text-semi-transparent', getTheme.themeColors.textSemiTransparent); // why were these wrong??
                 document.documentElement.style.setProperty('--sidebar-button-hover', getTheme.themeColors.sidebarButtonHover);
                 document.documentElement.style.setProperty('--button-transparent-hover', getTheme.themeColors.buttonTransparentHover);
                 document.documentElement.style.setProperty('--success-color', getTheme.themeColors.success);
