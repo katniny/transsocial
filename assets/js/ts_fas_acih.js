@@ -2021,6 +2021,11 @@ if (pathName === "/home" || pathName === "/home.html" || pathName === "/u" || pa
 
             const buttonRow = document.createElement("div");
             buttonRow.classList.add("buttonRow");
+            firebase.database().ref(`users/${firebase.auth().currentUser.uid}/experiments`).once('value', (val) => {
+               if (val.val().noteButtonLayout) {
+                  buttonRow.classList.add("buttonRowExperiment");
+               }
+            })
 
             // Add love button
             const loveBtn = document.createElement("p");
@@ -5229,7 +5234,9 @@ if (pathName === "/settings" || pathName === "/settings.html") {
       })
    })
 
-   // enable/disable experiments
+   // Experiments
+
+   // Direct Messages
    function toggleDMExperimentDetails() {
       if (document.getElementById("dm_details").style.display === "none") {
          document.getElementById("dm_details").style.display = "block";
@@ -5263,6 +5270,47 @@ if (pathName === "/settings" || pathName === "/settings.html") {
          if (user) {
             firebase.database().ref(`users/${user.uid}`).update({
                directMessagesExperiment: null
+            }).then(() => {
+               window.location.reload();
+            });
+         }
+      })
+   }
+
+   // Note Button Layout
+   function toggleButtonExperimentDetails() {
+      if (document.getElementById("button_details").style.display === "none") {
+         document.getElementById("button_details").style.display = "block";
+      } else {
+         document.getElementById("button_details").style.display = "none";
+      }
+   }
+
+   function enableButton() {
+      document.getElementById("enableButton").innerHTML = `<i class="fa-solid fa-spinner fa-spin-pulse"></i> Enabling...`;
+      document.getElementById("enableButton").classList.add("disabled");
+      document.getElementById("disableButton").classList.add("disabled");
+
+      firebase.auth().onAuthStateChanged((user) => {
+         if (user) {
+            firebase.database().ref(`users/${user.uid}/experiments`).update({
+               noteButtonLayout: true
+            }).then(() => {
+               window.location.reload();
+            });
+         }
+      })
+   }
+
+   function disableButton() {
+      document.getElementById("disableButton").innerHTML = `<i class="fa-solid fa-spinner fa-spin-pulse"></i> Disabling...`;
+      document.getElementById("enableButton").classList.add("disabled");
+      document.getElementById("disableButton").classList.add("disabled");
+
+      firebase.auth().onAuthStateChanged((user) => {
+         if (user) {
+            firebase.database().ref(`users/${user.uid}/experiments`).update({
+               noteButtonLayout: false
             }).then(() => {
                window.location.reload();
             });

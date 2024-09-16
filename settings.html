@@ -505,6 +505,20 @@
             <br />
             <br />
 
+            <!-- Interaction Button Layout -->
+            <div class="themeContainer" onclick="toggleButtonExperimentDetails()">
+                <img src="/assets/imgs/button_experiment.png" alt="" class="themeImage" />
+                <div class="themeText">Note Button Layout</div>
+            </div>
+            <div id="button_details" style="display: none;">
+                <p style="color: var(--text-semi-transparent);">Enable the experimental slightly different note button layout</p>
+                <p style="color: var(--text-semi-transparent); font-size: 14px;">Last Updated: August 17, 2024</p>
+                <button onclick="enableButton()" id="enableButton">Enable</button> <button onclick="disableButton()" id="disableButton">Disable</button>
+            </div>
+
+            <br />
+            <br />
+
             <button onclick="document.getElementById('experimentSelect').close();">Nevermind</button>
         </dialog>
 
