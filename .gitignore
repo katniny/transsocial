@@ -1,8 +1,1 @@
-# you dont need ma vercel deployment
-.vercel
-
-# you dont need my keys either
-.env
-
-# i'll upload it one day so you can host it yourself... but there's thousands of files and im impatient 😭
-assets/emojis/
+# honestly nothing really needs to be in here

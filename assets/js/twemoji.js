@@ -2,7 +2,7 @@
 var twemoji = function() {
    "use strict";
    var twemoji = {
-      base: "https://transs.social/assets/emojis/",
+      base: "/assets/emojis/",
       ext: ".png",
       size: "72x72",
       className: "emoji",
