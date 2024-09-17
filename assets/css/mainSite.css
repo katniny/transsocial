@@ -822,6 +822,16 @@ body {
    /* ^ just trying to keep it similar as it was before to keep a familar layout, sorry :( - katty */
 }
 
+.note .buttonRowExperiment {
+   display: flex;
+   justify-content: flex-start;
+   align-items: center;
+   gap: 1em;
+   margin-left: 1em;
+   margin-top: 1em;
+   font-size: large;
+}
+
 #buttonRow {
    display: flex;
    justify-content: flex-start;
