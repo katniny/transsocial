@@ -1149,6 +1149,7 @@ textarea {
    resize: none;
    height: 100px;
    transition: all 0.1s linear;
+   border: 1px solid black;
 }
 
 textarea:focus {
@@ -2967,11 +2968,10 @@ footer .footerBottom {
 }
 
 /* Subscription Tab */
-@-moz-document url-prefix() {
-   #thanksForSubscribing li,
-   #subscribe li {
-      margin-left: 15px;
-   }
+/* chromium had this broken too, so just give it to everyone (yippee) */
+#thanksForSubscribing li,
+#subscribe li {
+   margin-left: 15px;
 }
 
 /* make contributor badge the main color */
