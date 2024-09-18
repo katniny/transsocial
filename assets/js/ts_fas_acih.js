@@ -29,7 +29,8 @@ const pathName = pageURL.pathname;
 let isOnDesktopApp = null;
 
 // TransSocial Version
-let transsocialVersion = "v2024.9.12";
+let transsocialVersion = "v2024.9.18";
+let transsocialUpdate = "v2024918-1";
 let transsocialReleaseVersion = "pre-alpha";
 
 const notices = document.getElementsByClassName("version-notice");
@@ -409,15 +410,11 @@ firebase.auth().onAuthStateChanged((user) => {
 // TransSocial Update
 firebase.auth().onAuthStateChanged((user) => {
    if (user) {
-      firebase.database().ref(`users/${user.uid}`).on("value", (snapshot) => {
-         const hasDoneIt = snapshot.val();
+      firebase.database().ref(`users/${user.uid}/readUpdates/${transsocialUpdate}`).on("value", (snapshot) => {
+         const hasDoneIt = snapshot.exists();
 
-         if (hasDoneIt.readprealphaUpdateLog === undefined || hasDoneIt.readprealphaUpdateLog === false) {
-            if (document.getElementById("newestUpdates")) {
-               document.getElementById("newestUpdates").showModal();
-            }
-         } else {
-            // don't execute anything else
+         if (!hasDoneIt) {
+            document.getElementById("updatesBtn").innerHTML = `<i class="fa-solid fa-wrench"></i> Updates <span class="badge">New!</span>`;
          }
       })
    } else {
@@ -427,19 +424,15 @@ firebase.auth().onAuthStateChanged((user) => {
    }
 })
 
-function closeUploadLog() {
-   if (document.getElementById("newestUpdates")) {
-      document.getElementById("newestUpdates").close();
-
-      firebase.auth().onAuthStateChanged((user) => {
-         if (user) {
-            firebase.database().ref(`users/${user.uid}`).update({
-               readprealphaUpdateLog: true,
-            })
-         }
-      })
+firebase.auth().onAuthStateChanged((user) => {
+   if (pathName === "/updates") {
+      if (user) {
+         firebase.database().ref(`users/${user.uid}/readUpdates/${transsocialUpdate}`).update({
+            read: true,
+         })
+      }
    }
-}
+})
 
 // If the user is on the 404 page, change the page URL to be the page they are on.
 if (document.getElementById("404page")) {

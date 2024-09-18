@@ -305,6 +305,15 @@ body {
    padding: 10px;
 }
 
+.sidebar .badge {
+   background: var(--main-color-darker);
+   padding: 2px 8px;
+   border-radius: 12px;
+   font-size: 0.8em;
+   margin-left: 5px;
+   color: var(--hovered-button-text);
+}
+
 @media (max-width: 768px) {
    .sidebar {
       display: none;
