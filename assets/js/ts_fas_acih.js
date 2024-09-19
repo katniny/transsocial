@@ -30,7 +30,7 @@ let isOnDesktopApp = null;
 
 // TransSocial Version
 let transsocialVersion = "v2024.9.18";
-let transsocialUpdate = "v2024918-2";
+let transsocialUpdate = "v2024918-3";
 let transsocialReleaseVersion = "pre-alpha";
 
 const notices = document.getElementsByClassName("version-notice");

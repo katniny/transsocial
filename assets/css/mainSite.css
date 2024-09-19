@@ -1754,6 +1754,10 @@ button:hover {
    color: var(--hovered-button-text);
 }
 
+button:hover i {
+   color: var(--hovered-button-text);
+}
+
 button.disabled {
    opacity: 0.5;
 }
