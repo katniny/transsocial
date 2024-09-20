@@ -29,8 +29,8 @@ const pathName = pageURL.pathname;
 let isOnDesktopApp = null;
 
 // TransSocial Version
-let transsocialVersion = "v2024.9.18";
-let transsocialUpdate = "v2024918-3";
+let transsocialVersion = "v2024.9.19";
+let transsocialUpdate = "v2024919-1";
 let transsocialReleaseVersion = "pre-alpha";
 
 const notices = document.getElementsByClassName("version-notice");
@@ -1182,365 +1182,14 @@ function sanitizeAndLinkify(text) {
    return escapedText;
 }
 
-// Old Code
-// function loadNotes() {
-//     const notesRef = firebase.database().ref("notes"); 
-//     notesRef.once("value").then((snapshot) => {
-//         const noteDataWithKeys = [];
-
-//         snapshot.forEach(childSnapshot => {
-//             const key = childSnapshot.key;
-//             const data = childSnapshot.val();
-//             noteDataWithKeys.push({ key, data }); 
-//         });
-
-//         // Logging before sorting
-//         noteDataWithKeys.forEach(item => {
-//             console.log("Before sorting: " + item.data.createdAt); 
-//         });
-
-//         noteDataWithKeys.sort((a, b) => a.data.createdAt - b.data.createdAt); 
-
-//         // Logging after sorting
-//         noteDataWithKeys.forEach(item => {
-//             console.log("After sorting: " + item.data.createdAt); 
-//         });
-
-//         noteDataWithKeys.forEach(item => {
-//             renderNote(item.data, item.key); 
-//         });
-//     });
-// }
-
-// function loadNotesFromButton(loadInitial = true) {
-//     window.location.reload();
-// }
-
-// function handleSnapshot(snapshot) {
-//     const noteArray = []; // Use an array to maintain order
-
-//     snapshot.forEach(function(childSnapshot) {
-//         const noteId = childSnapshot.key; 
-//         const noteData = childSnapshot.val();
-//         noteArray.push({id: noteId, ...noteData}); 
-//     });
-
-//     // Render notes 
-//     noteArray.forEach((noteData) => {
-//         const noteId = noteData.id;
-
-//         if (!loadedNotesId.includes(noteId)) {
-//             renderNote(noteData, noteId);
-//             loadedNotesId.push(noteId);
-//         }
-
-//         //console.log("noteArray: " + noteArray);
-//     });
-
-//     isLoading = false; 
-// }
-
-// // check gemini
-// function renderNote(noteData, noteId) {
-//     const uid = noteData.whoSentIt;
-//         database.ref("users/" + uid).once("value", (userSnapshot) => {
-//             const userData = userSnapshot.val();
-
-//             const newNoteDiv = document.createElement("div");
-//             newNoteDiv.classList.add("note");
-
-//             // Create elements for user info
-//             const userImage = document.createElement("img");
-//             userImage.classList.add("notePfp");
-//             userImage.src = `https://firebasestorage.googleapis.com/v0/b/chat-transsocial-test.appspot.com/o/images%2Fpfp%2F${uid}%2F${userData.pfp}?alt=media`;
-
-//             const displayNameElement = document.createElement("a");
-//             displayNameElement.textContent = userData.display;
-//             displayNameElement.classList.add("noteDisplay");
-
-//             const usernameElement = document.createElement("a");
-//             if (userData.pronouns === "") {
-//                 usernameElement.textContent = `@${userData.username}`;
-//             } else {
-//                 usernameElement.textContent = `@${userData.username} • ${userData.pronouns}`;
-//             }
-//             usernameElement.classList.add("noteUsername");
-
-//             // Create element for text content
-//             const noteElement = document.createElement("p");
-//             noteElement.textContent = noteData.text;
-//             noteElement.classList.add("noteText"); 
-//             if (pathName !== "/note.html" && pathName !== "/note") {
-//                 noteElement.setAttribute("onclick", `window.location.href="/note?id=${noteId}"`);
-//             }
-
-//             // Other stuff
-//             const breakpoint = document.createElement("br");
-//             const like = document.createElement("p");
-//             const renote = document.createElement("p");
-//             const reply = document.createElement("p");
-//             const contentWarning = document.createElement("div");
-
-//             // Love Button
-//             like.classList.add("likeBtn");
-
-//             // Renote Button
-//             renote.classList.add("renoteBtn");
-
-//             // Reply Button
-//             reply.classList.add("replyBtn");
-//             if (pathName !== "/note.html" && pathName !== "/note") {
-//                 reply.setAttribute("onclick", `window.location.href="/note?id=${noteId}"`);
-//             } else {
-//                 reply.setAttribute("onclick", `replyToNote(this)`);
-//             }
-
-//             // Content Warning
-//             contentWarning.classList.add("contentWarning");
-
-//             // Check if the note was already liked. This isn't needed to love/unlove a note, but it shows the user that they have.
-//             if (noteData.likes === null || noteData.likes === undefined) {
-//                 like.innerHTML = `<i class="fa-solid fa-heart"></i> 0`;
-//             } else {
-//                 firebase.auth().onAuthStateChanged((user) => {
-//                     if (user) {
-//                         const uid = user.uid;
-
-//                         if (noteData.whoLiked && noteData.whoLiked[uid]) {
-//                             like.innerHTML = `<i class="fa-solid fa-heart"></i> ${noteData.likes}`;
-//                             if (pathName === "/" || pathName === "/index.html" || pathName === "/index") {
-//                                 document.getElementById(`like-${noteData.id}`).classList.add("liked");
-//                             } else {
-//                                 //document.getElementById(`like-${noteData.id}`).classList.add("liked");
-//                             }
-//                         } else {
-//                             like.innerHTML = `<i class="fa-solid fa-heart"></i> ${noteData.likes}`;
-//                         }
-//                     } else {
-//                         like.innerHTML = `<i class="fa-solid fa-heart"></i> ${noteData.likes}`;
-//                     }
-//                 })
-//             };
-
-//             // Check if the note was already renoted. This isn't needed to renote/unrenote a note, but it shows the user that they have.
-//             if (noteData.renotes === null || noteData.renotes === undefined) {
-//                 renote.innerHTML = `<i class="fa-solid fa-retweet"></i> 0`;
-//             } else {
-//                 firebase.auth().onAuthStateChanged((user) => {
-//                     if (user) {
-//                         const uid = user.uid;
-
-//                         if (noteData.whoRenoted && noteData.whoRenoted[uid]) {
-//                             renote.innerHTML = `<i class="fa-solid fa-retweet"></i> ${noteData.renotes}`;
-//                             if (pathName === "/index.html" || pathName === "/" || pathName === "/index") {
-//                                 document.getElementById(`renote-${noteData.id}`).classList.add("renoted");
-//                             }
-//                         } else {
-//                             renote.innerHTML = `<i class="fa-solid fa-retweet"></i> ${noteData.renotes}`;
-//                         }
-//                     } else {
-//                         renote.innerHTML = `<i class="fa-solid fa-retweet"></i> ${noteData.renotes}`;
-//                     }
-//                 })
-//             };
-
-//             if (noteData.renotes === null || noteData.renotes === undefined) {
-//                 renote.innerHTML = `<i class="fa-solid fa-retweet"></i> 0`;
-//             } else {
-//                 renote.innerHTML = `<i class="fa-solid fa-retweet"></i> ${noteData.renotes}`;
-//             };
-
-//             if (noteData.replies === null || noteData.replies === undefined) {
-//                 reply.innerHTML = `<i class="fa-solid fa-comment"></i> 0`;
-//             } else {
-//                 reply.innerHTML = `<i class="fa-solid fa-comment"></i> ${noteData.replies}`;
-//             };
-
-//             // Show elements
-//             if (noteData.isNsfw === true) {
-//                 const warningNsfw = document.createElement("p");
-//                 const warningNsfwInfo = document.createElement("p");
-//                 const closeWarning = document.createElement("button");
-
-//                 closeWarning.classList.add("closeWarning");
-
-//                 warningNsfw.textContent = "Note may contain NSFW content.";
-//                 warningNsfw.classList.add("warning");
-//                 warningNsfw.setAttribute("id", `${noteData.id}-warning`);
-//                 warningNsfwInfo.textContent = "The creator of the note flagged their note as having NSFW content.";
-//                 warningNsfwInfo.classList.add("warningInfo");
-//                 warningNsfwInfo.setAttribute("id", `${noteData.id}-warningInfo`);
-//                 closeWarning.textContent = "View";
-//                 closeWarning.classList.add("closeWarning");
-//                 closeWarning.setAttribute("id", `${noteData.id}-closeWarning`);
-//                 closeWarning.setAttribute("onclick", "removeNsfw(this.id);");
-
-//                 contentWarning.setAttribute("id", `${noteData.id}-blur`);
-
-//                 newNoteDiv.appendChild(contentWarning);
-//                 newNoteDiv.appendChild(warningNsfw);
-//                 newNoteDiv.appendChild(warningNsfwInfo);
-//                 newNoteDiv.appendChild(closeWarning);
-
-//                 firebase.auth().onAuthStateChanged((user) => {
-//                     if (user) {
-//                         firebase.database().ref(`users/${user.uid}`).on("value", (snapshot) => {
-//                             const preferences = snapshot.val();
-
-//                             if (preferences.showNsfw === undefined) {
-//                                 newNoteDiv.style.display = "none";
-//                             } else if (preferences.showNsfw === "Hide") {
-//                                 newNoteDiv.style.display = "none";
-//                             } else if (preferences.showNsfw === "Blur") {
-//                                 // Do whatever
-//                             } else if (preferences.showNsfw === "Show") {
-//                                 document.getElementById(`${noteId}-warning`).remove();
-//                                 document.getElementById(`${noteId}-closeWarning`).remove();
-//                                 document.getElementById(`${noteId}-warningInfo`).remove(); 
-//                                 document.getElementById(`${noteId}-blur`).remove();
-//                             }
-//                         })
-//                     } else {
-//                         newNoteDiv.style.display = "none";
-//                     }
-//                 })
-//             } else if (noteData.isSensitive === true) {
-//                 const warningSensitive = document.createElement("p");
-//                 const warningSensitiveInfo = document.createElement("p");
-//                 const closeSensitiveWarning = document.createElement("button");
-
-//                 closeSensitiveWarning.classList.add("closeWarning");
-//                 warningSensitive.textContent = "Note may contain sensitive content.";
-//                 warningSensitive.classList.add("warning");
-//                 warningSensitive.setAttribute("id", `${noteData.id}-warning`);
-//                 warningSensitiveInfo.textContent = "The creator of the note flagged their note as having sensitive content.";
-//                 warningSensitiveInfo.classList.add("warningInfo");
-//                 warningSensitiveInfo.setAttribute("id", `${noteData.id}-warningInfo`);
-//                 closeSensitiveWarning.textContent = "View";
-//                 closeSensitiveWarning.classList.add("closeWarning");
-//                 closeSensitiveWarning.setAttribute("id", `${noteData.id}-closeWarning`);
-//                 closeSensitiveWarning.setAttribute("onclick", "removeSensitive(this.id);");
-
-//                 contentWarning.setAttribute("id", `${noteData.id}-blur`);
-
-//                 newNoteDiv.appendChild(contentWarning);
-//                 newNoteDiv.appendChild(warningSensitive);
-//                 newNoteDiv.appendChild(warningSensitiveInfo);
-//                 newNoteDiv.appendChild(closeSensitiveWarning);
-
-//                 firebase.auth().onAuthStateChanged((user) => {
-//                     if (user) {
-//                         firebase.database().ref(`users/${user.uid}`).on("value", (snapshot) => {
-//                             const preferences = snapshot.val();
-
-//                             if (preferences.showSensitive === undefined) {
-//                                 // bleh, do whatever. on default "blur".
-//                             } else if (preferences.showSensitive === "Hide") {
-//                                 newNoteDiv.style.display = "none";
-//                             } else if (preferences.showSensitive === "Blur") {
-//                                 // Do whatever
-//                             } else if (preferences.showSensitive === "Show") {
-//                                 document.getElementById(`${noteId}-warning`).remove();
-//                                 document.getElementById(`${noteId}-warningInfo`).remove();
-//                                 document.getElementById(`${noteId}-closeWarning`).remove(); 
-//                                 document.getElementById(`${noteId}-blur`).remove();
-//                             }
-//                         })
-//                     } else {
-//                         newNoteDiv.style.display = "none";
-//                     }
-//                 })
-//             } else {
-//                 // Literally nothing needs to execute.
-//                 // DON'T RETURN!! POSTS THAT AREN'T FLAGGED AS NSFW OR SENSITIVE WILL NOT SHOW UP!
-//                 // TransSocial is NOT a porn site. We don't want that.
-//             }
-
-//             newNoteDiv.appendChild(userImage);
-
-//             newNoteDiv.appendChild(displayNameElement);
-//             displayNameElement.href = `/u?id=${userData.username}`;
-
-//             newNoteDiv.appendChild(breakpoint);
-
-//             newNoteDiv.appendChild(usernameElement);
-//             usernameElement.href = `/u?id=${userData.username}`;
-
-//             newNoteDiv.appendChild(noteElement);
-
-//             if (noteData.image !== undefined) {
-//                 const uploadedImage = document.createElement("img");
-//                 uploadedImage.src = noteData.image;
-//                 uploadedImage.classList.add("uploadedImg");
-//                 uploadedImage.setAttribute("draggable", "false");
-//                 newNoteDiv.appendChild(uploadedImage);
-//             }
-
-//             newNoteDiv.appendChild(like);
-//             like.setAttribute("id", `like-${noteId}`);
-
-//             newNoteDiv.appendChild(renote);
-//             renote.setAttribute("id", `renote-${noteId}`);
-
-//             newNoteDiv.appendChild(reply);
-
-//             newNoteDiv.setAttribute("id", noteId);
-//             if (pathName === "/u.html" || pathName === "/u") {
-//                 const url = new URL(window.location.href);
-//                 const userParam = url.searchParams.get("id");
-
-//                 database.ref(`taken-usernames/${userParam}`).once("value", (snapshot) => {
-//                     const profileExists = snapshot.val();
-
-//                     if (profileExists.user !== null) {
-//                         if (profileExists.user === noteData.whoSentIt) {
-//                             if (!notesDiv.querySelector(`#${noteId}`)) { 
-//                                 if (noteData.replyingTo === undefined) {
-//                                     notesDiv.appendChild(newNoteDiv); 
-//                                 }
-//                             }
-//                             // addHyperlinks("noteText");
-//                             if (pathName === "/" || pathName === "/index.html" || pathName === "/index") {
-//                                 document.getElementById("newNotesAvailable").style.display = "none";
-//                             }
-//                         }
-//                     }
-//                 }) 
-//             } else {
-//                 if (!notesDiv.querySelector(`#${noteId}`)) { 
-//                     if (pathName === "/note.html" || pathName === "/note") {
-//                         const url = new URL(window.location.href);
-//                         const noteParam = url.searchParams.get("id");
-
-//                         database.ref(`notes/${noteId}`).once("value", (snapshot) => {
-//                             const note = snapshot.val();
-
-//                             if (note.replyingTo === noteParam) {
-//                                 notesDiv.appendChild(newNoteDiv);
-//                             }
-//                         })
-//                     } else {
-//                         if (noteData.replyingTo === undefined) {
-//                             notesDiv.appendChild(newNoteDiv); 
-//                             notesDiv.appendChild(newNoteDiv);
-//                         }
-//                         document.getElementById("newNotesAvailable").style.display = "none";
-//                     }  
-//                 }
-//                 // addHyperlinks("noteText");
-
-//             }
-//         })
-// }
-
-// loadNotes();
+// i think its safe to assume no one needs the old note rendering code from v0.0.1?
 
 // Note Loading
 let notesRef = firebase.database().ref('notes');
 const notesDiv = document.getElementById("notes");
 const batchSize = null;
 let isLoading = false;
-let lastVisibleNoteId = null;
+let lastNoteKey = null;
 let loadedNotesId = [];
 
 if (pathName === "/home" || pathName === "/home.html" || pathName === "/u" || pathName === "/u.html" || pathName === "/note" || pathName === "/note.html" || pathName === "/favorites") {
@@ -1602,364 +1251,416 @@ if (pathName === "/home" || pathName === "/home.html" || pathName === "/u" || pa
       threshold: 0.1
    });
 
-   // retrieve data from the "notes" node
-   notesRef.once('value')
-      .then(function (snapshot) {
+   function loadInitalNotes() {
+      if (pathName !== "/note" && pathName !== "/u") {
+         notesRef.limitToLast(15).once("value").then(function (snapshot) {
+            const notesArray = [];
+            snapshot.forEach(function (childSnapshot) {
+               const noteContent = childSnapshot.val();
+               noteContent.key = childSnapshot.key;
+               notesArray.push(noteContent);
+            });
+
+            notesArray.sort((a, b) => b.createdAt - a.createdAt);
+
+            lastNoteKey = notesArray[notesArray.length - 1]?.key;
+
+            renderNotes(notesArray);
+         });
+      } else if (pathName === "/note") {
+         const url = new URL(window.location.href);
+         const noteParam = url.searchParams.get("id");
+
+         notesRef.once("value")
+            .then(function(snapshot) {
+               notesRef.limitToLast(snapshot.numChildren()).once("value").then(function (snapshot) {
+                  const notesArray = [];
+                  snapshot.forEach(function (childSnapshot) {
+                     const noteContent = childSnapshot.val();
+                     noteContent.key = childSnapshot.key;
+                     notesArray.push(noteContent);
+                  });
+      
+                  notesArray.sort((a, b) => b.createdAt - a.createdAt);
+      
+                  lastNoteKey = notesArray[notesArray.length - 1]?.key;
+
+                  const filteredNotes = notesArray.filter((currentNote) => currentNote.replyingTo === noteParam);
+      
+                  if (filteredNotes.length > 0) {
+                     renderNotes(filteredNotes);
+                  } else {
+                     renderNotes(notesArray);
+                  }
+               });
+            })
+         } else if (pathName === "/u") {
+            const url = new URL(window.location.href);
+            const userParam = url.searchParams.get("id");
+   
+            firebase.database().ref(`taken-usernames/${userParam}`).once("value", (snapshot) => {
+               const id = snapshot.val();
+               
+               firebase.database().ref(`users/${id.user}/posts`).once("value")
+               .then(function(snapshot) {
+                     notesRef.limitToLast(snapshot.numChildren()).once("value").then(function (snapshot) {
+                        const notesArray = [];
+                        snapshot.forEach(function (childSnapshot) {
+                           const noteContent = childSnapshot.val();
+                           noteContent.key = childSnapshot.key;
+                           notesArray.push(noteContent);
+                        });
+               
+                        notesArray.sort((a, b) => b.createdAt - a.createdAt);
+               
+                        lastNoteKey = notesArray[notesArray.length - 1]?.key;
+         
+                        const filteredNotes = notesArray.filter((currentNote) => currentNote.replyingTo === userParam);
+               
+                        if (filteredNotes.length > 0) {
+                           renderNotes(filteredNotes.reverse()); // has to be reversed, or it goes all weird
+                        } else {
+                           renderNotes(notesArray.reverse());
+                        }
+                     });
+                  })
+            })
+         }
+      } 
+
+   loadInitalNotes();
+
+   // infinite loading
+   window.addEventListener("scroll", () => {
+      if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 200) {
+         loadMoreNotes();
+      }
+   });
+
+   function loadMoreNotes() {
+      if (!lastNoteKey) return;
+
+      notesRef.orderByKey().endBefore(lastNoteKey).limitToLast(15).once('value').then(function (snapshot) {
          const notesArray = [];
+
          snapshot.forEach(function (childSnapshot) {
             const noteContent = childSnapshot.val();
+            noteContent.key = childSnapshot.key;
             notesArray.push(noteContent);
          });
 
-         // sort notes by timestamp, newest first
-         notesArray.sort((a, b) => b.createdAt - a.createdAt);
+         if (notesArray.length > 0) {
+            lastNoteKey = notesArray[0].key;
 
-         // create and append divs for each note
-         const notesContainer = document.getElementById('notes');
-         notesArray.forEach(noteContent => {
-            const noteDiv = createNoteDiv(noteContent);
-            if (document.getElementById("newNotesAvailable")) {
-               document.getElementById("newNotesAvailable").style.display = "none";
-            }
+            renderNotes(notesArray.reverse());
+         }
+      });
+   }
 
-            // Check if the note has NSFW/Sensitive content and users preferences
-            // Do this immediately or bugs will arise (that I don't feel like fixing)
-            if (noteContent.isNsfw === true) {
-               firebase.auth().onAuthStateChanged((user) => {
-                  if (user) {
-                     firebase.database().ref(`users/${user.uid}`).once("value", (snapshot) => {
-                        const showNsfw = snapshot.val();
+   // retrieve data from the "notes" node
+   function renderNotes(notesArray) {
+      const notesContainer = document.getElementById("notes");
 
-                        if (showNsfw.showNsfw === "Show") {
-                           // No need to do anything. It'll do it as is.
-                        } else if (showNsfw.showNsfw === "Blur") {
-                           // The actual cover
-                           const cover = document.createElement("div");
-                           cover.classList.add("contentWarning");
-                           cover.setAttribute("id", `${noteContent.id}-blur`);
+      notesArray.forEach(noteContent => {
+         const noteDiv = createNoteDiv(noteContent);
 
-                           // Warning Header
-                           const warning = document.createElement("p");
-                           warning.setAttribute("id", `${noteContent.id}-warning`);
-                           warning.classList.add("warning");
-                           warning.textContent = "Note may contain NSFW content.";
+         if (document.getElementById("newNotesAvailable")) {
+            document.getElementById("newNotesAvailable").style.display = "none";
+         }
 
-                           // Warning Info
-                           const warningInfo = document.createElement("p");
-                           warningInfo.classList.add("warningInfo");
-                           warningInfo.setAttribute("id", `${noteContent.id}-warningInfo`);
-                           warningInfo.textContent = "The creator of this note flagged their note as having NSFW content.";
+         if (noteContent.isNsfw === true) {
+            firebase.auth().onAuthStateChanged((user) => {
+               if (user) {
+                  firebase.database().ref(`users/${user.uid}`).once("value", (snapshot) => {
+                     const showNsfw = snapshot.val();
 
-                           // Close Warning Button
-                           const closeButton = document.createElement("button");
-                           closeButton.classList.add("closeWarning");
-                           closeButton.setAttribute("id", `${noteContent.id}-closeWarning`);
-                           closeButton.setAttribute("onclick", "removeNsfw(this.id);");
-                           closeButton.textContent = "View";
+                     if (showNsfw.showNsfw === "Show") {
+                        // No need to do anything. It'll do it as is.
+                     } else if (showNsfw.showNsfw === "Blur") {
+                        // The actual cover
+                        const cover = document.createElement("div");
+                        cover.classList.add("contentWarning");
+                        cover.setAttribute("id", `${noteContent.id}-blur`);
 
-                           // Show all children
-                           noteDiv.appendChild(cover);
-                           noteDiv.appendChild(warning);
-                           noteDiv.appendChild(warningInfo);
-                           noteDiv.appendChild(closeButton);
-                        } else if (showNsfw.showNsfw === "Hide") {
-                           // We remove the note so the user doesn't have to see it
-                           noteDiv.remove();
-                        }
-                     })
-                  } else {
-                     noteDiv.remove();
-                  }
-               })
-            } else if (noteContent.isSensitive === true) {
-               firebase.auth().onAuthStateChanged((user) => {
-                  if (user) {
-                     firebase.database().ref(`users/${user.uid}`).once("value", (snapshot) => {
-                        const showNsfw = snapshot.val();
+                        // Warning Header
+                        const warning = document.createElement("p");
+                        warning.setAttribute("id", `${noteContent.id}-warning`);
+                        warning.classList.add("warning");
+                        warning.textContent = "Note may contain NSFW content.";
 
-                        if (showNsfw.showSensitive === "Show") {
-                           // No need to do anything. It'll do it as is.
-                        } else if (showNsfw.showSensitive === "Blur") {
-                           // The actual cover
-                           const cover = document.createElement("div");
-                           cover.classList.add("contentWarning");
-                           cover.setAttribute("id", `${noteContent.id}-blur`);
+                        // Warning Info
+                        const warningInfo = document.createElement("p");
+                        warningInfo.classList.add("warningInfo");
+                        warningInfo.setAttribute("id", `${noteContent.id}-warningInfo`);
+                        warningInfo.textContent = "The creator of this note flagged their note as having NSFW content.";
 
-                           // Warning Header
-                           const warning = document.createElement("p");
-                           warning.setAttribute("id", `${noteContent.id}-warning`);
-                           warning.classList.add("warning");
-                           warning.textContent = "Note may contain sensitive content.";
+                        // Close Warning Button
+                        const closeButton = document.createElement("button");
+                        closeButton.classList.add("closeWarning");
+                        closeButton.setAttribute("id", `${noteContent.id}-closeWarning`);
+                        closeButton.setAttribute("onclick", "removeNsfw(this.id);");
+                        closeButton.textContent = "View";
 
-                           // Warning Info
-                           const warningInfo = document.createElement("p");
-                           warningInfo.classList.add("warningInfo");
-                           warningInfo.setAttribute("id", `${noteContent.id}-warningInfo`);
-                           warningInfo.textContent = "The creator of this note flagged their note as having sensitive content.";
-
-                           // Close Warning Button
-                           const closeButton = document.createElement("button");
-                           closeButton.classList.add("closeWarning");
-                           closeButton.setAttribute("id", `${noteContent.id}-closeWarning`);
-                           closeButton.setAttribute("onclick", "removeNsfw(this.id);");
-                           closeButton.textContent = "View";
-
-                           // Show all children
-                           noteDiv.appendChild(cover);
-                           noteDiv.appendChild(warning);
-                           noteDiv.appendChild(warningInfo);
-                           noteDiv.appendChild(closeButton);
-                        } else if (showNsfw.showSensitive === "Hide") {
-                           // We remove the note so the user doesn't have to see it
-                           noteDiv.remove();
-                        }
-                     })
-                  } else {
-                     noteDiv.remove();
-                  }
-               })
-            } else if (noteContent.isPolitical === true) {
-               firebase.auth().onAuthStateChanged((user) => {
-                  if (user) {
-                     firebase.database().ref(`users/${user.uid}`).once("value", (snapshot) => {
-                        const showNsfw = snapshot.val();
-
-                        if (showNsfw.showPolitics === "Show") {
-                           // No need to do anything. It'll do it as is.
-                        } else if (showNsfw.showPolitics === "Blur") {
-                           // The actual cover
-                           const cover = document.createElement("div");
-                           cover.classList.add("contentWarning");
-                           cover.setAttribute("id", `${noteContent.id}-blur`);
-
-                           // Warning Header
-                           const warning = document.createElement("p");
-                           warning.setAttribute("id", `${noteContent.id}-warning`);
-                           warning.classList.add("warning");
-                           warning.textContent = "Note may contain political content.";
-
-                           // Warning Info
-                           const warningInfo = document.createElement("p");
-                           warningInfo.classList.add("warningInfo");
-                           warningInfo.setAttribute("id", `${noteContent.id}-warningInfo`);
-                           warningInfo.textContent = "This note may contain political content. This note does not reflect TransSocial's opinions. This note may not be political and may be incorrectly flagged.";
-
-                           // Close Warning Button
-                           const closeButton = document.createElement("button");
-                           closeButton.classList.add("closeWarning");
-                           closeButton.setAttribute("id", `${noteContent.id}-closeWarning`);
-                           closeButton.setAttribute("onclick", "removeNsfw(this.id);");
-                           closeButton.textContent = "View";
-                           closeButton.style.marginTop = "25px";
-
-                           // Show all children
-                           noteDiv.appendChild(cover);
-                           noteDiv.appendChild(warning);
-                           noteDiv.appendChild(warningInfo);
-                           noteDiv.appendChild(closeButton);
-                        } else if (showNsfw.showPolitics === "Hide") {
-                           // We remove the note so the user doesn't have to see it
-                           noteDiv.remove();
-                        }
-                     })
-                  } else {
-                     noteDiv.remove();
-                  }
-               })
-            }
-
-            // Create the user's PFP
-            const userPfp = document.createElement("img");
-            userPfp.classList.add("notePfp");
-            firebase.database().ref("users/" + noteContent.whoSentIt).once("value", (snapshot) => {
-               const fetchedUser = snapshot.val();
-               userPfp.src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${noteContent.whoSentIt}%2F${fetchedUser.pfp}?alt=media`;
-               userPfp.setAttribute("draggable", "false");
-               userPfp.setAttribute("loading", "lazy");
-            });
-            noteDiv.appendChild(userPfp);
-            mediaObserver.observe(userPfp); // observe pfp
-
-            // Create the user's display name
-            // Also check for badges (verified, mod, Enchanted, etc.)
-            const displayName = document.createElement("a");
-            displayName.classList.add("noteDisplay");
-            firebase.database().ref("users/" + noteContent.whoSentIt).once("value", (snapshot) => {
-               const fetchedUser = snapshot.val();
-               displayName.textContent = fetchedUser.display;
-               displayName.href = `/u?id=${fetchedUser.username}`;
-
-               const badges = document.createElement("span");
-               if (fetchedUser.isVerified === true) {
-                  badges.innerHTML = `<i class="fa-solid fa-circle-check fa-sm"></i>`;
-               }
-               if (fetchedUser.isSubscribed === true) {
-                  badges.innerHTML = `${badges.innerHTML}<i class="fa-solid fa-heart fa-sm"></i>`;
-               }
-               if (fetchedUser.activeContributor === true) {
-                  badges.innerHTML = `${badges.innerHTML}<i class="fa-solid fa-handshake-angle fa-sm"></i>`;
-               }
-               badges.classList.add("noteBadges");
-               displayName.appendChild(badges);
-            })
-            noteDiv.appendChild(displayName);
-
-            // Insert Breakpoint to Seperate Display Name and Username
-            const breakpoint = document.createElement("br");
-            noteDiv.appendChild(breakpoint);
-
-            // Create the user's username
-            const username = document.createElement("a");
-            username.classList.add("noteUsername");
-            firebase.database().ref("users/" + noteContent.whoSentIt).once("value", (snapshot) => {
-               const fetchedUser = snapshot.val();
-               if (fetchedUser.pronouns !== undefined) {
-                  const displayDate = timeAgo(noteContent.createdAt);
-
-                  username.textContent = `@${fetchedUser.username} • ${fetchedUser.pronouns} • ${displayDate}`;
+                        // Show all children
+                        noteDiv.appendChild(cover);
+                        noteDiv.appendChild(warning);
+                        noteDiv.appendChild(warningInfo);
+                        noteDiv.appendChild(closeButton);
+                     } else if (showNsfw.showNsfw === "Hide") {
+                        // We remove the note so the user doesn't have to see it
+                        noteDiv.remove();
+                     }
+                  })
                } else {
-                  const displayDate = timeAgo(noteContent.createdAt);
-
-                  username.textContent = `@${fetchedUser.username} • ${displayDate}`;
+                  noteDiv.remove();
                }
-               username.href = `/u?id=${fetchedUser.username}`;
             })
-            noteDiv.appendChild(username);
+         } else if (noteContent.isSensitive === true) {
+            firebase.auth().onAuthStateChanged((user) => {
+               if (user) {
+                  firebase.database().ref(`users/${user.uid}`).once("value", (snapshot) => {
+                     const showNsfw = snapshot.val();
 
-            // Create the note's text
-            const text = document.createElement("p");
-            text.innerHTML = sanitizeAndLinkify(noteContent.text)
-            text.classList.add("noteText");
-            if (noteContent.replyingTo === undefined) {
-               text.setAttribute("onclick", `window.location.href="/note?id=${noteContent.id}"`);
-            }
-            text.querySelectorAll('a').forEach(link => {
-               link.addEventListener('click', (event) => {
-                  event.stopPropagation();
-               });
-            });
-            twemoji.parse(text, {
-               folder: 'svg',
-               ext: '.svg'
-            });
-            noteDiv.appendChild(text);
+                     if (showNsfw.showSensitive === "Show") {
+                        // No need to do anything. It'll do it as is.
+                     } else if (showNsfw.showSensitive === "Blur") {
+                        // The actual cover
+                        const cover = document.createElement("div");
+                        cover.classList.add("contentWarning");
+                        cover.setAttribute("id", `${noteContent.id}-blur`);
 
-            // If image has image/video, render a video/image
-            if (noteContent.image !== undefined) {
-               let imageFileName = noteContent.image;
-               let imageExtension = imageFileName.split(".").pop();
-               const url = imageExtension;
-               const cleanUrl = url.split('?')[0];
-            
-               if (cleanUrl === "mp4") {
-                  const video = document.createElement("video");
-                  video.src = noteContent.image;
-                  video.classList.add("uploadedImg");
-                  video.controls = true;
-                  video.muted = true;
-                  video.loop = true;
-                  video.setAttribute("loading", "lazy");
-                  video.style.visibility = "hidden"; // Start hidden
-                  video.style.opacity = "0";
-            
-                  video.autoplay = userAutoplayPreference;
-            
-                  video.setAttribute("alt", `${noteContent.alt}`);
-                  noteDiv.appendChild(video);
-            
-                  // observe image
-                  mediaObserver.observe(video);
+                        // Warning Header
+                        const warning = document.createElement("p");
+                        warning.setAttribute("id", `${noteContent.id}-warning`);
+                        warning.classList.add("warning");
+                        warning.textContent = "Note may contain sensitive content.";
+
+                        // Warning Info
+                        const warningInfo = document.createElement("p");
+                        warningInfo.classList.add("warningInfo");
+                        warningInfo.setAttribute("id", `${noteContent.id}-warningInfo`);
+                        warningInfo.textContent = "The creator of this note flagged their note as having sensitive content.";
+
+                        // Close Warning Button
+                        const closeButton = document.createElement("button");
+                        closeButton.classList.add("closeWarning");
+                        closeButton.setAttribute("id", `${noteContent.id}-closeWarning`);
+                        closeButton.setAttribute("onclick", "removeNsfw(this.id);");
+                        closeButton.textContent = "View";
+
+                        // Show all children
+                        noteDiv.appendChild(cover);
+                        noteDiv.appendChild(warning);
+                        noteDiv.appendChild(warningInfo);
+                        noteDiv.appendChild(closeButton);
+                     } else if (showNsfw.showSensitive === "Hide") {
+                        // We remove the note so the user doesn't have to see it
+                        noteDiv.remove();
+                     }
+                  })
                } else {
-                  const image = document.createElement("img");
-                  image.src = noteContent.image;
-                  image.draggable = "false";
-                  image.classList.add("uploadedImg");
-                  image.setAttribute("alt", `${noteContent.alt}`);
-                  image.setAttribute("loading", "lazy");
-                  image.style.visibility = "hidden"; // Start hidden
-                  image.style.opacity = "0";
-            
-                  noteDiv.appendChild(image);
-            
-                  // observe image
-                  mediaObserver.observe(image);
+                  noteDiv.remove();
                }
+            })
+         } else if (noteContent.isPolitical === true) {
+            firebase.auth().onAuthStateChanged((user) => {
+               if (user) {
+                  firebase.database().ref(`users/${user.uid}`).once("value", (snapshot) => {
+                     const showNsfw = snapshot.val();
+
+                     if (showNsfw.showPolitics === "Show") {
+                        // No need to do anything. It'll do it as is.
+                     } else if (showNsfw.showPolitics === "Blur") {
+                        // The actual cover
+                        const cover = document.createElement("div");
+                        cover.classList.add("contentWarning");
+                        cover.setAttribute("id", `${noteContent.id}-blur`);
+
+                        // Warning Header
+                        const warning = document.createElement("p");
+                        warning.setAttribute("id", `${noteContent.id}-warning`);
+                        warning.classList.add("warning");
+                        warning.textContent = "Note may contain political content.";
+
+                        // Warning Info
+                        const warningInfo = document.createElement("p");
+                        warningInfo.classList.add("warningInfo");
+                        warningInfo.setAttribute("id", `${noteContent.id}-warningInfo`);
+                        warningInfo.textContent = "This note may contain political content. This note does not reflect TransSocial's opinions. This note may not be political and may be incorrectly flagged.";
+
+                        // Close Warning Button
+                        const closeButton = document.createElement("button");
+                        closeButton.classList.add("closeWarning");
+                        closeButton.setAttribute("id", `${noteContent.id}-closeWarning`);
+                        closeButton.setAttribute("onclick", "removeNsfw(this.id);");
+                        closeButton.textContent = "View";
+                        closeButton.style.marginTop = "25px";
+
+                        // Show all children
+                        noteDiv.appendChild(cover);
+                        noteDiv.appendChild(warning);
+                        noteDiv.appendChild(warningInfo);
+                        noteDiv.appendChild(closeButton);
+                     } else if (showNsfw.showPolitics === "Hide") {
+                        // We remove the note so the user doesn't have to see it
+                        noteDiv.remove();
+                     }
+                  })
+               } else {
+                  noteDiv.remove();
+               }
+            })
+         }
+
+         // Create the user's PFP
+         const userPfp = document.createElement("img");
+         userPfp.classList.add("notePfp");
+         firebase.database().ref("users/" + noteContent.whoSentIt).once("value", (snapshot) => {
+            const fetchedUser = snapshot.val();
+            userPfp.src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${noteContent.whoSentIt}%2F${fetchedUser.pfp}?alt=media`;
+            userPfp.setAttribute("draggable", "false");
+            userPfp.setAttribute("loading", "lazy");
+         });
+         noteDiv.appendChild(userPfp);
+         mediaObserver.observe(userPfp); // observe pfp
+
+         // Create the user's display name
+         // Also check for badges (verified, mod, Enchanted, etc.)
+         const displayName = document.createElement("a");
+         displayName.classList.add("noteDisplay");
+         firebase.database().ref("users/" + noteContent.whoSentIt).once("value", (snapshot) => {
+            const fetchedUser = snapshot.val();
+            displayName.textContent = fetchedUser.display;
+            displayName.href = `/u?id=${fetchedUser.username}`;
+
+            const badges = document.createElement("span");
+            if (fetchedUser.isVerified === true) {
+               badges.innerHTML = `<i class="fa-solid fa-circle-check fa-sm"></i>`;
             }
-
-            // if the note has a song, embed it into the note
-            if (noteContent.music) {
-               const embed = document.createElement("iframe");
-               embed.src = `https://open.spotify.com/embed/track/${noteContent.music}`;
-               embed.width = "98%";
-               embed.height = "100";
-               embed.frameBorder = "0";
-               embed.allowTransparency = "true";
-               embed.allow = "encrypted-media";
-
-               noteDiv.appendChild(embed);
+            if (fetchedUser.isSubscribed === true) {
+               badges.innerHTML = `${badges.innerHTML}<i class="fa-solid fa-heart fa-sm"></i>`;
             }
+            if (fetchedUser.activeContributor === true) {
+               badges.innerHTML = `${badges.innerHTML}<i class="fa-solid fa-handshake-angle fa-sm"></i>`;
+            }
+            badges.classList.add("noteBadges");
+            displayName.appendChild(badges);
+         })
+         noteDiv.appendChild(displayName);
 
-            // If quoting a note, display the note that the note is quoting
-            if (noteContent.quoting) {
-               const container = document.createElement("div");
-               container.classList.add("quoteContainer");
-               container.setAttribute("onclick", `window.location.replace("/note?id=${noteContent.quoting}")`);
-               noteDiv.appendChild(container);
+         // Insert Breakpoint to Seperate Display Name and Username
+         const breakpoint = document.createElement("br");
+         noteDiv.appendChild(breakpoint);
 
-               firebase.database().ref(`notes/${noteContent.quoting}`).once("value", (snapshot) => {
-                  const quoteData = snapshot.val();
+         // Create the user's username
+         const username = document.createElement("a");
+         username.classList.add("noteUsername");
+         firebase.database().ref("users/" + noteContent.whoSentIt).once("value", (snapshot) => {
+            const fetchedUser = snapshot.val();
+            if (fetchedUser.pronouns !== undefined) {
+               const displayDate = timeAgo(noteContent.createdAt);
 
-                  if (quoteData.isDeleted !== true) {
-                     firebase.database().ref(`users/${quoteData.whoSentIt}`).once("value", (snapshot) => {
-                        const quoteUser = snapshot.val();
+               username.textContent = `@${fetchedUser.username} • ${fetchedUser.pronouns} • ${displayDate}`;
+            } else {
+               const displayDate = timeAgo(noteContent.createdAt);
 
-                        const quotePfp = document.createElement("img");
-                        quotePfp.classList.add("quotePfp");
-                        quotePfp.setAttribute("draggable", "false");
-                        quotePfp.src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${quoteData.whoSentIt}%2F${quoteUser.pfp}?alt=media`;
+               username.textContent = `@${fetchedUser.username} • ${displayDate}`;
+            }
+            username.href = `/u?id=${fetchedUser.username}`;
+         })
+         noteDiv.appendChild(username);
 
-                        const quoteContent = document.createElement("div");
-                        quoteContent.classList.add("quoteContent");
+         // Create the note's text
+         const text = document.createElement("p");
+         text.innerHTML = sanitizeAndLinkify(noteContent.text)
+         text.classList.add("noteText");
+         if (noteContent.replyingTo === undefined) {
+            text.setAttribute("onclick", `window.location.href="/note?id=${noteContent.id}"`);
+         }
+         text.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', (event) => {
+               event.stopPropagation();
+            });
+         });
+         twemoji.parse(text, {
+            folder: 'svg',
+            ext: '.svg'
+         });
+         noteDiv.appendChild(text);
 
-                        const quoteHeader = document.createElement("div");
-                        quoteHeader.classList.add("quoteHeader");
+         // If image has image/video, render a video/image
+         if (noteContent.image !== undefined) {
+            let imageFileName = noteContent.image;
+            let imageExtension = imageFileName.split(".").pop();
+            const url = imageExtension;
+            const cleanUrl = url.split('?')[0];
+         
+            if (cleanUrl === "mp4") {
+               const video = document.createElement("video");
+               video.src = noteContent.image;
+               video.classList.add("uploadedImg");
+               video.controls = true;
+               video.muted = true;
+               video.loop = true;
+               video.setAttribute("loading", "lazy");
+               video.style.visibility = "hidden"; // Start hidden
+               video.style.opacity = "0";
+         
+               video.autoplay = userAutoplayPreference;
+         
+               video.setAttribute("alt", `${noteContent.alt}`);
+               noteDiv.appendChild(video);
+         
+               // observe image
+               mediaObserver.observe(video);
+            } else {
+               const image = document.createElement("img");
+               image.src = noteContent.image;
+               image.draggable = "false";
+               image.classList.add("uploadedImg");
+               image.setAttribute("alt", `${noteContent.alt}`);
+               image.setAttribute("loading", "lazy");
+               image.style.visibility = "hidden"; // Start hidden
+               image.style.opacity = "0";
+         
+               noteDiv.appendChild(image);
+         
+               // observe image
+               mediaObserver.observe(image);
+            }
+         }
 
-                        const quoteDisplay = document.createElement("span");
-                        quoteDisplay.classList.add("quoteDisplay");
-                        quoteDisplay.textContent = quoteUser.display;
+         // if the note has a song, embed it into the note
+         if (noteContent.music) {
+            const embed = document.createElement("iframe");
+            embed.src = `https://open.spotify.com/embed/track/${noteContent.music}`;
+            embed.width = "98%";
+            embed.height = "100";
+            embed.frameBorder = "0";
+            embed.allowTransparency = "true";
+            embed.allow = "encrypted-media";
 
-                        const quoteUsername = document.createElement("span");
-                        quoteUsername.classList.add("quoteUsername");
-                        if (quoteUser.pronouns !== undefined || quoteUser.pronouns !== "") {
-                           quoteUsername.textContent = `@${quoteUser.username} • ${quoteUser.pronouns}`;
-                        } else {
-                           quoteUsername.textContent = `@${quoteUser.username}`;
-                        }
+            noteDiv.appendChild(embed);
+         }
 
-                        const quoteText = document.createElement("span");
-                        quoteText.classList.add("quoteText");
-                        let content = sanitizeAndLinkify(quoteData.text);
-                        if (content.length > 247) { // check length
-                           content = content.substring(0, 247) + "...";
-                        }
-                        quoteText.innerHTML = content;
+         // If quoting a note, display the note that the note is quoting
+         if (noteContent.quoting) {
+            const container = document.createElement("div");
+            container.classList.add("quoteContainer");
+            container.setAttribute("onclick", `window.location.replace("/note?id=${noteContent.quoting}")`);
+            noteDiv.appendChild(container);
 
-                        container.appendChild(quotePfp);
-                        container.appendChild(quoteContent);
-                        quoteHeader.appendChild(quoteDisplay);
-                        quoteHeader.appendChild(quoteUsername);
-                        quoteContent.appendChild(quoteHeader);
-                        quoteContent.appendChild(quoteText);
-                        twemoji.parse(quoteText, {
-                           folder: 'svg',
-                           ext: '.svg'
-                        });
-                     })
-                  } else {
+            firebase.database().ref(`notes/${noteContent.quoting}`).once("value", (snapshot) => {
+               const quoteData = snapshot.val();
+
+               if (quoteData.isDeleted !== true) {
+                  firebase.database().ref(`users/${quoteData.whoSentIt}`).once("value", (snapshot) => {
+                     const quoteUser = snapshot.val();
+
                      const quotePfp = document.createElement("img");
                      quotePfp.classList.add("quotePfp");
                      quotePfp.setAttribute("draggable", "false");
-                     quotePfp.src = `/assets/imgs/defaultPfp.png`;
+                     quotePfp.src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${quoteData.whoSentIt}%2F${quoteUser.pfp}?alt=media`;
 
                      const quoteContent = document.createElement("div");
                      quoteContent.classList.add("quoteContent");
@@ -1969,16 +1670,23 @@ if (pathName === "/home" || pathName === "/home.html" || pathName === "/u" || pa
 
                      const quoteDisplay = document.createElement("span");
                      quoteDisplay.classList.add("quoteDisplay");
-                     quoteDisplay.textContent = "Unknown User";
+                     quoteDisplay.textContent = quoteUser.display;
 
                      const quoteUsername = document.createElement("span");
                      quoteUsername.classList.add("quoteUsername");
-                     quoteUsername.textContent = `@unknownuser`;
-                     
+                     if (quoteUser.pronouns !== undefined || quoteUser.pronouns !== "") {
+                        quoteUsername.textContent = `@${quoteUser.username} • ${quoteUser.pronouns}`;
+                     } else {
+                        quoteUsername.textContent = `@${quoteUser.username}`;
+                     }
 
                      const quoteText = document.createElement("span");
                      quoteText.classList.add("quoteText");
-                     quoteText.textContent = "You do not have permission to view this note.";
+                     let content = sanitizeAndLinkify(quoteData.text);
+                     if (content.length > 247) { // check length
+                        content = content.substring(0, 247) + "...";
+                     }
+                     quoteText.innerHTML = content;
 
                      container.appendChild(quotePfp);
                      container.appendChild(quoteContent);
@@ -1986,180 +1694,254 @@ if (pathName === "/home" || pathName === "/home.html" || pathName === "/u" || pa
                      quoteHeader.appendChild(quoteUsername);
                      quoteContent.appendChild(quoteHeader);
                      quoteContent.appendChild(quoteText);
-                  }
-               })
-            }
+                     twemoji.parse(quoteText, {
+                        folder: 'svg',
+                        ext: '.svg'
+                     });
+                  })
+               } else {
+                  const quotePfp = document.createElement("img");
+                  quotePfp.classList.add("quotePfp");
+                  quotePfp.setAttribute("draggable", "false");
+                  quotePfp.src = `/assets/imgs/defaultPfp.png`;
 
-            // If flagged, display that.
-            if (noteContent.isNsfw === true) {
-               const contentWarning = document.createElement("p");
-               contentWarning.classList.add("contentWarning-showBelowText");
-               contentWarning.innerHTML = `<i class="fa-solid fa-flag"></i> Flagged as NSFW`;
+                  const quoteContent = document.createElement("div");
+                  quoteContent.classList.add("quoteContent");
 
-               noteDiv.appendChild(contentWarning);
-            } else if (noteContent.isSensitive === true) {
-               const contentWarning = document.createElement("p");
-               contentWarning.classList.add("contentWarning-showBelowText");
-               contentWarning.innerHTML = `<i class="fa-solid fa-flag"></i> Flagged as sensitive`;
+                  const quoteHeader = document.createElement("div");
+                  quoteHeader.classList.add("quoteHeader");
 
-               noteDiv.appendChild(contentWarning);
-            } else if (noteContent.isPolitical === true) {
-               const contentWarning = document.createElement("p");
-               contentWarning.classList.add("contentWarning-showBelowText");
-               contentWarning.innerHTML = `<i class="fa-solid fa-flag"></i> Flagged as political`;
+                  const quoteDisplay = document.createElement("span");
+                  quoteDisplay.classList.add("quoteDisplay");
+                  quoteDisplay.textContent = "Unknown User";
 
-               noteDiv.appendChild(contentWarning);
-            }
+                  const quoteUsername = document.createElement("span");
+                  quoteUsername.classList.add("quoteUsername");
+                  quoteUsername.textContent = `@unknownuser`;
+                  
 
+                  const quoteText = document.createElement("span");
+                  quoteText.classList.add("quoteText");
+                  quoteText.textContent = "You do not have permission to view this note.";
 
-            const buttonRow = document.createElement("div");
-            buttonRow.classList.add("buttonRow");
-            firebase.database().ref(`users/${firebase.auth().currentUser.uid}/experiments`).once("value", (val) => {
-               if (val.val().noteButtonLayout) {
-                  buttonRow.classList.add("buttonRowExperiment");
+                  container.appendChild(quotePfp);
+                  container.appendChild(quoteContent);
+                  quoteHeader.appendChild(quoteDisplay);
+                  quoteHeader.appendChild(quoteUsername);
+                  quoteContent.appendChild(quoteHeader);
+                  quoteContent.appendChild(quoteText);
                }
             })
+         }
 
-            // Add love button
-            const loveBtn = document.createElement("p");
-            loveBtn.classList.add("likeBtn");
-            if (noteContent.likes !== undefined) {
-               loveBtn.innerHTML = `<i class="fa-solid fa-heart"></i> ${noteContent.likes}`;
+         // If flagged, display that.
+         if (noteContent.isNsfw === true) {
+            const contentWarning = document.createElement("p");
+            contentWarning.classList.add("contentWarning-showBelowText");
+            contentWarning.innerHTML = `<i class="fa-solid fa-flag"></i> Flagged as NSFW`;
 
-               firebase.auth().onAuthStateChanged((user) => {
-                  if (noteContent.whoLiked && noteContent.whoLiked[user.uid]) {
-                     loveBtn.classList.add("liked");
-                  }
-               })
-            } else {
-               loveBtn.innerHTML = `<i class="fa-solid fa-heart"></i> 0`;
+            noteDiv.appendChild(contentWarning);
+         } else if (noteContent.isSensitive === true) {
+            const contentWarning = document.createElement("p");
+            contentWarning.classList.add("contentWarning-showBelowText");
+            contentWarning.innerHTML = `<i class="fa-solid fa-flag"></i> Flagged as sensitive`;
+
+            noteDiv.appendChild(contentWarning);
+         } else if (noteContent.isPolitical === true) {
+            const contentWarning = document.createElement("p");
+            contentWarning.classList.add("contentWarning-showBelowText");
+            contentWarning.innerHTML = `<i class="fa-solid fa-flag"></i> Flagged as political`;
+
+            noteDiv.appendChild(contentWarning);
+         }
+
+
+         const buttonRow = document.createElement("div");
+         buttonRow.classList.add("buttonRow");
+         firebase.database().ref(`users/${firebase.auth().currentUser.uid}/experiments`).once("value", (val) => {
+            if (val.val().noteButtonLayout) {
+               buttonRow.classList.add("buttonRowExperiment");
             }
-            loveBtn.setAttribute("id", `like-${noteContent.id}`);
-            buttonRow.appendChild(loveBtn);
+         })
 
-            // Add renote button
-            const renoteBtn = document.createElement("p");
-            renoteBtn.classList.add("renoteBtn");
-            if (noteContent.renotes !== undefined) {
-               renoteBtn.innerHTML = `<i class="fa-solid fa-retweet"></i> ${noteContent.renotes}`;
+         // Add love button
+         const loveBtn = document.createElement("p");
+         loveBtn.classList.add("likeBtn");
+         if (noteContent.likes !== undefined) {
+            loveBtn.innerHTML = `<i class="fa-solid fa-heart"></i> ${noteContent.likes}`;
 
-               firebase.auth().onAuthStateChanged((user) => {
-                  if (noteContent.whoRenoted && noteContent.whoRenoted[user.uid]) {
-                     renoteBtn.classList.add("renoted");
-                  }
-               })
-            } else {
-               renoteBtn.innerHTML = `<i class="fa-solid fa-retweet"></i> 0`;
-            }
-            renoteBtn.setAttribute("id", `renote-${noteContent.id}`);
-            buttonRow.appendChild(renoteBtn);
-
-            // Add reply button
-            const replyBtn = document.createElement("p");
-            replyBtn.classList.add("replyBtn");
-            if (noteContent.replies !== undefined) {
-               replyBtn.innerHTML = `<i class="fa-solid fa-comment"></i> ${noteContent.replies}`;
-            } else {
-               replyBtn.innerHTML = `<i class="fa-solid fa-comment"></i> 0`;
-            }
-            if (pathName !== "/note") {
-               replyBtn.setAttribute("onclick", `window.location.href="/note?id=${noteContent.id}";`);
-            } else {
-               replyBtn.setAttribute("onclick", "replyToNote(this);");
-            }
-            buttonRow.appendChild(replyBtn);
-
-            // Add quote renote button
-            const quoteRenote = document.createElement("p");
-            quoteRenote.classList.add("quoteRenoteBtn");
-            quoteRenote.innerHTML = `<i class="fa-solid fa-quote-left"></i>`;
-            quoteRenote.setAttribute("onclick", `quoteRenote("${noteContent.id}")`);
-            buttonRow.appendChild(quoteRenote);
-
-            // Add favorite button
-            const favorite = document.createElement("p");
-            favorite.classList.add("quoteRenoteBtn"); // eh. just reuse a class tbh
-            favorite.innerHTML = `<i class="fa-solid fa-bookmark fa-xs" id="favorite-${noteContent.id}"></i>`; // apply the id to the favorites button or it will not change colors
-            favorite.setAttribute("onclick", `favorite("${noteContent.id}")`);
             firebase.auth().onAuthStateChanged((user) => {
-               if (user) {
-                  firebase.database().ref(`users/${user.uid}/favorites/${noteContent.id}`).once("value", (snapshot) => {
-                     if (snapshot.exists()) {
-                        // checked if the user has already favorited this. if they have, change the color to indicate that
-                        favorite.innerHTML = `<i class="fa-solid fa-bookmark fa-xs" id="favorite-${noteContent.id}" style="color: var(--main-color);"></i>`;
+               if (noteContent.whoLiked && noteContent.whoLiked[user.uid]) {
+                  loveBtn.classList.add("liked");
+               }
+            })
+         } else {
+            loveBtn.innerHTML = `<i class="fa-solid fa-heart"></i> 0`;
+         }
+         loveBtn.setAttribute("id", `like-${noteContent.id}`);
+         buttonRow.appendChild(loveBtn);
+
+         // Add renote button
+         const renoteBtn = document.createElement("p");
+         renoteBtn.classList.add("renoteBtn");
+         if (noteContent.renotes !== undefined) {
+            renoteBtn.innerHTML = `<i class="fa-solid fa-retweet"></i> ${noteContent.renotes}`;
+
+            firebase.auth().onAuthStateChanged((user) => {
+               if (noteContent.whoRenoted && noteContent.whoRenoted[user.uid]) {
+                  renoteBtn.classList.add("renoted");
+               }
+            })
+         } else {
+            renoteBtn.innerHTML = `<i class="fa-solid fa-retweet"></i> 0`;
+         }
+         renoteBtn.setAttribute("id", `renote-${noteContent.id}`);
+         buttonRow.appendChild(renoteBtn);
+
+         // Add reply button
+         const replyBtn = document.createElement("p");
+         replyBtn.classList.add("replyBtn");
+         if (noteContent.replies !== undefined) {
+            replyBtn.innerHTML = `<i class="fa-solid fa-comment"></i> ${noteContent.replies}`;
+         } else {
+            replyBtn.innerHTML = `<i class="fa-solid fa-comment"></i> 0`;
+         }
+         if (pathName !== "/note") {
+            replyBtn.setAttribute("onclick", `window.location.href="/note?id=${noteContent.id}";`);
+         } else {
+            replyBtn.setAttribute("onclick", "replyToNote(this);");
+         }
+         buttonRow.appendChild(replyBtn);
+
+         // Add quote renote button
+         const quoteRenote = document.createElement("p");
+         quoteRenote.classList.add("quoteRenoteBtn");
+         quoteRenote.innerHTML = `<i class="fa-solid fa-quote-left"></i>`;
+         quoteRenote.setAttribute("onclick", `quoteRenote("${noteContent.id}")`);
+         buttonRow.appendChild(quoteRenote);
+
+         // Add favorite button
+         const favorite = document.createElement("p");
+         favorite.classList.add("quoteRenoteBtn"); // eh. just reuse a class tbh
+         favorite.innerHTML = `<i class="fa-solid fa-bookmark fa-xs" id="favorite-${noteContent.id}"></i>`; // apply the id to the favorites button or it will not change colors
+         favorite.setAttribute("onclick", `favorite("${noteContent.id}")`);
+         firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+               firebase.database().ref(`users/${user.uid}/favorites/${noteContent.id}`).once("value", (snapshot) => {
+                  if (snapshot.exists()) {
+                     // checked if the user has already favorited this. if they have, change the color to indicate that
+                     favorite.innerHTML = `<i class="fa-solid fa-bookmark fa-xs" id="favorite-${noteContent.id}" style="color: var(--main-color);"></i>`;
+                  }
+               });
+            }
+         });
+         buttonRow.appendChild(favorite);
+
+         // If user created the note, allow them to edit/delete
+         firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+               if (user.uid === noteContent.whoSentIt) {
+                  const more = document.createElement("p");
+                  more.classList.add("more");
+                  more.innerHTML = `<i class="fa-solid fa-pen-to-square"></i>`;
+                  buttonRow.appendChild(more);
+               }
+            }
+         })
+
+         noteDiv.appendChild(buttonRow);
+
+         // Render note
+         // BUT check for certain things first (such as if user is suspended, if user is blocked, etc.)
+         // Prevent suspended users notes from rendering
+         firebase.database().ref(`users/${noteContent.whoSentIt}`).once("value", (snapshot) => {
+            const isSuspended = snapshot.val();
+
+            if (isSuspended.suspensionStatus === "suspended") {
+               noteDiv.remove();
+            }
+         })
+
+         // If all is okay, do it fine.
+         if (pathName === "/home" || pathName === "/u") {
+            if (pathName === "/u") {
+               const url = new URL(window.location.href);
+               const userParam = url.searchParams.get("id");
+               
+               firebase.database().ref(`taken-usernames/${userParam}`).once("value", (snapshot) => {
+                  const sender = snapshot.val();
+
+                  if (noteContent.whoSentIt === sender.user) {
+                     if (noteContent.replyingTo === undefined) {
+                        if (noteContent.isDeleted !== true) {
+                           notesContainer.appendChild(noteDiv);
+                        }
                      }
-                  });
-               }
-            });
-            buttonRow.appendChild(favorite);
-
-            // If user created the note, allow them to edit/delete
-            firebase.auth().onAuthStateChanged((user) => {
-               if (user) {
-                  if (user.uid === noteContent.whoSentIt) {
-                     const more = document.createElement("p");
-                     more.classList.add("more");
-                     more.innerHTML = `<i class="fa-solid fa-pen-to-square"></i>`;
-                     buttonRow.appendChild(more);
                   }
-               }
-            })
-
-            noteDiv.appendChild(buttonRow);
-
-            // Render note
-            // BUT check for certain things first (such as if user is suspended, if user is blocked, etc.)
-            // Prevent suspended users notes from rendering
-            firebase.database().ref(`users/${noteContent.whoSentIt}`).once("value", (snapshot) => {
-               const isSuspended = snapshot.val();
-
-               if (isSuspended.suspensionStatus === "suspended") {
-                  noteDiv.remove();
-               }
-            })
-
-            // If all is okay, do it fine.
-            if (pathName === "/home") {
+               })
+            } else {
                if (noteContent.replyingTo === undefined) {
                   if (noteContent.isDeleted !== true) {
                      notesContainer.appendChild(noteDiv);
                   }
                }
             }
+         }
 
-            if (pathName === "/favorites") {
-               firebase.auth().onAuthStateChanged((user) => {
-                  if (user) {
-                     firebase.database().ref(`users/${user.uid}/favorites/${noteContent.id}`).once("value", (snapshot) => {
-                        if (snapshot.exists()) {
-                           // only show if the user has favorited this note
-                           notesContainer.appendChild(noteDiv);
-                        }
-                     });
-                  }
-               });
-            }
+         if (pathName === "/favorites") {
+            firebase.auth().onAuthStateChanged((user) => {
+               if (user) {
+                  firebase.database().ref(`users/${user.uid}/favorites/${noteContent.id}`).once("value", (snapshot) => {
+                     if (snapshot.exists()) {
+                        // only show if the user has favorited this note
+                        notesContainer.appendChild(noteDiv);
+                     }
+                  });
+               }
+            });
+         }
 
-            if (pathName === "/note") {
-               const url = new URL(window.location.href);
-               const noteParam = url.searchParams.get("id");
+         if (pathName === "/note") {
+            const url = new URL(window.location.href);
+            const noteParam = url.searchParams.get("id");
 
-               if (noteContent.replyingTo === noteParam) {
-                  if (noteContent.isDeleted !== true) {
-                     notesContainer.appendChild(noteDiv);
-                  }
+            if (noteContent.replyingTo === noteParam) {
+               if (noteContent.isDeleted !== true) {
+                  notesContainer.appendChild(noteDiv);
                }
             }
-            if (pathName === "/u") {
-               // Remove the note and go to line 1928 for proper note rendering, since we need to show renotes as well
-               noteDiv.remove();
-            }
-         });
+         }
       })
-      .catch(function (error) {
-         console.error("TransSocial encountered an error trying to load notes:", error);
-         console.error("TransSocial encountered an error trying to load notes: " + error + " Please check your internet connection or report an issue on GitHub (https://github.com/katniny/transsocial-issues/issues).");
-      });
+   }
+
+   // notesRef.limitToLast(15).once('value')
+   //    .then(function (snapshot) {
+   //       const notesArray = [];
+   //       snapshot.forEach(function (childSnapshot) {
+   //          const noteContent = childSnapshot.val();
+   //          notesArray.push(noteContent);
+   //       });
+
+   //       // sort notes by timestamp, newest first
+   //       notesArray.sort((a, b) => b.createdAt - a.createdAt);
+
+   //       // create and append divs for each note
+   //       const notesContainer = document.getElementById('notes');
+   //       notesArray.forEach(noteContent => {
+   //          const noteDiv = createNoteDiv(noteContent);
+   //          if (document.getElementById("newNotesAvailable")) {
+   //             document.getElementById("newNotesAvailable").style.display = "none";
+   //          }
+
+   //          // Check if the note has NSFW/Sensitive content and users preferences
+   //          // Do this immediately or bugs will arise (that I don't feel like fixing)
+            
+   //       });
+   //    })
+   //    .catch(function (error) {
+   //       console.error("TransSocial encountered an error trying to load notes:", error);
+   //       console.error("TransSocial encountered an error trying to load notes: " + error + " Please check your internet connection or report an issue on GitHub (https://github.com/katniny/transsocial-issues/issues).");
+   //    });
 
    // When a new note is added, let the user know.
    firebase.database().ref("notes/").on("child_added", (snapshot) => {
@@ -2661,570 +2443,6 @@ if (pathName === "/u.html" || pathName === "/u") {
                }
             })
          })
-
-         // Note rendering for users
-         const notesRef = firebase.database().ref('notes');
-         const notesDiv = document.getElementById("notes");
-
-         // get the note ids from the user's notes
-         firebase.database().ref(`users/${profileExists.user}/posts`).once('value')
-            .then(snapshot => {
-               const noteIds = [];
-               snapshot.forEach(childSnapshot => {
-                  noteIds.push(childSnapshot.key);
-               });
-
-               // fetch the note details for each note id
-               const notePromises = noteIds.map(noteId => notesRef.child(noteId).once('value'));
-
-               // resolve all promises
-               return Promise.all(notePromises);
-            })
-            .then(snapshots => {
-               const notesArray = snapshots.map(snap => snap.val()).filter(note => note !== null);
-
-               // sort notes by timestamp, newest first
-               notesArray.sort((a, b) => b.createdAt - a.createdAt);
-
-               // create and append divs for each note
-               notesArray.forEach(noteContent => {
-                  const noteDiv = createNoteDiv(noteContent);
-                  if (document.getElementById("newNotesAvailable")) {
-                     document.getElementById("newNotesAvailable").style.display = "none";
-                  }
-
-                  // Check if the note has NSFW/Sensitive content and users preferences
-                  // Do this immediately or bugs will arise (that I don't feel like fixing)
-                  if (noteContent.isNsfw === true) {
-                     firebase.auth().onAuthStateChanged(user => {
-                        if (user) {
-                           firebase.database().ref(`users/${user.uid}`).once("value", snapshot => {
-                              const showNsfw = snapshot.val();
-
-                              if (showNsfw.showNsfw === "Show") {
-                                 // No need to do anything. It'll do it as is.
-                              } else if (showNsfw.showNsfw === "Blur") {
-                                 // The actual cover
-                                 const cover = document.createElement("div");
-                                 cover.classList.add("contentWarning");
-                                 cover.setAttribute("id", `${noteContent.id}-blur`);
-
-                                 // Warning Header
-                                 const warning = document.createElement("p");
-                                 warning.setAttribute("id", `${noteContent.id}-warning`);
-                                 warning.classList.add("warning");
-                                 warning.textContent = "Note may contain NSFW content.";
-
-                                 // Warning Info
-                                 const warningInfo = document.createElement("p");
-                                 warningInfo.classList.add("warningInfo");
-                                 warningInfo.setAttribute("id", `${noteContent.id}-warningInfo`);
-                                 warningInfo.textContent = "The creator of this note flagged their note as having NSFW content.";
-
-                                 // Close Warning Button
-                                 const closeButton = document.createElement("button");
-                                 closeButton.classList.add("closeWarning");
-                                 closeButton.setAttribute("id", `${noteContent.id}-closeWarning`);
-                                 closeButton.setAttribute("onclick", "removeNsfw(this.id);");
-                                 closeButton.textContent = "View";
-
-                                 // Show all children
-                                 noteDiv.appendChild(cover);
-                                 noteDiv.appendChild(warning);
-                                 noteDiv.appendChild(warningInfo);
-                                 noteDiv.appendChild(closeButton);
-                              } else if (showNsfw.showNsfw === "Hide") {
-                                 // We remove the note so the user doesn't have to see it
-                                 noteDiv.remove();
-                              }
-                           })
-                        } else {
-                           noteDiv.remove();
-                        }
-                     })
-                  } else if (noteContent.isSensitive === true) {
-                     firebase.auth().onAuthStateChanged(user => {
-                        if (user) {
-                           firebase.database().ref(`users/${user.uid}`).once("value", snapshot => {
-                              const showNsfw = snapshot.val();
-
-                              if (showNsfw.showSensitive === "Show") {
-                                 // No need to do anything. It'll do it as is.
-                              } else if (showNsfw.showSensitive === "Blur") {
-                                 // The actual cover
-                                 const cover = document.createElement("div");
-                                 cover.classList.add("contentWarning");
-                                 cover.setAttribute("id", `${noteContent.id}-blur`);
-
-                                 // Warning Header
-                                 const warning = document.createElement("p");
-                                 warning.setAttribute("id", `${noteContent.id}-warning`);
-                                 warning.classList.add("warning");
-                                 warning.textContent = "Note may contain sensitive content.";
-
-                                 // Warning Info
-                                 const warningInfo = document.createElement("p");
-                                 warningInfo.classList.add("warningInfo");
-                                 warningInfo.setAttribute("id", `${noteContent.id}-warningInfo`);
-                                 warningInfo.textContent = "The creator of this note flagged their note as having sensitive content.";
-
-                                 // Close Warning Button
-                                 const closeButton = document.createElement("button");
-                                 closeButton.classList.add("closeWarning");
-                                 closeButton.setAttribute("id", `${noteContent.id}-closeWarning`);
-                                 closeButton.setAttribute("onclick", "removeNsfw(this.id);");
-                                 closeButton.textContent = "View";
-
-                                 // Show all children
-                                 noteDiv.appendChild(cover);
-                                 noteDiv.appendChild(warning);
-                                 noteDiv.appendChild(warningInfo);
-                                 noteDiv.appendChild(closeButton);
-                              } else if (showNsfw.showSensitive === "Hide") {
-                                 // We remove the note so the user doesn't have to see it
-                                 noteDiv.remove();
-                              }
-                           })
-                        } else {
-                           noteDiv.remove();
-                        }
-                     })
-                  } else if (noteContent.isPolitical === true) {
-                     firebase.auth().onAuthStateChanged((user) => {
-                        if (user) {
-                           firebase.database().ref(`users/${user.uid}`).once("value", (snapshot) => {
-                              const showNsfw = snapshot.val();
-
-                              if (showNsfw.showPolitics === "Show") {
-                                 // No need to do anything. It'll do it as is.
-                              } else if (showNsfw.showPolitics === "Blur") {
-                                 // The actual cover
-                                 const cover = document.createElement("div");
-                                 cover.classList.add("contentWarning");
-                                 cover.setAttribute("id", `${noteContent.id}-blur`);
-
-                                 // Warning Header
-                                 const warning = document.createElement("p");
-                                 warning.setAttribute("id", `${noteContent.id}-warning`);
-                                 warning.classList.add("warning");
-                                 warning.textContent = "Note may contain political content.";
-
-                                 // Warning Info
-                                 const warningInfo = document.createElement("p");
-                                 warningInfo.classList.add("warningInfo");
-                                 warningInfo.setAttribute("id", `${noteContent.id}-warningInfo`);
-                                 warningInfo.textContent = "This note may contain political content. This note does not reflect TransSocial's opinions. This note may not be political and may be incorrectly flagged.";
-
-                                 // Close Warning Button
-                                 const closeButton = document.createElement("button");
-                                 closeButton.classList.add("closeWarning");
-                                 closeButton.setAttribute("id", `${noteContent.id}-closeWarning`);
-                                 closeButton.setAttribute("onclick", "removeNsfw(this.id);");
-                                 closeButton.textContent = "View";
-                                 closeButton.style.marginTop = "25px";
-
-                                 // Show all children
-                                 noteDiv.appendChild(cover);
-                                 noteDiv.appendChild(warning);
-                                 noteDiv.appendChild(warningInfo);
-                                 noteDiv.appendChild(closeButton);
-                              } else if (showNsfw.showPolitics === "Hide") {
-                                 // We remove the note so the user doesn't have to see it
-                                 noteDiv.remove();
-                              }
-                           })
-                        } else {
-                           noteDiv.remove();
-                        }
-                     })
-                  }
-
-                  // Check if the note is a renote
-                  if (profileExists.user !== noteContent.whoSentIt) {
-                     const isRenote = document.createElement("p");
-                     isRenote.classList.add("isRenote");
-                     isRenote.innerHTML = `<i class="fa-solid fa-retweet"></i> Fetching... renoted`;
-                     noteDiv.appendChild(isRenote);
-
-                     firebase.database().ref(`users/${profileExists.user}`).once("value", (snapshot) => {
-                        const getUsername = snapshot.val();
-
-                        isRenote.innerHTML = `<i class="fa-solid fa-retweet"></i> ${getUsername.display} renoted`;
-                     })
-                  }
-
-                  // Create the user's PFP
-                  const userPfp = document.createElement("img");
-                  userPfp.classList.add("notePfp");
-                  firebase.database().ref("users/" + noteContent.whoSentIt).once("value", snapshot => {
-                     const fetchedUser = snapshot.val();
-                     userPfp.src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${noteContent.whoSentIt}%2F${fetchedUser.pfp}?alt=media`;
-                     userPfp.setAttribute("draggable", "false");
-                     userPfp.setAttribute("loading", "lazy");
-                  });
-                  noteDiv.appendChild(userPfp);
-
-                  // Create the user's display name
-                  // Also check for badges (verified, mod, Enchanted, etc.)
-                  const displayName = document.createElement("a");
-                  displayName.classList.add("noteDisplay");
-                  firebase.database().ref("users/" + noteContent.whoSentIt).once("value", snapshot => {
-                     const fetchedUser = snapshot.val();
-                     displayName.textContent = fetchedUser.display;
-                     displayName.href = `/u?id=${fetchedUser.username}`;
-
-                     const badges = document.createElement("span");
-                     if (fetchedUser.isVerified === true) {
-                        badges.innerHTML = `<i class="fa-solid fa-circle-check fa-sm"></i>`;
-                        badges.classList.add("noteBadges");
-                     }
-                     if (fetchedUser.isSubscribed === true) {
-                        badges.innerHTML = `${badges.innerHTML}<i class="fa-solid fa-heart fa-sm"></i>`;
-                     }
-                     if (fetchedUser.activeContributor === true) {
-                        badges.innerHTML = `${badges.innerHTML}<i class="fa-solid fa-handshake-angle fa-sm"></i>`;
-                     }
-                     displayName.appendChild(badges);
-                  })
-                  noteDiv.appendChild(displayName);
-
-                  // Insert Breakpoint to Seperate Display Name and Username
-                  const breakpoint = document.createElement("br");
-                  noteDiv.appendChild(breakpoint);
-
-                  // Create the user's username
-                  const username = document.createElement("a");
-                  username.classList.add("noteUsername");
-                  firebase.database().ref("users/" + noteContent.whoSentIt).once("value", (snapshot) => {
-                     const fetchedUser = snapshot.val();
-
-                     if (fetchedUser.pronouns !== undefined) {
-                        const displayDate = timeAgo(noteContent.createdAt);
-
-                        username.textContent = `@${fetchedUser.username} • ${fetchedUser.pronouns} • ${displayDate}`;
-                     } else {
-                        const displayDate = timeAgo(noteContent.createdAt);
-
-                        username.textContent = `@${fetchedUser.username} • ${displayDate}`;
-                     }
-                     username.href = `/u?id=${fetchedUser.username}`;
-                  })
-
-                  noteDiv.appendChild(username);
-
-                  // Create the note's text
-                  const text = document.createElement("p");
-                  text.innerHTML = sanitizeAndLinkify(noteContent.text);
-                  text.classList.add("noteText");
-                  if (noteContent.replyingTo === undefined) {
-                     text.setAttribute("onclick", `window.location.href="/note?id=${noteContent.id}"`);
-                  }
-                  // this will prevent the user from getting forced into the note view when clicking a link. now it'll just work! woo!!
-                  text.querySelectorAll("a").forEach(link => {
-                     link.addEventListener("click", (event) => {
-                        event.stopPropagation();
-                     });
-                  });
-                  twemoji.parse(text, {
-                     folder: 'svg',
-                     ext: '.svg'
-                  });
-                  noteDiv.appendChild(text);
-
-                  // If image has image/video, render a video/image
-                  if (noteContent.image !== undefined) {
-                     let imageFileName = noteContent.image;
-                     let imageExtension = imageFileName.split(".").pop();
-                     const url = imageExtension;
-                     const cleanUrl = url.split('?')[0];
-                  
-                     if (cleanUrl === "mp4") {
-                        const video = document.createElement("video");
-                        video.src = noteContent.image;
-                        video.classList.add("uploadedImg");
-                        video.controls = true;
-                        video.muted = true;
-                        video.loop = true;
-                        video.setAttribute("loading", "lazy");
-                        video.style.visibility = "hidden"; // Start hidden
-                        video.style.opacity = "0";
-                  
-                        video.autoplay = userAutoplayPreference;
-                  
-                        video.setAttribute("alt", `${noteContent.alt}`);
-                        noteDiv.appendChild(video);
-                  
-                        // observe image
-                        mediaObserver.observe(video);
-                     } else {
-                        const image = document.createElement("img");
-                        image.src = noteContent.image;
-                        image.draggable = "false";
-                        image.classList.add("uploadedImg");
-                        image.setAttribute("alt", `${noteContent.alt}`);
-                        image.setAttribute("loading", "lazy");
-                        image.style.visibility = "hidden"; // Start hidden
-                        image.style.opacity = "0";
-                  
-                        noteDiv.appendChild(image);
-                  
-                        // observe image
-                        mediaObserver.observe(image);
-                     }
-                  }
-
-                  // if the note has a song, embed it into the note
-                  if (noteContent.music) {
-                     const embed = document.createElement("iframe");
-                     embed.src = `https://open.spotify.com/embed/track/${noteContent.music}`;
-                     embed.width = "98%";
-                     embed.height = "100";
-                     embed.frameBorder = "0";
-                     embed.allowTransparency = "true";
-                     embed.allow = "encrypted-media";
-
-                     noteDiv.appendChild(embed);
-                  }
-
-                  // If quoting a note, display the note that the note is quoting
-                  if (noteContent.quoting) {
-                     const container = document.createElement("div");
-                     container.classList.add("quoteContainer");
-                     container.setAttribute("onclick", `window.location.replace("/note?id=${noteContent.quoting}")`);
-                     noteDiv.appendChild(container);
-      
-                     firebase.database().ref(`notes/${noteContent.quoting}`).once("value", (snapshot) => {
-                        const quoteData = snapshot.val();
-      
-                        if (quoteData.isDeleted !== true) {
-                           firebase.database().ref(`users/${quoteData.whoSentIt}`).once("value", (snapshot) => {
-                              const quoteUser = snapshot.val();
-      
-                              const quotePfp = document.createElement("img");
-                              quotePfp.classList.add("quotePfp");
-                              quotePfp.setAttribute("draggable", "false");
-                              quotePfp.src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${quoteData.whoSentIt}%2F${quoteUser.pfp}?alt=media`;
-      
-                              const quoteContent = document.createElement("div");
-                              quoteContent.classList.add("quoteContent");
-      
-                              const quoteHeader = document.createElement("div");
-                              quoteHeader.classList.add("quoteHeader");
-      
-                              const quoteDisplay = document.createElement("span");
-                              quoteDisplay.classList.add("quoteDisplay");
-                              quoteDisplay.textContent = quoteUser.display;
-      
-                              const quoteUsername = document.createElement("span");
-                              quoteUsername.classList.add("quoteUsername");
-                              if (quoteUser.pronouns !== undefined || quoteUser.pronouns !== "") {
-                                 quoteUsername.textContent = `@${quoteUser.username} • ${quoteUser.pronouns}`;
-                              } else {
-                                 quoteUsername.textContent = `@${quoteUser.username}`;
-                              }
-      
-                              const quoteText = document.createElement("span");
-                              quoteText.classList.add("quoteText");
-                              let content = sanitizeAndLinkify(quoteData.text);
-                              if (content.length > 247) { // check length
-                                 content = content.substring(0, 247) + "...";
-                              }
-                              quoteText.innerHTML = content;
-      
-                              container.appendChild(quotePfp);
-                              container.appendChild(quoteContent);
-                              quoteHeader.appendChild(quoteDisplay);
-                              quoteHeader.appendChild(quoteUsername);
-                              quoteContent.appendChild(quoteHeader);
-                              quoteContent.appendChild(quoteText);
-                              twemoji.parse(quoteText, {
-                                 folder: 'svg',
-                                 ext: '.svg'
-                              });
-                           })
-                        } else {
-                           const quotePfp = document.createElement("img");
-                           quotePfp.classList.add("quotePfp");
-                           quotePfp.setAttribute("draggable", "false");
-                           quotePfp.src = `/assets/imgs/defaultPfp.png`;
-      
-                           const quoteContent = document.createElement("div");
-                           quoteContent.classList.add("quoteContent");
-      
-                           const quoteHeader = document.createElement("div");
-                           quoteHeader.classList.add("quoteHeader");
-      
-                           const quoteDisplay = document.createElement("span");
-                           quoteDisplay.classList.add("quoteDisplay");
-                           quoteDisplay.textContent = "Unknown User";
-      
-                           const quoteUsername = document.createElement("span");
-                           quoteUsername.classList.add("quoteUsername");
-                           quoteUsername.textContent = `@unknownuser`;
-                           
-      
-                           const quoteText = document.createElement("span");
-                           quoteText.classList.add("quoteText");
-                           quoteText.textContent = "You do not have permission to view this note.";
-      
-                           container.appendChild(quotePfp);
-                           container.appendChild(quoteContent);
-                           quoteHeader.appendChild(quoteDisplay);
-                           quoteHeader.appendChild(quoteUsername);
-                           quoteContent.appendChild(quoteHeader);
-                           quoteContent.appendChild(quoteText);
-                        }
-                     })
-                  }
-
-                  // If flagged, display that.
-                  if (noteContent.isNsfw === true) {
-                     const contentWarning = document.createElement("p");
-                     contentWarning.classList.add("contentWarning-showBelowText");
-                     contentWarning.innerHTML = `<i class="fa-solid fa-flag"></i> Flagged as NSFW`;
-
-                     noteDiv.appendChild(contentWarning);
-                  } else if (noteContent.isSensitive === true) {
-                     const contentWarning = document.createElement("p");
-                     contentWarning.classList.add("contentWarning-showBelowText");
-                     contentWarning.innerHTML = `<i class="fa-solid fa-flag"></i> Flagged as sensitive`;
-
-                     noteDiv.appendChild(contentWarning);
-                  } else if (noteContent.isPolitical === true) {
-                     const contentWarning = document.createElement("p");
-                     contentWarning.classList.add("contentWarning-showBelowText");
-                     contentWarning.innerHTML = `<i class="fa-solid fa-flag"></i> Flagged as political`;
-
-                     noteDiv.appendChild(contentWarning);
-                  }
-
-                  const buttonRow = document.createElement("div");
-                  buttonRow.classList.add("buttonRow");
-                  firebase.database().ref(`users/${firebase.auth().currentUser.uid}/experiments`).once("value", (val) => {
-                     if (val.val().noteButtonLayout) {
-                        buttonRow.classList.add("buttonRowExperiment");
-                     }
-                  })
-
-                  // Add love button
-                  const loveBtn = document.createElement("p");
-                  loveBtn.classList.add("likeBtn");
-                  if (noteContent.likes !== undefined) {
-                     loveBtn.innerHTML = `<i class="fa-solid fa-heart"></i> ${noteContent.likes}`;
-
-                     firebase.auth().onAuthStateChanged(user => {
-                        if (noteContent.whoLiked && noteContent.whoLiked[user.uid]) {
-                           loveBtn.classList.add("liked");
-                        }
-                     })
-                  } else {
-                     loveBtn.innerHTML = `<i class="fa-solid fa-heart"></i> 0`;
-                  }
-                  loveBtn.setAttribute("id", `like-${noteContent.id}`);
-                  buttonRow.appendChild(loveBtn);
-
-                  // Add renote button
-                  const renoteBtn = document.createElement("p");
-                  renoteBtn.classList.add("renoteBtn");
-                  if (noteContent.renotes !== undefined) {
-                     renoteBtn.innerHTML = `<i class="fa-solid fa-retweet"></i> ${noteContent.renotes}`;
-
-                     firebase.auth().onAuthStateChanged(user => {
-                        if (noteContent.whoRenoted && noteContent.whoRenoted[user.uid]) {
-                           renoteBtn.classList.add("renoted");
-                        }
-                     })
-                  } else {
-                     renoteBtn.innerHTML = `<i class="fa-solid fa-retweet"></i> 0`;
-                  }
-                  renoteBtn.setAttribute("id", `renote-${noteContent.id}`);
-                  buttonRow.appendChild(renoteBtn);
-
-                  // Add reply button
-                  const replyBtn = document.createElement("p");
-                  replyBtn.classList.add("renoteBtn");
-                  if (noteContent.replies !== undefined) {
-                     replyBtn.innerHTML = `<i class="fa-solid fa-comment"></i> ${noteContent.replies}`;
-                  } else {
-                     replyBtn.innerHTML = `<i class="fa-solid fa-comment"></i> 0`;
-                  }
-                  if (pathName !== "/note") {
-                     replyBtn.setAttribute("onclick", `window.location.href="/note?id=${noteContent.id}";`);
-                  } else {
-                     replyBtn.setAttribute("onclick", "replyToNote(this);");
-                  }
-                  buttonRow.appendChild(replyBtn);
-
-                  // Add quote renote button
-                  const quoteRenote = document.createElement("p");
-                  quoteRenote.classList.add("quoteRenoteBtn");
-                  quoteRenote.innerHTML = `<i class="fa-solid fa-quote-left"></i>`;
-                  quoteRenote.setAttribute("onclick", `quoteRenote("${noteContent.id}")`);
-                  buttonRow.appendChild(quoteRenote);
-
-                  // Add favorite button
-                  const favorite = document.createElement("p");
-                  favorite.classList.add("quoteRenoteBtn"); // eh. just reuse a class tbh
-                  favorite.innerHTML = `<i class="fa-solid fa-bookmark fa-xs" id="favorite-${noteContent.id}"></i>`; // apply the id to the favorites button or it will not change colors
-                  favorite.setAttribute("onclick", `favorite("${noteContent.id}")`);
-                  firebase.auth().onAuthStateChanged((user) => {
-                     if (user) {
-                        firebase.database().ref(`users/${user.uid}/favorites/${noteContent.id}`).once("value", (snapshot) => {
-                           if (snapshot.exists()) {
-                              // checked if the user has already favorited this. if they have, change the color to indicate that
-                              favorite.innerHTML = `<i class="fa-solid fa-bookmark fa-xs" id="favorite-${noteContent.id}" style="color: var(--main-color);"></i>`;
-                           }
-                        });
-                     }
-                  });
-                  buttonRow.appendChild(favorite);
-
-                  // If user created the note, allow them to edit/delete
-                  firebase.auth().onAuthStateChanged(user => {
-                     if (user) {
-                        if (user.uid === noteContent.whoSentIt) {
-                           const more = document.createElement("p");
-                           more.classList.add("more");
-                           more.innerHTML = `<i class="fa-solid fa-pen-to-square"></i>`;
-                           buttonRow.appendChild(more);
-                        }
-                     }
-                  })
-
-                  noteDiv.appendChild(buttonRow);
-
-                  // Render note
-                  // BUT check for certain things first (such as if user is suspended, if user is blocked, etc.)
-                  // Prevent suspended users notes from rendering
-                  firebase.database().ref(`users/${noteContent.whoSentIt}`).once("value", snapshot => {
-                     const isSuspended = snapshot.val();
-
-                     if (isSuspended.suspensionStatus === "suspended") {
-                        noteDiv.remove();
-                     }
-                  })
-
-                  // If all is okay, do it fine.
-                  if (pathName === "/u") {
-                     if (noteContent.replyingTo === undefined) {
-                        if (noteContent.isDeleted !== true) {
-                           notesDiv.appendChild(noteDiv);
-                        }
-                     }
-                  }
-               });
-            })
-            .catch(error => {
-               console.error("TransSocial encountered an error trying to load notes:", error);
-               console.error("TransSocial encountered an error trying to load notes: " + error + " Please check your internet connection or report an issue on GitHub (https://github.com/katniny/transsocial-issues/issues).");
-            });
-
-         function createNoteDiv(noteContent) {
-            const noteDiv = document.createElement('div');
-            noteDiv.className = 'note';
-            noteDiv.setAttribute("id", `${noteContent.id}`);
-            return noteDiv;
-         }
       }
 
       // Achievements
