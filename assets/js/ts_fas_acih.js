@@ -29,8 +29,8 @@ const pathName = pageURL.pathname;
 let isOnDesktopApp = null;
 
 // TransSocial Version
-let transsocialVersion = "v2024.9.19";
-let transsocialUpdate = "v2024919-1";
+let transsocialVersion = "v2024.9.23";
+let transsocialUpdate = "v2024923-1";
 let transsocialReleaseVersion = "pre-alpha";
 
 const notices = document.getElementsByClassName("version-notice");
@@ -2346,6 +2346,10 @@ if (pathName === "/u.html" || pathName === "/u") {
             document.getElementById(`display-profile`).appendChild(verifiedBadge);
             document.getElementById(`username-profile`).textContent = `@${profileData.username}`;
 
+            if (profileData.banner) {
+               document.getElementById(`userImage-banner`).src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fbanner%2F${profileExists.user}%2F${profileData.banner}?alt=media`;
+            }
+
             document.getElementById("interactingWithWho").textContent = `User Actions for @${profileData.username}`;
 
             firebase.auth().onAuthStateChanged((user) => {
@@ -3374,6 +3378,10 @@ if (pathName === "/settings" || pathName === "/settings.html") {
                document.getElementById("profilePicture_settings").src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${user.uid}%2F${userData.pfp}?alt=media`;
             }
 
+            if (userData.banner !== undefined) {
+               document.getElementById("banner_settings").src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fbanner%2F${user.uid}%2F${userData.banner}?alt=media`;
+            }
+
             // Display name
             if (userData.display !== undefined) {
                document.getElementById("displayName-text").value = `${userData.display}`;
@@ -4389,6 +4397,9 @@ if (pathName === "/settings" || pathName === "/settings.html") {
       firebase.auth().onAuthStateChanged((user) => {
          const file = event.target.files[0];
 
+         document.getElementById("changePfp").innerHTML = `<i class="fa-solid fa-spinner fa-spin-pulse"></i> Checking file...`;
+         document.getElementById("changePfp").classList.add("disabled");
+
          if (file) {
             firebase.database().ref(`users/${user.uid}`).once("value", (snapshot) => {
                const data = snapshot.val();
@@ -4404,6 +4415,8 @@ if (pathName === "/settings" || pathName === "/settings.html") {
                   if (allowedTypes.includes(file.type)) {
                      const storageRef = firebase.storage().ref();
                      const fileRef = storageRef.child(`images/pfp/${user.uid}/${file.name}`);
+
+                     document.getElementById("changePfp").innerHTML = `<i class="fa-solid fa-spinner fa-spin-pulse"></i> Uploading image...`;
    
                      fileRef.put(file).then(function (snapshot) {
                         snapshot.ref.getDownloadURL().then(function (downloadURL) {
@@ -4418,7 +4431,7 @@ if (pathName === "/settings" || pathName === "/settings.html") {
                                        if (oldPfpName) {
                                           const oldFileRef = storageRef.child(`images/pfp/${user.uid}/${oldPfpName}`);
                                           oldFileRef.delete().then(() => {
-                                             // :D
+                                             document.getElementById("changePfp").innerHTML = `<i class="fa-solid fa-spinner fa-spin-pulse"></i> Checking...`;
                                           }).catch((error) => {
                                              document.getElementById("errorUploadingPfp").style.display = "block";
                                              document.getElementById("errorUploadingPfp").textContent = `Failed to upload profile picture: ${error.message}`;
@@ -4426,19 +4439,25 @@ if (pathName === "/settings" || pathName === "/settings.html") {
                                        }
                                     })
                               })
-                           })
+                           });
+
+                           document.getElementById("changePfp").innerHTML = `<i class="fa-solid fa-spinner fa-spin-pulse"></i> Done!`;
+                           window.location.reload();
                         });
                      }).catch(function (error) {
                         document.getElementById("errorUploadingPfp").style.display = "block";
                         document.getElementById("errorUploadingPfp").textContent = `Failed to upload profile picture: ${error.message}`;
+                        document.getElementById("changePfp").classList.remove("disabled");
                      })
                   } else {
                      if (file.type === "image/gif") {
                         document.getElementById("errorUploadingPfp").style.display = "block";
                         document.getElementById("errorUploadingPfp").textContent = `You need a Katniny+ subscription to use a GIF as your profile picture!`;
+                        document.getElementById("changePfp").classList.remove("disabled");
                      } else {
                         document.getElementById("errorUploadingPfp").style.display = "block";
                         document.getElementById("errorUploadingPfp").textContent = `Invalid image type. Please select a .png, .jpg (.jpeg), or .webp file.`;
+                        document.getElementById("changePfp").classList.remove("disabled");
                      }
                   }
                } else {
@@ -4448,7 +4467,90 @@ if (pathName === "/settings" || pathName === "/settings.html") {
             });
          }
       })
-   })
+   });
+
+   // change banner
+   function changeBanner() {
+      if (!document.getElementById("changeBanner").classList.contains("disabled")) {
+         document.getElementById("fileInput_banner").click();
+      }
+   }
+
+   document.getElementById("fileInput_banner").addEventListener("change", function (event) {
+      firebase.auth().onAuthStateChanged((user) => {
+         const file = event.target.files[0];
+
+         document.getElementById("changeBanner").innerHTML = `<i class="fa-solid fa-spinner fa-spin-pulse"></i> Checking file...`;
+         document.getElementById("changeBanner").classList.add("disabled");
+
+         if (file) {
+            firebase.database().ref(`users/${user.uid}`).once("value", (snapshot) => {
+               const data = snapshot.val();
+
+               let allowedTypes = [];
+               if (data.isSubscribed === true) {
+                  allowedTypes = ["image/png", "image/jpeg", "image/webp", "image/gif"];
+               } else {
+                  allowedTypes = ["image/png", "image/jpeg", "image/webp"];
+               }
+
+               if (file.size <= 5 * 1024 * 1024) {
+                  if (allowedTypes.includes(file.type)) {
+                     const storageRef = firebase.storage().ref();
+                     const fileRef = storageRef.child(`images/banner/${user.uid}/${file.name}`);
+
+                     document.getElementById("changeBanner").innerHTML = `<i class="fa-solid fa-spinner fa-spin-pulse"></i> Uploading image...`;
+   
+                     fileRef.put(file).then(function (snapshot) {
+                        snapshot.ref.getDownloadURL().then(function (downloadURL) {
+                           firebase.database().ref(`users/${user.uid}/banner`).once("value", (snapshot) => {
+                              firebase.database().ref(`users/${user.uid}/banner`).once("value", (snapshot) => {
+                                 const oldPfpName = snapshot.val();
+   
+                                 firebase.database().ref(`users/${user.uid}`).update({
+                                    banner: file.name
+                                 })
+                                    .then(() => {
+                                       if (oldPfpName) {
+                                          const oldFileRef = storageRef.child(`images/banner/${user.uid}/${oldPfpName}`);
+                                          oldFileRef.delete().then(() => {
+                                             document.getElementById("changeBanner").innerHTML = `<i class="fa-solid fa-spinner fa-spin-pulse"></i> Checking...`;
+                                          }).catch((error) => {
+                                             document.getElementById("errorUploadingBanner").style.display = "block";
+                                             document.getElementById("errorUploadingBanner").textContent = `Failed to upload profile picture: ${error.message}`;
+                                          })
+                                       }
+                                    })
+                              })
+                           });
+
+                           document.getElementById("changeBanner").innerHTML = `<i class="fa-solid fa-spinner fa-spin-pulse"></i> Done!`;
+                           window.location.reload();
+                        });
+                     }).catch(function (error) {
+                        document.getElementById("errorUploadingBanner").style.display = "block";
+                        document.getElementById("errorUploadingBanner").textContent = `Failed to upload profile picture: ${error.message}`;
+                        document.getElementById("changeBanner").classList.remove("disabled");
+                     })
+                  } else {
+                     if (file.type === "image/gif") {
+                        document.getElementById("errorUploadingBanner").style.display = "block";
+                        document.getElementById("errorUploadingBanner").textContent = `You need a Katniny+ subscription to use a GIF as your profile picture!`;
+                        document.getElementById("changePfp").classList.remove("disabled");
+                     } else {
+                        document.getElementById("errorUploadingBanner").style.display = "block";
+                        document.getElementById("errorUploadingBanner").textContent = `Invalid image type. Please select a .png, .jpg (.jpeg), or .webp file.`;
+                        document.getElementById("changeBanner").classList.remove("disabled");
+                     }
+                  }
+               } else {
+                  document.getElementById("errorUploadingBanner").style.display = "block";
+                  document.getElementById("errorUploadingBanner").textContent = `Image exceeds 5MB. Please choose a smaller image.`;
+               }
+            });
+         }
+      })
+   });
 
    // Experiments
 

@@ -143,48 +143,54 @@
                     <!-- Tab #1 (Profile) -->
                     <br />
 
-                    <div id="profileTab-display">
+                    <div id="profileTab-display" style="padding-bottom: 0px;">
                         <h2>Profile Information</h2>
                         <p style="color: var(--text-semi-transparent); font-size: 14.5px;">How you'll appear across TransSocial and other Katniny products.</p>
 
                         <br />
 
-                        <p>Profile Picture</p>
-                        <img src="" draggable="false" alt="Your Katniny profile picture" id="profilePicture_settings" class="profilePicture" /> <button onclick="changePfp()" style="transform: translateY(-20px); margin-left: 5px;" id="changePfp">Change Picture</button>
+                        <p>Profile Picture & Banner</p>
+                        <img src="/assets/imgs/Transparency.png" draggable="false" alt="Your Katniny profile banner" id="banner_settings" style="width: 100%; height: 75px; background: var(--profile-picture-bg);" /> 
+                        <input type="file" id="fileInput_banner" accept="image/png, image/jpeg, image/webp, image/gif" style="display: none;" />
+                        <p id="errorUploadingBanner" style="color: var(--error-text); display: none;"></p>
+
+
+                        <!--<p>Profile Picture</p>-->
+                        <img src="" draggable="false" alt="Your Katniny profile picture" id="profilePicture_settings" class="profilePicture" /> <button onclick="changePfp()" style="transform: translateY(-55px); margin-left: 5px;" id="changePfp">Change Picture</button> <button onclick="changeBanner()" style="transform: translateY(-55px); margin-left: 5px;" id="changeBanner">Change Banner</button>
                         <input type="file" id="fileInput" accept="image/png, image/jpeg, image/webp, image/gif" style="display: none;" />
                         <p id="errorUploadingPfp" style="color: var(--error-text); display: none;"></p>
 
-                        <br />
-                        <br />
 
-                        <p>Display Name</p>
-                        <input type="text" placeholder="Enter a fun display name!" style="font-size: 15px; margin-top: 3px;" id="displayName-text" class="displayName-text" />
-                        <p id="errorUsingDisplay" style="color: var(--error-text); font-size: 14px; display: none;"></p>
-                        <p id="characterLimit_display" style="color: var(--text-semi-transparent); font-size: 14px; margin-top: 1px;">0/25</p>
-                        <button onclick="setDisplayName()" id="saveDisplay" style="display: none;">Save</button>
+                        <div style="transform: translateY(-20px);">
+                           <p>Display Name</p>
+                           <input type="text" placeholder="Enter a fun display name!" style="font-size: 15px; margin-top: 3px;" id="displayName-text" class="displayName-text" />
+                           <p id="errorUsingDisplay" style="color: var(--error-text); font-size: 14px; display: none;"></p>
+                           <p id="characterLimit_display" style="color: var(--text-semi-transparent); font-size: 14px; margin-top: 1px;">0/25</p>
+                           <button onclick="setDisplayName()" id="saveDisplay" style="display: none;">Save</button>
 
-                        <br />
+                           <br />
 
-                        <p>Username</p>
-                        <input type="text" placeholder="Enter a unique username!" style="font-size: 15px; margin-top: 3px;" id="username-text" oninput="usernameCharacters()" class="username-text" />
-                        <p id="characterLimit_username" style="color: var(--text-semi-transparent); font-size: 14px; margin-top: 1px;">0/20</p>
-                        <p id="errorTakingUsername" style="color: var(--error-text); font-size: 14px; display: none;"></p>
-                        <p id="usernameNotice" style="color: var(--error-text); font-size: 14px; display: none;">Changing your username will immediately make your old one available to take!</p>
-                        <button onclick="setUsername()" id="saveUsername" style="display: none;">Save</button>
+                           <p>Username</p>
+                           <input type="text" placeholder="Enter a unique username!" style="font-size: 15px; margin-top: 3px;" id="username-text" oninput="usernameCharacters()" class="username-text" />
+                           <p id="characterLimit_username" style="color: var(--text-semi-transparent); font-size: 14px; margin-top: 1px;">0/20</p>
+                           <p id="errorTakingUsername" style="color: var(--error-text); font-size: 14px; display: none;"></p>
+                           <p id="usernameNotice" style="color: var(--error-text); font-size: 14px; display: none;">Changing your username will immediately make your old one available to take!</p>
+                           <button onclick="setUsername()" id="saveUsername" style="display: none;">Save</button>
 
-                        <br />
+                           <br />
 
-                        <p>Pronouns</p>
-                        <input type="text" placeholder="What do you preferred to be called? (Field can be empty)" style="font-size: 15px; margin-top: 3px;" id="pronouns-text" class="pronouns-text" />
-                        <p id="characterLimit_pronouns" style="color: var(--text-semi-transparent); font-size: 14px; margin-top: 1px;">0/15</p>
-                        <button onclick="setPronouns()" id="savePronouns" style="display: none;">Save</button>
+                           <p>Pronouns</p>
+                           <input type="text" placeholder="What do you preferred to be called? (Field can be empty)" style="font-size: 15px; margin-top: 3px;" id="pronouns-text" class="pronouns-text" />
+                           <p id="characterLimit_pronouns" style="color: var(--text-semi-transparent); font-size: 14px; margin-top: 1px;">0/15</p>
+                           <button onclick="setPronouns()" id="savePronouns" style="display: none;">Save</button>
 
-                        <br />
+                           <br />
 
-                        <p>Bio</p>
-                        <textarea id="bioText" class="bioText borderBlack" style="font-size: 14px;"></textarea>
-                        <p id="characterLimit_bio" style="color: var(--text-semi-transparent);">0/500</p>
-                        <button onclick="setBio()" id="saveBio" style="display: none;">Save</button>
+                           <p>Bio</p>
+                           <textarea id="bioText" class="bioText borderBlack" style="font-size: 14px;"></textarea>
+                           <p id="characterLimit_bio" style="color: var(--text-semi-transparent);">0/500</p>
+                           <button onclick="setBio()" id="saveBio" style="display: none;">Save</button>
+                        </div>
                     </div>
                 </div> 
 

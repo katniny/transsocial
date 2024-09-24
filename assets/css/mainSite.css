@@ -1581,6 +1581,7 @@ select {
 
 .melissa .filters button:hover {
    background: var(--button-transparent-hover);
+   color: var(--text);
 }
 
 .melissa .filters button.active {
@@ -2563,8 +2564,9 @@ dialog .coverCreateANote {
 #profilePicture_settings {
    margin-top: 5px;
    border-radius: 50%;
-   width: 50px;
-   height: 50px;
+   width: 80px;
+   height: 80px;
+   transform: translateY(-35px);
 }
 
 textarea.borderBlack {
@@ -3057,4 +3059,14 @@ a {
 a:hover {
    color: var(--main-color-darker);
    text-decoration: none;
+}
+
+/* banner settings */
+#banner_settings {
+   object-fit: cover;
+   object-position: center;
+   display: block;
+   outline: none;
+   background: var(--profile-picture-bg);
+   border-radius: 15px;
 }
