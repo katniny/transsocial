@@ -134,20 +134,26 @@
                 <!--<button class="active" style="border-right: 1px solid gray;">All Notes</button><button>Following</button>-->
             </div>
 
-            <button onclick="startNewChat()" style="margin-left: 15px;"><i class="fa-solid fa-message"></i> New Chat</button>
+            <div id="dmNotOpen">
+               <button onclick="startNewChat()" style="margin-left: 15px;"><i class="fa-solid fa-message"></i> New Chat</button>
 
-            <br />
-            <br />
+               <br />
+               <br />
 
-            <div class="openChats" id="openChats">
-                <div id="noDMsOpen">
-                    <p>You don't have any DMs open!</p>
-                    <p style="color: var(--text-semi-transparent); margin-top: 0px;">Start a conversation!</p>
-                </div>
+               <div class="openChats" id="openChats">
+                  <div id="noDMsOpen">
+                     <p>You don't have any DMs open!</p>
+                     <p style="color: var(--text-semi-transparent); margin-top: 0px;">Start a conversation!</p>
+                  </div>
 
-                <div id="openDMs">
+                  <div id="openDMs">
 
-                </div>
+                  </div>
+               </div>
+            </div>
+
+            <div id="dms" style="display: none;">
+               <h1>hi</h1>
             </div>
 
             <!-- Please Donate -->

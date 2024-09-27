@@ -29,8 +29,8 @@ const pathName = pageURL.pathname;
 let isOnDesktopApp = null;
 
 // TransSocial Version
-let transsocialVersion = "v2024.9.23";
-let transsocialUpdate = "v2024923-1";
+let transsocialVersion = "v2024.9.27";
+let transsocialUpdate = "v2024927-1";
 let transsocialReleaseVersion = "pre-alpha";
 
 const notices = document.getElementsByClassName("version-notice");
@@ -1221,9 +1221,15 @@ if (pathName === "/home" || pathName === "/home.html" || pathName === "/u" || pa
    
    fetchAutoplayPreference(); // call on start
 
-   // Reload page
+   // show notes without refreshing
+   // revolutionary tech y'all
    function loadNotesFromButton() {
-      window.location.reload();
+      // remove existing notes
+      const notes = document.querySelectorAll(".note");
+      notes.forEach(note => note.remove());
+
+      // load the new notes
+      loadInitalNotes();
    }
 
    // Note Rendering
@@ -5122,96 +5128,105 @@ document.body.addEventListener('click', function (event) {
 
 // Direct Messages
 if (pathName === "/messages") {
+   const url = new URL(window.location.href);
+   const dmParam = url.searchParams.get("id");
+
    firebase.auth().onAuthStateChanged((user) => {
       if (user) {
-         firebase.database().ref(`users/${user.uid}/openDMs`).on("value", (snapshot) => {
-            const openDMs = snapshot.val() || {}; // Handle the case where openDMs doesn't exist
+         if (!dmParam) {
+            firebase.database().ref(`users/${user.uid}/openDMs`).on("value", (snapshot) => {
+               const openDMs = snapshot.val() || {}; // Handle the case where openDMs doesn't exist
 
-            const dmContainer = document.getElementById("openChats");
-            dmContainer.innerHTML = "";
+               const dmContainer = document.getElementById("openChats");
+               dmContainer.innerHTML = "";
 
-            if (Object.keys(openDMs).length > 0) {
-               if (document.getElementById("noDMsOpen")) {
-                  document.getElementById("noDMsOpen").remove();
-               }
+               if (Object.keys(openDMs).length > 0) {
+                  if (document.getElementById("noDMsOpen")) {
+                     document.getElementById("noDMsOpen").remove();
+                  }
 
-               // Create divs for each DM
-               for (const dmId in openDMs) {
-                  const dmDiv = document.createElement("div");
-                  dmDiv.id = dmId;
-                  dmDiv.classList.add("person");
-                  firebase.database().ref(`dms/${dmId}`).on("value", (snapshot) => {
-                     const dmData = snapshot.val();
+                  // Create divs for each DM
+                  for (const dmId in openDMs) {
+                     const dmDiv = document.createElement("div");
+                     dmDiv.id = dmId;
+                     dmDiv.classList.add("person");
+                     firebase.database().ref(`dms/${dmId}`).on("value", (snapshot) => {
+                        const dmData = snapshot.val();
 
-                     if (user.uid === dmData.user1) {
-                        const otherPersonPfp = document.createElement("img");
-                        const otherPersonDisplay = document.createElement("span");
-                        const lastMessageSent = document.createElement("span");
+                        if (user.uid === dmData.user1) {
+                           const otherPersonPfp = document.createElement("img");
+                           const otherPersonDisplay = document.createElement("span");
+                           const lastMessageSent = document.createElement("span");
 
-                        firebase.database().ref(`users/${dmData.user2}`).once("value", (snapshot) => {
-                           const otherPerson = snapshot.val();
+                           firebase.database().ref(`users/${dmData.user2}`).once("value", (snapshot) => {
+                              const otherPerson = snapshot.val();
 
-                           // Get pfp
-                           otherPersonPfp.src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${dmData.user2}%2F${otherPerson.pfp}?alt=media`;
-                           otherPersonPfp.setAttribute("draggable", "false");
-                           otherPersonPfp.classList.add("pfp");
-                           dmDiv.appendChild(otherPersonPfp);
-                           dmContainer.appendChild(dmDiv);
-
-                           // Get display
-                           otherPersonDisplay.textContent = otherPerson.display;
-                           otherPersonDisplay.classList.add("display");
-                           dmDiv.appendChild(otherPersonDisplay);
-                           dmContainer.appendChild(dmDiv);
-
-                           // Get last message, if available
-                           if (dmData.messages) {
-
-                           } else {
-                              lastMessageSent.textContent = `You and ${otherPerson.username} haven't chatted yet!`;
-                              lastMessageSent.classList.add("lastMessageSent");
-                              dmDiv.appendChild(lastMessageSent);
+                              // Get pfp
+                              otherPersonPfp.src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${dmData.user2}%2F${otherPerson.pfp}?alt=media`;
+                              otherPersonPfp.setAttribute("draggable", "false");
+                              otherPersonPfp.classList.add("pfp");
+                              dmDiv.appendChild(otherPersonPfp);
                               dmContainer.appendChild(dmDiv);
-                           }
-                        })
-                     } else {
-                        const otherPersonPfp = document.createElement("img");
-                        const otherPersonDisplay = document.createElement("span");
-                        const lastMessageSent = document.createElement("p");
 
-                        firebase.database().ref(`users/${dmData.user1}`).once("value", (snapshot) => {
-                           const otherPerson = snapshot.val();
-
-                           // Get pfp
-                           otherPersonPfp.src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${dmData.user1}%2F${otherPerson.pfp}?alt=media`;
-                           otherPersonPfp.setAttribute("draggable", "false");
-                           otherPersonPfp.classList.add("pfp");
-                           dmDiv.appendChild(otherPersonPfp);
-                           dmContainer.appendChild(dmDiv);
-
-                           // Get display
-                           otherPersonDisplay.textContent = otherPerson.display;
-                           otherPersonDisplay.classList.add("display");
-                           dmDiv.appendChild(otherPersonDisplay);
-                           dmContainer.appendChild(dmDiv);
-
-                           // Get last message, if available
-                           if (dmData.messages) {
-
-                           } else {
-                              lastMessageSent.textContent = `You and ${otherPerson.username} haven't chatted yet!`;
-                              lastMessageSent.classList.add("lastMessageSent");
-                              dmDiv.appendChild(lastMessageSent);
+                              // Get display
+                              otherPersonDisplay.textContent = otherPerson.display;
+                              otherPersonDisplay.classList.add("display");
+                              dmDiv.appendChild(otherPersonDisplay);
                               dmContainer.appendChild(dmDiv);
-                           }
-                        })
-                     }
-                  })
+
+                              // Get last message, if available
+                              if (dmData.messages) {
+
+                              } else {
+                                 lastMessageSent.textContent = `You and ${otherPerson.username} haven't chatted yet!`;
+                                 lastMessageSent.classList.add("lastMessageSent");
+                                 dmDiv.appendChild(lastMessageSent);
+                                 dmContainer.appendChild(dmDiv);
+                              }
+                           })
+                        } else {
+                           const otherPersonPfp = document.createElement("img");
+                           const otherPersonDisplay = document.createElement("span");
+                           const lastMessageSent = document.createElement("p");
+
+                           firebase.database().ref(`users/${dmData.user1}`).once("value", (snapshot) => {
+                              const otherPerson = snapshot.val();
+
+                              // Get pfp
+                              otherPersonPfp.src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${dmData.user1}%2F${otherPerson.pfp}?alt=media`;
+                              otherPersonPfp.setAttribute("draggable", "false");
+                              otherPersonPfp.classList.add("pfp");
+                              dmDiv.appendChild(otherPersonPfp);
+                              dmContainer.appendChild(dmDiv);
+
+                              // Get display
+                              otherPersonDisplay.textContent = otherPerson.display;
+                              otherPersonDisplay.classList.add("display");
+                              dmDiv.appendChild(otherPersonDisplay);
+                              dmContainer.appendChild(dmDiv);
+
+                              // Get last message, if available
+                              if (dmData.messages) {
+
+                              } else {
+                                 lastMessageSent.textContent = `You and ${otherPerson.username} haven't chatted yet!`;
+                                 lastMessageSent.classList.add("lastMessageSent");
+                                 dmDiv.appendChild(lastMessageSent);
+                                 dmContainer.appendChild(dmDiv);
+                              }
+                           })
+                        }
+                     })
+                  }
+               } else {
+                  document.getElementById("noDMsOpen").style.display = "block";
                }
-            } else {
-               document.getElementById("noDMsOpen").style.display = "block";
-            }
-         })
+            })
+         } else {
+            // hide open dms & show current
+            document.getElementById("dmNotOpen").remove();
+            document.getElementById("dms").style.display = "block";
+         }
       }
    })
 

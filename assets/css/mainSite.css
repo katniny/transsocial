@@ -2918,7 +2918,7 @@ textarea.borderBlack:focus {
 
 /* Home Page */
 .animateGradient {
-   background: linear-gradient(45deg, var(--main-color), #ff4866);
+   background: linear-gradient(45deg, pink, purple);
    background-size: 200% 200%;
    background-clip: text;
    -webkit-background-clip: text;
