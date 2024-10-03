@@ -3070,3 +3070,8 @@ a:hover {
    background: var(--profile-picture-bg);
    border-radius: 15px;
 }
+
+/* small */
+small {
+   color: var(--text-semi-transparent);
+}
