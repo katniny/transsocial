@@ -5409,9 +5409,9 @@ function isTauri() {
 }
 
 if (isTauri()) {
-   if (document.getElementById("betaTestingApp")) {
-      document.getElementById("betaTestingApp").remove();
-   }
+   // if (document.getElementById("betaTestingApp")) {
+   //    document.getElementById("betaTestingApp").remove();
+   // }
 }
 
 // Detect user OS
@@ -7857,4 +7857,16 @@ function setNoteMusic(trackId) {
    swapNoteTab("note");
    pickedMusic = trackId;
    console.log(trackId);
+}
+
+// randomize "betaTestingApp" to some info
+if (pathName === "/home") {
+   const info = [
+      `Did you know TransSocial has custom themes? <a href="/userstudio">Check them out</a>!`,
+      `Download our app <a href="/download">here</a> and bring TransSocial with you anywhere!`,
+      `TransSocial is open source!`,
+      `TransSocial has achievements you can unlock! But it's up to you to find them!`
+   ];
+   const randomIndex = Math.floor(Math.random() * info.length);
+   document.getElementById("betaTestingApp").innerHTML = info[randomIndex];
 }
