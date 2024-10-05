@@ -29,8 +29,8 @@ const pathName = pageURL.pathname;
 let isOnDesktopApp = null;
 
 // TransSocial Version
-let transsocialVersion = "v2024.10.3";
-let transsocialUpdate = "v2024103-1";
+let transsocialVersion = "v2024.10.5";
+let transsocialUpdate = "v2024105-1";
 let transsocialReleaseVersion = "pre-alpha";
 
 const notices = document.getElementsByClassName("version-notice");
@@ -3119,6 +3119,7 @@ async function publishNote() {
          const notesRef = firebase.database().ref("notes");
          const userNotes = firebase.database().ref(`users/${user.uid}/posts`);
          const newNoteKey = notesRef.push().key;
+         let isNotFlaggedNsfwButShouldBe = null;
 
          // if (pathName === "/note" || pathName === "/note.html") {
          //     console.log(isReplying_notehtml);
@@ -3136,6 +3137,49 @@ async function publishNote() {
             return;
          }
 
+         try {
+            const response = await fetch("/nsfw_words.json");
+            if (!response.ok) {
+               throw new Error("Network response not okay. User needs to check their connection. Let TransSocial handle the error later down, do not return.");
+            }
+
+            const nsfwWords = await response.json();
+
+            const nsfwPattern = new RegExp(`\\b(${nsfwWords.join("|")})\\b`, "i"); 
+
+            if (nsfwPattern.test(noteContent.toLowerCase()) && !document.getElementById("isNsfw").checked) {
+               const bad = document.createElement("dialog");
+               const h1 = document.createElement("h1");
+               const info = document.createElement("p");
+               const close = document.createElement("button");
+
+               h1.textContent = "Unflagged NSFW Detected";
+               info.innerHTML = "We detected NSFW content, but you have not flagged it. We allow NSFW as long as <br/>1) You aren't being a creep <br/>2) You flag it correctly<br/>To post this, please click the flag on the bottom of the note creation popup, check the NSFW checkbox, then try posting it again.<br/><br/>Attempting to circumvent this is a serious violation of our <a href='/policies/terms'>Terms of Service</a> and <a href='/policies/child-safety'>Child Safety</a> policies, and WILL get you permanently suspended without appeal.<br/><br/>If you believe this flag was an error, please let us know by creating a note.";
+               close.textContent = "Okay";
+
+               close.onclick = () => {
+                  bad.close();
+
+                  setTimeout(() => {
+                     bad.delete();
+                  }, 100);
+               }
+
+               bad.appendChild(h1);
+               bad.appendChild(info);
+               bad.appendChild(close);
+               document.body.appendChild(bad);
+               bad.showModal();
+
+               document.getElementById("coverCreateANote").style.display = "none";
+               return;
+            }
+         } catch (error) { 
+            document.getElementById("noteError").textContent = error;
+            document.getElementById("coverCreateANote").style.display = "none";
+            return;
+         }
+         
          const renoteData = {
             isRenote: false,
          }
