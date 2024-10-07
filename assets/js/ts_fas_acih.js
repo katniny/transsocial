@@ -29,8 +29,8 @@ const pathName = pageURL.pathname;
 let isOnDesktopApp = null;
 
 // TransSocial Version
-let transsocialVersion = "v2024.10.5";
-let transsocialUpdate = "v2024105-1";
+let transsocialVersion = "v2024.10.6";
+let transsocialUpdate = "v2024106-1";
 let transsocialReleaseVersion = "pre-alpha";
 
 const notices = document.getElementsByClassName("version-notice");
@@ -2843,7 +2843,11 @@ if (pathName === "/note.html" || pathName === "/note") {
 
             database.ref(`users/${noteData.whoSentIt}`).once("value", (snapshot) => {
                const profileData = snapshot.val();
-               document.title = `"${noteData.text}" / @${profileData.username} on TransSocial`;
+               if (noteData.text !== "") {
+                  document.title = `"${noteData.text}" / @${profileData.username} on TransSocial`;
+               } else {
+                  document.title = `@${profileData.username} on TransSocial`;
+               }
                document.getElementById(`melissa`).style.display = "block";
                document.getElementById(`userImage-profile`).src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${noteData.whoSentIt}%2F${profileData.pfp}?alt=media`;
                document.getElementById(`userImage-profile`).setAttribute("onclick", `window.location.href="/u?id=${profileData.username}"`);
@@ -4023,10 +4027,6 @@ if (pathName === "/settings" || pathName === "/settings.html") {
                                     text : themeData.themeColors.text,
                                     textHalfTransparent : themeData.themeColors.textHalfTransparent,
                                     textSemiTransparent : themeData.themeColors.textSemiTransparent,
-                                    buttonText : themeData.themeColors.buttonText,
-                                    hoveredButtonText : themeData.themeColors.hoveredButtonText,
-                                    createNoteButton : themeData.themeColors.createNoteButton,
-                                    createNoteButtonHover : themeData.themeColors.createNoteButtonHover
                                  }).then(() => {
                                     window.location.reload();
                                  });
@@ -4050,6 +4050,10 @@ if (pathName === "/settings" || pathName === "/settings.html") {
                                     text : themeData.themeColors.text,
                                     textHalfTransparent : themeData.themeColors.textHalfTransparent,
                                     textSemiTransparent : themeData.themeColors.textSemiTransparent,
+                                    buttonText : themeData.themeColors.buttonText,
+                                    hoveredButtonText : themeData.themeColors.hoveredButtonText,
+                                    createNoteButton : themeData.themeColors.createNoteButton,
+                                    createNoteButtonHover : themeData.themeColors.createNoteButtonHover,
                                     buttonText : themeData.themeColors.buttonText,
                                     hoveredButtonText : themeData.themeColors.hoveredButtonText,
                                     createNoteButton : themeData.themeColors.createNoteButton,
@@ -6511,7 +6515,22 @@ if (pathName === "/userstudio") {
             const themeDiv = document.createElement("div");
             themeDiv.classList.add("theme");
 
-            // add title/desc/creator to div
+            // add pic/title/desc/creator to div
+            // if legacy, then add a warning
+            if (themeData.legacy) {
+               const warning = document.createElement("div");
+               warning.className = "badge";
+               warning.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> Core`;
+               themeDiv.appendChild(warning);
+            }
+
+            const thumbnail = document.createElement("img");
+            if (themeData.hasThumbnail) {
+               thumbnail.src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fthemes%2F${themeKey}%2Fthumbnail.png?alt=media`;
+            } else {
+               thumbnail.src = `/assets/imgs/themeimgunavailable.png`;
+            }
+
             const title = document.createElement("h3");
             title.textContent = themeData.title;
 
@@ -6526,6 +6545,7 @@ if (pathName === "/userstudio") {
             })
 
             // append elements to the theme div
+            themeDiv.appendChild(thumbnail);
             themeDiv.appendChild(title);
             themeDiv.appendChild(desc);
             themeDiv.appendChild(creator);
@@ -6545,6 +6565,7 @@ if (pathName === "/userstudio") {
       firebase.database().ref(`themes/${themeParam}`).once("value", (snapshot) => {
          const themeExists = snapshot.exists();
          const themeData = snapshot.val();
+         const themeKey = snapshot.key;
 
          if (themeExists === false) {
             // 404 the user
@@ -6552,6 +6573,10 @@ if (pathName === "/userstudio") {
          } else {
             // show the user the theme
             document.getElementById("themeSelected").style.display = "block";
+            console.log(themeData);
+            if (themeData.hasThumbnail) {
+               document.getElementById("themeImg").src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fthemes%2F${themeKey}%2Fthumbnail.png?alt=media`;
+            }
             document.getElementById("themeName_title").textContent = themeData.title;
             document.getElementById("themeDesc").textContent = themeData.desc;
             firebase.database().ref(`users/${themeData.creator}/username`).once("value", (snapshot) => {

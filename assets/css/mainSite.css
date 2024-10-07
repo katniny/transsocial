@@ -2862,13 +2862,46 @@ textarea.borderBlack:focus {
    cursor: pointer;
    float: left;
    margin-left: 10px;
-   margin-top: 10px;
-   height: 150px;
+   margin-top: 10px; 
+   max-height: 250px;
    transition: all 0.15s linear;
+}
+
+#availableThemes .theme img {
+   width: 100%;
+   height: auto;
+   display: block;
+   border-radius: 15px;
+   margin-bottom: 3px;
+}
+
+#availableThemes .theme p {
+   display: -webkit-box;
+   -webkit-line-clamp: 3;
+   line-clamp: 3;
+   -webkit-box-orient: vertical;
+   overflow: hidden;
+   text-overflow: ellipsis;   
 }
 
 #availableThemes .theme:hover {
    transform: translateY(-3px);
+}
+
+#availableThemes .theme .badge {
+   background: var(--warning-text);
+   padding: 2px 8px;
+   border-radius: 12px;
+   font-size: 0.8em;
+   margin-left: 5px;
+   color: var(--hovered-button-text);
+   display: block;
+   max-width: 50px;
+   margin-bottom: 10px;
+}
+
+#availableThemes .theme .badge i {
+   color: var(--hovered-button-text);
 }
 
 /* Markdown Toolbar */
@@ -3074,4 +3107,11 @@ a:hover {
 /* small */
 small {
    color: var(--text-semi-transparent);
+}
+
+/* theme selected */
+#themeSelected img {
+   max-width: 100%;
+   border-radius: 15px;
+   height: 200px;
 }
