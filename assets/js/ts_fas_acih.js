@@ -6577,6 +6577,9 @@ if (pathName === "/userstudio") {
             if (themeData.hasThumbnail) {
                document.getElementById("themeImg").src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fthemes%2F${themeKey}%2Fthumbnail.png?alt=media`;
             }
+            if (!themeData.legacy) {
+               document.getElementById("legacyTheme").remove();
+            }
             document.getElementById("themeName_title").textContent = themeData.title;
             document.getElementById("themeDesc").textContent = themeData.desc;
             firebase.database().ref(`users/${themeData.creator}/username`).once("value", (snapshot) => {
