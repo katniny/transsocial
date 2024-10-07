@@ -446,7 +446,7 @@ if (document.getElementById("404page")) {
 if (pathName === "/auth/register" || pathName === "/auth/register.html") {
    firebase.auth().onAuthStateChanged((user) => {
       if (user) {
-         window.location.replace("/auth/pfp");
+         window.location.replace("/auth/policies");
       } else {
          // no need to do anything
       }
