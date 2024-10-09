@@ -21,8 +21,8 @@ const pathName = pageURL.pathname;
 let isOnDesktopApp = null;
 
 // TransSocial Version
-let transsocialVersion = "v2024.10.7";
-let transsocialUpdate = "v2024107-1";
+let transsocialVersion = "v2024.10.8";
+let transsocialUpdate = "v2024108-1";
 let transsocialReleaseVersion = "pre-alpha";
 
 const notices = document.getElementsByClassName("version-notice");
@@ -381,19 +381,33 @@ if (pathName === "/suspended.html" || pathName === "/suspended") {
 // Get notifications
 let unreadNotifications = null;
 
-firebase.auth().onAuthStateChanged((user) => {
+supabase.auth.onAuthStateChange(async (event, session) => {
+   const user = session?.user;
+
    if (user) {
-      firebase.database().ref(`users/${user.uid}/notifications/unread`).on("value", (snapshot) => {
-         unreadNotifications = snapshot.val();
-         if (unreadNotifications !== null && unreadNotifications !== 0) {
-            document.getElementById("notificationsCount").classList.add("show");
-            document.getElementById("notificationsCount").innerHTML = `${unreadNotifications}`;
-         } else {
-            document.getElementById("notificationsCount").classList.remove("show");
-         }
-      })
+      const uid = user.id;
+
+      let { data: notifications, error } = await supabase
+         .from("public.users")
+         .select("notifications->unread")
+         .eq("id", uid)
+         .single();
+      
+      if (error) {
+         console.error("Error fetching notifications:", error);
+         return;
+      }
+
+      unreadNotifications = notifications?.notifications?.unread || 0;
+
+      if (unreadNotifications !== 0) {
+         document.getElementById("notificationsCount").classList.add("show");
+         document.getElementById("notificationsCount").innerHTML = `${unreadNotifications}`;
+      } else {
+         document.getElementById("notificationsCount").classList.remove("show");
+      }
    }
-})
+});
 
 // Check for updates
 // let currentTransSocialVersion = "v0.0.3_indev";
@@ -408,31 +422,59 @@ firebase.auth().onAuthStateChanged((user) => {
 // })
 
 // TransSocial Update
-firebase.auth().onAuthStateChanged((user) => {
-   if (user) {
-      firebase.database().ref(`users/${user.uid}/readUpdates/${transsocialUpdate}`).on("value", (snapshot) => {
-         const hasDoneIt = snapshot.exists();
+supabase.auth.onAuthStateChange(async (event, session) => {
+   const user = session?.user;
 
-         if (!hasDoneIt) {
-            document.getElementById("updatesBtn").innerHTML = `<i class="fa-solid fa-wrench"></i> Updates <span class="badge">New!</span>`;
-         }
-      })
+   if (user) {
+      const uid = user.id;
+
+      let { data: readUpdate, error } = await supabase
+         .from(`public.users.read_updates`)
+         .select("*")
+         .eq("user_id", uid)
+         .eq("update_id", transsocialUpdate)
+         .single();
+      
+      if (error) {
+         console.error("Error fetching read updates: ", error);
+         return;
+      }
+
+      const hasDoneIt = !!readUpdate; 
+
+      if (!hasDoneIt) {
+         document.getElementById("updatesBtn").innerHTML = `<i class="fa-solid fa-wrench"></i> Updates <span class="badge">New!</span>`;
+      }
    } else {
+      // show the updates modal if no user is logged in
       if (document.getElementById("newestUpdates")) {
          document.getElementById("newestUpdates").showModal();
       }
    }
-})
+});
 
-firebase.auth().onAuthStateChanged((user) => {
+supabase.auth.onAuthStateChange(async (event, session) => {
+   const user = session?.user;
+
    if (pathName === "/updates") {
       if (user) {
-         firebase.database().ref(`users/${user.uid}/readUpdates/${transsocialUpdate}`).update({
-            read: true,
-         })
+         const uid = user.id;
+
+         const { error } = await supabase
+            .from(`public.users.read_updates`)
+            .upsert({
+               user_id: uid,
+               update_id: transsocialUpdate,
+               read: true,
+               version: transsocialVersion
+            });
+         
+         if (error) {
+            console.error("Error updating read updates: ", error);
+         }
       }
    }
-})
+});
 
 // If the user is on the 404 page, change the page URL to be the page they are on.
 if (document.getElementById("404page")) {
