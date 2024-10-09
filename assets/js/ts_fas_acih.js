@@ -3,24 +3,16 @@
 
 // katniny Firebase Configuration
 // before pushing to git, always make sure the firebase config doesn't expose yours
-const firebaseConfig = {
-   apiKey: "REPLACE",
-   authDomain: "REPLACE",
-   databaseURL: "REPLACE",
-   projectId: "REPLACE",
-   storageBucket: "REPLACE",
-   messagingSenderId: "REPLACE",
-   appId: "REPLACE",
-   measurementId: "REPLACE"
-};
+const supabaseUrl = "https://ywgiijfoylssrnfpakmn.supabase.co";
+const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl3Z2lpamZveWxzc3JuZnBha21uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjg0MzE3MTEsImV4cCI6MjA0NDAwNzcxMX0.BVszRvNo_FTw72eC6whqqo-KEAxjYB1eOATZDrc5kXY";
 
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const database = firebase.database();
-const storage = firebase.storage();
-const storageRef = storage.ref();
-const timestamp = firebase.database.ServerValue.TIMESTAMP
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+const auth = supabase.auth;
+const database = supabase.from("public");
+const storage = supabase.storage;
+const storageRef = storage.from("public");
+const timestamp = new Date();
 
 // Get the current URL. This is going to prevent functions that don't need to run on a page from running.
 const currentURL = window.location.href;
@@ -339,41 +331,31 @@ if (document.getElementById("themeDescription")) {
 }
 
 // Constantly check user's suspension status
-if (pathName !== "/suspended.html" || pathName !== "/suspended") {
-   firebase.auth().onAuthStateChanged((user) => {
-      // Firstly, check if the user even exists. If they don't return.
-      if (user) {
-         const suspensionRef = firebase.database().ref("users/" + user.uid);
-         suspensionRef.on("value", (snapshot) => {
-            const data = snapshot.val();
+if (pathName !== "/suspended.html" && pathName !== "/suspended") {
+   supabase.auth.onAuthStateChange(async (event, session) => {
+      if (session && session.user) {
+         const { data, error } = await supabase
+            .from("users")
+            .select("suspensionStatus")
+            .eq("id", session.user.id)
+            .single();
+         
+         if (error) {
+            console.error("Error fetching user suspension status: ", error.message);
+            return;
+         }
 
-            if (data.suspensionStatus === "suspended") {
-               if (pathName !== "/suspended" && pathName !== "/suspended.html") {
-                  window.location.replace("/suspended");
-               }
-            }
-         })
+         if (data.suspensionStatus === "suspended") {
+            window.location.replace("/suspended");
+         }
       }
    });
-};
+}
 
 if (pathName === "/suspended.html" || pathName === "/suspended") {
-   firebase.auth().onAuthStateChanged((user) => {
-      // Firstly, check if the user even exists. If they don't return.
-      if (user) {
-         const suspensionRef = firebase.database().ref("users/" + user.uid);
-         suspensionRef.on("value", (snapshot) => {
-            const data = snapshot.val();
-            //console.log(data);
-
-            if (data.suspensionStatus === "suspended") {
-               document.getElementById("reasonForBeingSuspended").textContent = data.suspensionNotes.reason;
-               document.getElementById("suspensionExpiration").textContent = data.suspensionNotes.expiration;
-            } else 
-               window.location.replace("/home");
-         })
-      } else {
-         window.location.replace("/home");
+   supabase.auth.onAuthStateChange(async (event, session) => {
+      if (session && session.user) {
+         const 
       }
    });
 }
