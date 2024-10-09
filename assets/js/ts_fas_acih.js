@@ -3,8 +3,8 @@
 
 // katniny Firebase Configuration
 // before pushing to git, always make sure the firebase config doesn't expose yours
-const supabaseUrl = "https://ywgiijfoylssrnfpakmn.supabase.co";
-const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl3Z2lpamZveWxzc3JuZnBha21uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjg0MzE3MTEsImV4cCI6MjA0NDAwNzcxMX0.BVszRvNo_FTw72eC6whqqo-KEAxjYB1eOATZDrc5kXY";
+const supabaseUrl = "REPLACE";
+const supabaseAnonKey = "REPLACE";
 
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
@@ -355,7 +355,25 @@ if (pathName !== "/suspended.html" && pathName !== "/suspended") {
 if (pathName === "/suspended.html" || pathName === "/suspended") {
    supabase.auth.onAuthStateChange(async (event, session) => {
       if (session && session.user) {
-         const 
+         const { data, error } = await supabase
+            .from("users")
+            .select("suspensionNotes")
+            .eq("id", session.user.id)
+            .single();
+         
+         if (error) {
+            console.error("Error fetching user suspension details: ", error.message);
+            return;
+         }
+
+         if (data.suspensionStatus === "suspended") {
+            document.getElementById("reasonForBeingSuspended").textContent = data.suspensionNotes.reason;
+            document.getElementById("suspensionExpiration").textContent = data.suspensionNotes.expiration;
+         } else {
+            window.location.replace("/home");
+         }
+      } else {
+         window.location.replace("/home");
       }
    });
 }
