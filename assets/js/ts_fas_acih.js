@@ -652,7 +652,7 @@ function register() {
 }
 
 // Login Function
-function login() {
+async function login() {
    document.getElementById("loginBtn").innerHTML = `<i class="fa-solid fa-spinner fa-spin-pulse"></i> Logging in...`;
    document.getElementById("loginBtn").classList.add("disabled");
    document.getElementById("errorTxt").style.display = "none";
@@ -661,15 +661,19 @@ function login() {
       const email = document.getElementById("email").value;
       const password = document.getElementById("password").value;
 
-      firebase.auth().signInWithEmailAndPassword(email, password)
-         .then(() => {
-            window.location.replace("/home");
-         }).catch((error) => {
-            document.getElementById("errorTxt").style.display = "block";
-            document.getElementById("errorTxt").textContent = error.message;
-            document.getElementById("loginBtn").innerHTML = `Login`;
-            document.getElementById("loginBtn").classList.remove("disabled");
-         });
+      const { data, error } = await supabase.auth.signInWithPassword({
+         email: email,
+         password: password
+      });
+
+      if (error) {
+         document.getElementById("errorTxt").style.display = "block";
+         document.getElementById("errorTxt").textContent = error.message;
+         document.getElementById("loginBtn").innerHTML = `Login`;
+         document.getElementById("loginBtn").classList.remove("disabled");
+      } else {
+         window.location.replace("/home");
+      }
    }
 }
 
