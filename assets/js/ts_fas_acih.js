@@ -6,7 +6,7 @@
 const supabaseUrl = "REPLACE";
 const supabaseAnonKey = "REPLACE";
 
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+const supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey); // dont ask me why, but it doesnt work properly without "window.supabase."
 
 const auth = supabase.auth;
 const database = supabase.from("public");
