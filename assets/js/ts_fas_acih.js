@@ -486,29 +486,40 @@ if (document.getElementById("404page")) {
 
 // If user is on the register page and is not signed in, redirect to /
 if (pathName === "/auth/register" || pathName === "/auth/register.html") {
-   firebase.auth().onAuthStateChanged((user) => {
+   supabase.auth.onAuthStateChange((event, session) => {
+      const user = session?.user;
+
       if (user) {
          window.location.replace("/auth/policies");
       } else {
          // no need to do anything
       }
-   })
+   });
 }
 
 // If user is on /auth/pfp, make sure their email is saved
 // We also add their profile picture here
 if (pathName === "/auth/pfp") {
-   firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-         firebase.database().ref(`users/${user.uid}`).update({
-            email : user.email
-         });
+   supabase.auth.onAuthStateChange(async (event, session) => {
+      const user = session?.user;
 
-         firebase.database().ref(`users/${user.uid}/pfp`).once("value", (snapshot) => {
-            if (snapshot.exists()) {
-               window.location.replace("/auth/names");
-            }
-         });
+      if (user) {
+         const { error: updateError } = await supabase
+            .from("public.users")
+            .update({
+               email: user.email,
+            })
+            .eq("id", user.id);
+         
+         const { data: pfpData, error: pfpError } = await supabase
+            .from("public.users")
+            .select("pfp")
+            .eq("id", user.id)
+            .single();
+         
+         if (pfpData?.pfp) {
+            window.location.replace("/auth/names");
+         }
       } else {
          window.location.replace("/auth/register");
       }
@@ -516,18 +527,16 @@ if (pathName === "/auth/pfp") {
 }
 
 if (pathName === "/auth/pfp") {
-   document.getElementById("pfpUploader").addEventListener("change", function(event) {
+   document.getElementById("pfpUploader").addEventListener("change", async function(event) {
       const file = event.target.files[0];
 
       if (file) {
-         // ensure file is 5mb or lower
-         if (file.size > 5 * 1024 * 1024) { // 5mb
+         if (file.size > 5 * 1024 * 1024) {
             document.getElementById("errorTxt").textContent = "Image must be under 5MB.";
             document.getElementById("errorTxt").style.display = "block";
             return;
          }
 
-         // check file type
          const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
          if (!allowedTypes.includes(file.type)) {
             document.getElementById("errorTxt").textContent = "Image must be a JPG, PNG, or WEBP file.";
@@ -535,57 +544,80 @@ if (pathName === "/auth/pfp") {
             return;
          }
 
-         // get user uid
-         firebase.auth().onAuthStateChanged((user) => {
-            // create a reference to where you want to upload the file
-            const fileRef = storageRef.child(`images/pfp/${user.uid}/${file.name}`);
+         // user
+         const { user } = await supabase.auth.getUser();
 
-            // upload the file
-            const uploadTask = fileRef.put(file);
+         if (user) {
+            // create ref to supabase storage
+            const { error: uploadError } = await supabase.storage
+               .from("pub")
+               .upload(`images/pfp/${user.id}/${file.name}`, file, {
+                  cacheControl: "3600",
+                  upsert: true
+               });   
+            
+            if (uploadError) {
+               document.getElementById("errorTxt").textContent = `${uploadError.message}`;
+               document.getElementById("errorTxt").style.display = "block";
+               document.getElementById("errorTxt").style.color = "var(--error-text)";
+               return;
+            }
 
-            uploadTask.on("state_changed",
-               function(snapshot) {
-                  // log progress
-                  const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                  document.getElementById("errorTxt").textContent = `Uploading profile picture! ${progress}% done`;
-                  document.getElementById("errorTxt").style.display = "block";
-                  document.getElementById("errorTxt").style.color = "var(--success-color)";
-               },
-               function(error) {
-                  document.getElementById("errorTxt").textContent = `${error.message}`;
-                  document.getElementById("errorTxt").style.display = "block";
-                  document.getElementById("errorTxt").style.color = "var(--error-text)";
-               },
-               function() {
-                  // complete!
-                  uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
-                     firebase.database().ref(`users/${user.uid}`).update({
-                        pfp : file.name
-                     })
-                     .then(() => {
-                        window.location.replace("/auth/names");
-                     });
-                  })
-               }
-            )
-         })
+            const { publicURL, error: urlError } = supabase.storage
+               .from("pub")
+               .getPublicUrl(`images/pfp/${user.id}/${file.name}`)
+            
+            if (urlError) {
+               document.getElementById("errorTxt").textContent = `${urlError.message}`;
+               document.getElementById("errorTxt").style.display = "block";
+               document.getElementById("errorTxt").style.color = "var(--error-text)";
+               return;
+            }
+
+            const { error: updateError } = await supabase
+               .from("public.users")
+               .update({ pfp: file.name })
+               .eq("id", user.id);
+            
+            if (updateError) {
+               document.getElementById("errorTxt").textContent = `${updateError.message}`;
+               document.getElementById("errorTxt").style.display = "block";
+               document.getElementById("errorTxt").style.color = "var(--error-text)";
+               return;
+            }
+
+            window.location.replace("/auth/names");
+         }
       }
    })
 }
 
 // if user is on /auth/names, allow them to add a display name and username
+
+//CONTINUE FROM HERE!!
 if (pathName === "/auth/pfp") {
-   firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-         firebase.database().ref(`users/${user.uid}/username`).once("value", (snapshot) => {
-            if (snapshot.exists()) {
-               window.location.replace("/auth/done");
-            }
-         });
-      } else {
-         window.location.replace("/auth/register");
-      }
-   });
+   const { data: usernameExists, error } = await supabase
+      .from("public.taken_usernames")
+      .select("username")
+      .eq("username", desiredUsername)
+      .single();
+
+   if (error) {
+      console.error("Error checking username: ", error);
+      return;
+   }
+
+   if (usernameExists) {
+      document.getElementById("errorTxt").textContent = "Username is already taken. Try another!";
+      document.getElementById("errorTxt").style.display = "block";
+   } else {
+      // Username is available, proceed with registration
+      console.log("Username is available!");
+      const { error: updateError } = await supabase
+         .from("public.users")
+         .update({ username: file.name })
+         .eq("id", user.id);
+   }
 }
 
 function displayAndUsernameReserve() {
