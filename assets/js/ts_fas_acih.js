@@ -593,34 +593,37 @@ if (pathName === "/auth/pfp") {
 }
 
 // if user is on /auth/names, allow them to add a display name and username
-
-//CONTINUE FROM HERE!!
+// wait is this even used?
 if (pathName === "/auth/pfp") {
-   const { data: usernameExists, error } = await supabase
-      .from("public.taken_usernames")
-      .select("username")
-      .eq("username", desiredUsername)
-      .single();
+   async function claimUsername() {
+      const { data: usernameExists, error } = await supabase
+         .from("public.taken_usernames")
+         .select("username")
+         .eq("username", desiredUsername)
+         .single();
 
-   if (error) {
-      console.error("Error checking username: ", error);
-      return;
+      if (error) {
+         console.error("Error checking username: ", error);
+         return;
+      }
+
+      if (usernameExists) {
+         document.getElementById("errorTxt").textContent = "Username is already taken. Try another!";
+         document.getElementById("errorTxt").style.display = "block";
+      } else {
+         // Username is available, proceed with registration
+         console.log("Username is available!");
+         const { error: updateError } = await supabase
+            .from("public.users")
+            .update({ username: file.name })
+            .eq("id", user.id);
+      }
    }
 
-   if (usernameExists) {
-      document.getElementById("errorTxt").textContent = "Username is already taken. Try another!";
-      document.getElementById("errorTxt").style.display = "block";
-   } else {
-      // Username is available, proceed with registration
-      console.log("Username is available!");
-      const { error: updateError } = await supabase
-         .from("public.users")
-         .update({ username: file.name })
-         .eq("id", user.id);
-   }
+   claimUsername();
 }
 
-function displayAndUsernameReserve() {
+async function displayAndUsernameReserve() {
    document.getElementById("errorTxt").style.display = "none";
    document.getElementById("displayAndUsernameBtn").innerHTML = `<i class="fa-solid fa-spinner fa-spin-pulse"></i> Checking display...`;
    document.getElementById("displayAndUsernameBtn").classList.add("disabled");
@@ -639,65 +642,89 @@ function displayAndUsernameReserve() {
       document.getElementById("displayAndUsernameBtn").classList.remove("disabled");
       return;
    } else {
-      firebase.auth().onAuthStateChanged((user) => {
-         if (user) {
-            firebase.database().ref(`users/${user.uid}`).update({
-               display : displayName
-            })
-            .then(() => {
-               document.getElementById("displayAndUsernameBtn").innerHTML = `<i class="fa-solid fa-spinner fa-spin-pulse"></i> Checking username...`;
-      
-               firebase.database().ref(`taken-usernames/${username}`).once("value", (snapshot) => {
-                  if (snapshot.exists()) {
-                     // we don't have to check if the username is blank because firebase reads the entire "taken-usernames/"
-                     // database reference, so it assumes it's already taken.
-                     // if you want it to say "Username cannot be empty", then you can add it (i doubt it'd be hard)
-                     document.getElementById("errorTxt").textContent = `Username is unavailable! Try another.`;
-                     document.getElementById("errorTxt").style.display = "block";
-                     document.getElementById("displayAndUsernameBtn").innerHTML = `Use Display Name & Check Username`;
-                     document.getElementById("displayAndUsernameBtn").classList.remove("disabled");
-                     return;
-                  } else {
-                     firebase.auth().onAuthStateChanged((user) => {
-                        if (user) {
-                           document.getElementById("displayAndUsernameBtn").innerHTML = `<i class="fa-solid fa-spinner fa-spin-pulse"></i> Applying username...`;
-      
-                           // reserve the name
-                           firebase.database().ref(`taken-usernames/${username}`).update({
-                              user : user.uid
-                           })
-                           .then(() => {
-                              // then add username to account
-                              firebase.database().ref(`users/${user.uid}`).update({
-                                 username : username
-                              })
-                              .then(() => {
-                                 window.location.replace("/auth/done");
-                              });
-                           });
-                        }
-                     });
-                  }
-               });
-            });
+      const { data: { user } } = await supabase.auth.getUser();
+
+      if (user) {
+         const uid = user.id;
+
+         let { error: displayError } = await supabase
+            .from("public.users")
+            .update({ display: displayName })
+            .eq("id", uid);
+         
+         if (displayError) {
+            document.getElementById("errorTxt").textContent = `Failed to update display name: ${displayError.message}`;
+            document.getElementById("errorTxt").style.display = "block";
+            document.getElementById("displayAndUsernameBtn").innerHTML = `Use Display Name & Check Username`;
+            document.getElementById("displayAndUsernameBtn").classList.remove("disabled");
+            return;
          }
-      })
+
+         document.getElementById("displayAndUsernameBtn").innerHTML = `<i class="fa-solid fa-spinner fa-spin-pulse"></i> Checking username...`;
+
+         // check if username exists in taken_usernames
+         const { data: usernameExists, error: usernameError } = await supabase
+            .from("public.taken_usernames")
+            .select("username")
+            .eq("username", username)
+            .single();
+         
+         if (usernameExists) {
+            document.getElementById("errorTxt").textContent = "Username is unavailable! Try another.";
+            document.getElementById("errorTxt").style.display = "block";
+            document.getElementById("displayAndUsernameBtn").innerHTML = `Use Display Name & Check Username`;
+            document.getElementById("displayAndUsernameBtn").classList.remove("disabled");
+            return;
+         } else {
+            document.getElementById("displayAndUsernameBtn").innerHTML = `<i class="fa-solid fa-spinner fa-spin-pulse"></i> Applying username...`;
+
+            let { error: reserveError } = await supabase
+               .from("public.taken_usernames")
+               .insert({ username: username, user_id: uid });
+            
+            if (reserveError) {
+               document.getElementById("errorTxt").textContent = `Error reserving username: ${reserveError.message}`;
+               document.getElementById("errorTxt").style.display = "block";
+               document.getElementById("displayAndUsernameBtn").innerHTML = `Use Display Name & Check Username`;
+               document.getElementById("displayAndUsernameBtn").classList.remove("disabled");
+               return;
+            }
+
+            // update the username
+            let { error: userUpdateError } = await supabase
+               .from("public.users")
+               .update({ username: username })
+               .eq("id", uid);
+            
+            if (userUpdateError) {
+               document.getElementById("errorTxt").textContent = `Error applying username: ${userUpdateError.message}`;
+               document.getElementById("errorTxt").style.display = "block";
+               document.getElementById("displayAndUsernameBtn").innerHTML = `Use Display Name & Check Username`;
+               document.getElementById("displayAndUsernameBtn").classList.remove("disabled");
+               return;
+            }
+
+            window.location.replace("/auth/done");
+         }
+      }
    }
 }
 
 // auth/done... not much to do, just check auth state
 if (pathName === "/auth/done") {
-   firebase.auth().onAuthStateChanged((user) => {
+   (async () => {
+      const { data: { user }, error } = await supabase.auth.getUser();
+
       if (user) {
-         // nothing to do
+         // nothing to do, user is logged in
       } else {
          window.location.replace("/auth/register");
       }
-   });
+   })
 }
 
 // Register Function
-function register() {
+async function register() {
    if (pathName === "/auth/register.html" || pathName === "/auth/register") {
       document.getElementById("registerBtn").innerHTML = `<i class="fa-solid fa-spinner fa-spin-pulse"></i> Registering...`;
       document.getElementById("registerBtn").classList.add("disabled");
@@ -707,21 +734,39 @@ function register() {
       const email = document.getElementById("email").value;
       const password = document.getElementById("password").value;
 
-      firebase.auth().createUserWithEmailAndPassword(email, password)
-         .then((userCredential) => {
-            document.getElementById("registerBtn").innerHTML = `<i class="fa-solid fa-spinner fa-spin-pulse"></i> Starting...`;
-            firebase.database().ref(`users/${userCredential.uid}`).update({
-               email : email
-            }).then(() => {
-               window.location.replace("/auth/pfp");
-            });
-         })
-         .catch((error) => {
-            document.getElementById("errorTxt").textContent = error.message;
-            document.getElementById("errorTxt").style.display = "block";
-            document.getElementById("registerBtn").innerHTML = `Register`;
-            document.getElementById("registerBtn").classList.remove("disabled");
+      try {
+         // ensure the user doesnt exist
+         const { error: signInError } = await supabase.auth.signInWithPassword({
+            email: email,
+            password: password
          });
+
+         if (!signInError) {
+            throw new Error("This email is already registered. Please sign in instead.");
+         }
+
+         // register user
+         const { data, error } = await supabase.auth.signUp({
+            email: email,
+            password: password,
+         });
+
+         if (error) {
+            throw error;
+         }  
+
+         const user = data.user;
+         
+         document.getElementById("registerBtn").innerHTML = `<i class="fa-solid fa-spinner fa-spin-pulse"></i> Starting...`;
+
+         // redirect to profile picture page
+         window.location.replace("/auth/policies");
+      } catch (error) {
+         document.getElementById("errorTxt").textContent = error.message;
+         document.getElementById("errorTxt").style.display = "block";
+         document.getElementById("registerBtn").innerHTML = `Register`;
+         document.getElementById("registerBtn").classList.remove("disabled");
+      }
    }
 }
 
@@ -798,7 +843,9 @@ function validate_field(field) {
 // Hide error by default
 function hideErrorByDefault() {
    const errorTxt = document.getElementById('errorTxt');
-   errorTxt.innerHTML = '';
+   if (errorTxt) {
+      errorTxt.innerHTML = '';
+   }
 }
 
 // Only allow user on page if they are signed in/signed out
@@ -1263,7 +1310,7 @@ function sanitizeAndLinkify(text) {
 // i think its safe to assume no one needs the old note rendering code from v0.0.1?
 
 // Note Loading
-let notesRef = firebase.database().ref('notes');
+let notesRef = supabase.from("notes");
 const notesDiv = document.getElementById("notes");
 const batchSize = null;
 let isLoading = false;

@@ -77,6 +77,7 @@ quote.textContent = quotes[key];
 const date = new Date();
 const currentMonth = date.getMonth() + 1;
 
+// investigate why loader wont go away while logged in
 supabase.auth.onAuthStateChange(async (event, session) => {
    const user = session?.user;
 
@@ -101,10 +102,11 @@ supabase.auth.onAuthStateChange(async (event, session) => {
             document.documentElement.style.setProperty("--zoom-level", "1");
          } else if (userData.fontSizePref === "large") {
             document.documentElement.style.setProperty("--zoom-level", "1.07");
+         } else {
+            document.documentElement.style.setProperty("--zoom-level", "1");
          }
       }
 
-      // theme
       if (!userData.theme || userData.theme === "Dark") {
          // uses dark by default
       } else if (userData.theme === "Light") {
