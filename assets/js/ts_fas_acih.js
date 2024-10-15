@@ -29,8 +29,8 @@ const pathName = pageURL.pathname;
 let isOnDesktopApp = null;
 
 // TransSocial Version
-let transsocialVersion = "v2024.10.7";
-let transsocialUpdate = "v2024107-1";
+let transsocialVersion = "v2024.10.14";
+let transsocialUpdate = "v20241014-1";
 let transsocialReleaseVersion = "pre-alpha";
 
 const notices = document.getElementsByClassName("version-notice");
@@ -347,7 +347,7 @@ if (pathName !== "/suspended.html" || pathName !== "/suspended") {
          suspensionRef.on("value", (snapshot) => {
             const data = snapshot.val();
 
-            if (data.suspensionStatus === "suspended") {
+            if (data && data.suspensionStatus === "suspended") {
                if (pathName !== "/suspended" && pathName !== "/suspended.html") {
                   window.location.replace("/suspended");
                }
@@ -389,7 +389,9 @@ firebase.auth().onAuthStateChanged((user) => {
             document.getElementById("notificationsCount").classList.add("show");
             document.getElementById("notificationsCount").innerHTML = `${unreadNotifications}`;
          } else {
-            document.getElementById("notificationsCount").classList.remove("show");
+            if (document.getElementById("notificationsCount")) {
+               document.getElementById("notificationsCount").classList.remove("show");
+            }
          }
       })
    }
@@ -414,7 +416,9 @@ firebase.auth().onAuthStateChanged((user) => {
          const hasDoneIt = snapshot.exists();
 
          if (!hasDoneIt) {
-            document.getElementById("updatesBtn").innerHTML = `<i class="fa-solid fa-wrench"></i> Updates <span class="badge">New!</span>`;
+            if (document.getElementById("updatesBtn")) {
+               document.getElementById("updatesBtn").innerHTML = `<i class="fa-solid fa-wrench"></i> Updates <span class="badge">New!</span>`;
+            }
          }
       })
    } else {
@@ -444,13 +448,37 @@ if (document.getElementById("404page")) {
 
 // If user is on the register page and is not signed in, redirect to /
 if (pathName === "/auth/register" || pathName === "/auth/register.html") {
+   const url = new URL(window.location.href);
+   const urlParam = url.searchParams.get("return_to");
+
+   if (urlParam && urlParam === "https://music.transs.social/") {
+      document.getElementById("redirectNotice").innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> You'll be returned to TransMusic after you create your account.`;
+   } else if (urlParam && urlParam !== "https://music.transs.social/") {
+      document.getElementById("redirectNotice").innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> You'll be returned to ${urlParam} after you create your account.`;
+   } else {
+      document.getElementById("redirectNotice").remove();
+   }
+
    firebase.auth().onAuthStateChanged((user) => {
       if (user) {
-         window.location.replace("/auth/policies");
+         if (!urlParam) {
+            window.location.replace("/auth/policies");
+         } else {
+            window.location.replace(`/auth/policies?return_to=${urlParam}`);
+         }
       } else {
          // no need to do anything
       }
    })
+}
+
+if (pathName === "/auth/policies") {
+   const url = new URL(window.location.href);
+   const urlParam = url.searchParams.get("return_to");
+
+   if (urlParam) {
+      document.getElementById("continueBtn").href = `/auth/pfp?return_to=${urlParam}`;
+   }
 }
 
 // If user is on /auth/pfp, make sure their email is saved
@@ -464,7 +492,14 @@ if (pathName === "/auth/pfp") {
 
          firebase.database().ref(`users/${user.uid}/pfp`).once("value", (snapshot) => {
             if (snapshot.exists()) {
-               window.location.replace("/auth/names");
+               const url = new URL(window.location.href);
+               const urlParam = url.searchParams.get("return_to");
+               
+               if (!urlParam) {
+                  window.location.replace("/auth/names");
+               } else {
+                  window.location.replace(`/auth/names?return_to=${urlParam}`);
+               }
             }
          });
       } else {
@@ -521,7 +556,14 @@ if (pathName === "/auth/pfp") {
                         pfp : file.name
                      })
                      .then(() => {
-                        window.location.replace("/auth/names");
+                        const url = new URL(window.location.href);
+                        const urlParam = url.searchParams.get("return_to");
+
+                        if (!urlParam) {
+                           window.location.replace("/auth/names");
+                        } else {
+                           window.location.replace(`/auth/names?return_to=${urlParam}`);
+                        }
                      });
                   })
                }
@@ -537,7 +579,14 @@ if (pathName === "/auth/pfp") {
       if (user) {
          firebase.database().ref(`users/${user.uid}/username`).once("value", (snapshot) => {
             if (snapshot.exists()) {
-               window.location.replace("/auth/done");
+               const url = new URL(window.location.href);
+               const urlParam = url.searchParams.get("return_to");
+
+               if (!urlParam) {
+                  window.location.replace("/auth/done");
+               } else {
+                  window.location.replace(`/auth/done?return_to=${urlParam}`);
+               }
             }
          });
       } else {
@@ -598,7 +647,14 @@ function displayAndUsernameReserve() {
                                  username : username
                               })
                               .then(() => {
-                                 window.location.replace("/auth/done");
+                                 const url = new URL(window.location.href);
+                                 const urlParam = url.searchParams.get("return_to");
+                                    
+                                 if (!urlParam) {
+                                    window.location.replace("/auth/done");
+                                 } else {
+                                    window.location.replace(`/auth/done?return_to=${urlParam}`);
+                                 }
                               });
                            });
                         }
@@ -613,9 +669,14 @@ function displayAndUsernameReserve() {
 
 // auth/done... not much to do, just check auth state
 if (pathName === "/auth/done") {
+   const url = new URL(window.location.href);
+   const urlParam = url.searchParams.get("return_to");
+
    firebase.auth().onAuthStateChanged((user) => {
       if (user) {
-         // nothing to do
+         if (urlParam) {
+            window.location.replace(urlParam);
+         }
       } else {
          window.location.replace("/auth/register");
       }
@@ -639,7 +700,14 @@ function register() {
             firebase.database().ref(`users/${userCredential.uid}`).update({
                email : email
             }).then(() => {
-               window.location.replace("/auth/pfp");
+               const url = new URL(window.location.href);
+               const urlParam = url.searchParams.get("return_to");
+               
+               if (urlParam) {
+                  window.location.replace(`/auth/pfp?return_to=${urlParam}`);
+               } else {
+                  window.location.replace("/auth/pfp");
+               }
             });
          })
          .catch((error) => {
@@ -720,7 +788,9 @@ function validate_field(field) {
 // Hide error by default
 function hideErrorByDefault() {
    const errorTxt = document.getElementById('errorTxt');
-   errorTxt.innerHTML = '';
+   if (errorTxt) {
+      errorTxt.innerHTML = '';
+   }
 }
 
 // Only allow user on page if they are signed in/signed out
@@ -2287,7 +2357,7 @@ function loadEverything() {
 }
 
 // TransSocial account stuff
-if (pathName !== "/auth/login.html" && pathName !== "/auth/register.html" && pathName !== "/auth/katniny.html" && pathName !== "/auth/login" && pathName !== "/auth/register" && pathName !== "/auth/katniny") {
+if (!pathName.startsWith("/auth/")) {
    database.ref("users/G6GaJr8vPpeVdvenAntjOFYlbwr2").once("value", (snapshot) => {
       const data = snapshot.val();
       if (data !== null) {
@@ -7473,11 +7543,13 @@ if (pathName === "/search") {
    }
 }
 
-document.getElementById("searchBar").addEventListener("keydown", (event) => {
-   if (event.key === "Enter") {
-      window.location.replace(`/search?q=${document.getElementById("searchBar").value}`);
-   }
-});
+if (document.getElementById("searchBar")) {
+   document.getElementById("searchBar").addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+         window.location.replace(`/search?q=${document.getElementById("searchBar").value}`);
+      }
+   });
+}
 
 // init stripe & allow users to create a subscription
 // also yes. this key is safe to have out. this wasn't an accident lol. (wait, you cant do that, it would violate our license)

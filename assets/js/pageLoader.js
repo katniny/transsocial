@@ -87,7 +87,7 @@ firebase.auth().onAuthStateChanged((user) => {
             const getTheme = snapshot.val();
 
             // Set zoom level
-            if (getTheme.fontSizePref) {
+            if (getTheme && getTheme.fontSizePref) {
                 if (getTheme.fontSizePref === "normal") {
                     document.documentElement.style.setProperty('--zoom-level', '1');
                 } else if (getTheme.fontSizePref === "large") {
@@ -95,9 +95,9 @@ firebase.auth().onAuthStateChanged((user) => {
                 }
             }
 
-            if (getTheme.theme === "Dark" || getTheme.theme === undefined) {
+            if (getTheme && getTheme.theme === "Dark" || getTheme && getTheme.theme === undefined) {
                 // Dark theme by default
-            } else if (getTheme.theme === "Light") {
+            } else if (getTheme && getTheme.theme === "Light") {
                 document.documentElement.style.setProperty('--background', '#f5f5f5');
                 document.documentElement.style.setProperty('--main-color', '#dd6075');
                 document.documentElement.style.setProperty('--main-color-darker', '#b44d5d');
@@ -129,7 +129,7 @@ firebase.auth().onAuthStateChanged((user) => {
                 if (currentMonth === 6 && getTheme.showPrideFlag === "Yes" || currentMonth === 6 && getTheme.showPrideFlag === undefined) {
                     document.getElementById("transsocialHeaderLogo").src = "/assets/imgs/PrideHeaderLogo.png";
                 }
-            } else if (getTheme.theme === "Mint (Light)") {
+            } else if (getTheme && getTheme.theme === "Mint (Light)") {
                 document.documentElement.style.setProperty('--background', '#f0f8ff');
                 document.documentElement.style.setProperty('--main-color', '#9be7c4');
                 document.documentElement.style.setProperty('--main-color-darker', '#62c198');
@@ -164,7 +164,7 @@ firebase.auth().onAuthStateChanged((user) => {
                 } else {
                     document.getElementById("transsocialHeaderLogo").src = "/assets/imgs/MintLightThemeLogo.png";
                 }
-            } else if (getTheme.theme === "Mint (Dark)") {
+            } else if (getTheme && getTheme.theme === "Mint (Dark)") {
                 document.documentElement.style.setProperty('--background', '#18282d');
                 document.documentElement.style.setProperty('--main-color', '#add8d0');
                 document.documentElement.style.setProperty('--main-color-darker', '#8cc0b2');
@@ -198,7 +198,7 @@ firebase.auth().onAuthStateChanged((user) => {
                 } else {
                     document.getElementById("transsocialHeaderLogo").src = "/assets/imgs/MintDarkThemeLogo.png";
                 }
-            } else if (getTheme.theme === "High Contrast") {
+            } else if (getTheme && getTheme.theme === "High Contrast") {
                 document.documentElement.style.setProperty('--background', 'black');
                 document.documentElement.style.setProperty('--main-color', 'yellow');
                 document.documentElement.style.setProperty('--main-color-darker', '#cccc00');
@@ -232,7 +232,7 @@ firebase.auth().onAuthStateChanged((user) => {
                 } else {
                     document.getElementById("transsocialHeaderLogo").src = "/assets/imgs/HighContrastThemeLogo.png";
                 }
-            } else if (getTheme.theme === "TransSocial Classic") {
+            } else if (getTheme && getTheme.theme === "TransSocial Classic") {
                 document.documentElement.style.setProperty('--background', '#ffb2a8');
                 document.documentElement.style.setProperty('--main-color', '#ffb2a8');
                 document.documentElement.style.setProperty('--main-color-darker', '#f0cfb6');
@@ -266,7 +266,7 @@ firebase.auth().onAuthStateChanged((user) => {
                 } else {
                     document.getElementById("transsocialHeaderLogo").src = "/assets/imgs/TransSocialClassicThemeLogo.png";
                 }
-            } else if (getTheme.theme === "Midnight Purple") {
+            } else if (getTheme && getTheme.theme === "Midnight Purple") {
                 document.documentElement.style.setProperty('--background', '#221e2b');
                 document.documentElement.style.setProperty('--main-color', '#957DAD');
                 document.documentElement.style.setProperty('--main-color-darker', '#786491');
@@ -300,7 +300,7 @@ firebase.auth().onAuthStateChanged((user) => {
                 } else {
                     document.getElementById("transsocialHeaderLogo").src = "/assets/imgs/MidnightPurpleThemeLogo.png";
                 }
-            } else if (getTheme.theme === "Darker") {
+            } else if (getTheme && getTheme.theme === "Darker") {
                 document.documentElement.style.setProperty('--background', '#171717');
                 document.documentElement.style.setProperty('--main-color', '#ff869a');
                 document.documentElement.style.setProperty('--main-color-darker', '#e1788a');
@@ -328,7 +328,7 @@ firebase.auth().onAuthStateChanged((user) => {
                 document.documentElement.style.setProperty('--reply-background', '#282828');
                 document.documentElement.style.setProperty('--reply-hovered-background', '#333333');
                 document.documentElement.style.setProperty('--note-background', '#202020');
-            } else if (getTheme.theme === "Custom") {
+            } else if (getTheme && getTheme.theme === "Custom") {
                 document.documentElement.style.setProperty('--background', getTheme.themeColors.background);
                 document.documentElement.style.setProperty('--main-color', getTheme.themeColors.mainColor);
                 document.documentElement.style.setProperty('--main-color-darker', getTheme.themeColors.mainColorDarker);
