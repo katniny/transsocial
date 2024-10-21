@@ -30,7 +30,7 @@ let isOnDesktopApp = null;
 
 // TransSocial Version
 let transsocialVersion = "v2024.10.20";
-let transsocialUpdate = "v20241020-1";
+let transsocialUpdate = "v20241020-2";
 let transsocialReleaseVersion = "pre-alpha";
 
 const notices = document.getElementsByClassName("version-notice");
@@ -8013,4 +8013,16 @@ if (pathName === "/home") {
    ];
    const randomIndex = Math.floor(Math.random() * info.length);
    document.getElementById("betaTestingApp").innerHTML = info[randomIndex];
+}
+
+// server test
+function serverTest() {
+   fetch(`https://thisisatest-6p622mhgza-uc.a.run.app`)
+      .then(response => response.json())
+      .then(data => {
+         console.log(data);
+      })
+      .catch(error => {
+         console.error("not okay response :(", error);
+      });
 }

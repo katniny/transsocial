@@ -1,1 +1,3 @@
-# honestly nothing really needs to be in here
+node_modules
+.firebase
+.firebaserc
