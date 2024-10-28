@@ -6,13 +6,16 @@ on:
   push:
     branches:
       - main
+
+permissions:
+  contents: read
+
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-      
+    - uses: actions/checkout@v4
+
     - name: Inject Firebase config into ts_fas_acih.js
       run: |
         sed -i \
@@ -26,7 +29,6 @@ jobs:
         -e 's|measurementId: ".*"|measurementId: "${{ secrets.FIREBASE_MEASUREMENT_ID }}"|' \
         ./assets/js/ts_fas_acih.js
 
-    - uses: actions/checkout@v4
     - uses: FirebaseExtended/action-hosting-deploy@v0
       with:
         repoToken: ${{ secrets.GITHUB_TOKEN }}
