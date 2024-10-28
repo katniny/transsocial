@@ -29,8 +29,8 @@ const pathName = pageURL.pathname;
 let isOnDesktopApp = null;
 
 // TransSocial Version
-let transsocialVersion = "v2024.10.20";
-let transsocialUpdate = "v20241020-2";
+let transsocialVersion = "v2024.10.27";
+let transsocialUpdate = "v20241027-1";
 let transsocialReleaseVersion = "pre-alpha";
 
 const notices = document.getElementsByClassName("version-notice");
