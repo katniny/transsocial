@@ -3,7 +3,7 @@ name: Deploy static content to Pages
 
 on:
   push:
-    branches: ["main"]
+    branches: ["github-pages-main-test"]
 
   workflow_dispatch:
 

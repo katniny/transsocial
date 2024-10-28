@@ -15,26 +15,13 @@ Try multiple themes! Such as the classic Dark and Light modes, but also Midnight
 <br />
 
 ## How to Install/Use
-TransSocial is 100% pure HTML, CSS and JavaScript with no NodeJS dependencies. All you have to do is:
-- Get the source code\
-You can either download the zip file provided by GitHub from the <a href="https://github.com/katniny/transsocial/releases/tag/Version" target="_blank">Release tabs</a> or use Git.
-- Open it in the code editor of your choice\
-(We recommend <a href="https://code.visualstudio.com/">Visual Studio Code</a>)
-- Replace Values\
-In order to get TransSocial working with your Firebase setup, get all the required components (if you're unsure how to, follow <a href="https://support.google.com/firebase/answer/7015592#zippy=%2Cin-this-article">this guide</a> by Google. Then, navigate to the very top of /assets/js/ts_fas_acih.js and find:
-```API_KEY="REPLACE"
-AUTH_DOMAIN="REPLACE"
-DATABASE_URL="REPLACE"
-PROJECT_ID="REPLACE"
-STORAGE_BUCKET="REPLACE"
-MESSAGING_SENDER_ID="REPLACE"
-APP_ID="REPLACE"
-MEASUREMENT_ID="REPLACE"
-```
-Then replace all "REPLACE" values with your own.
-- Start the project\
-Open the project somehow. I use <a href="https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer">Live Server by Ritwick Dey</a> but you can use anything that works for you.\
-(For a more in-depth tutorial, see our <a href="https://github.com/katniny/transsocial/wiki/How-to-Setup-TransSocial-&-Firebase">GitHub Wiki tutorial</a>).
+This needs to be rewritten as we've upgraded and changed our hosting provider to Firebase Hosting. Please bear with me.
+But until I decide to do that, please note:
+- To contribute to server-side code, you need a Firebase project with the Blaze Plan as Firebase Functions are unavailable otherwise. Otherwise, a Spark Plan project should suffice (but I haven't tested, please let me know if I'm wrong).
+- You need the Firebase CLI installed and connected to a project. You can install it with `npm i -g firebase-tools` (please don't replace our firebase.json, we use it to host!)
+- To test locally, run `firebase emulators:start`. The Firebase Functions will start as well testing hosting. This will ensure things run as you would see on our site. If you don't do this and attempt to visit a page (e.g. /u/katniny) and it doesn't work, don't complain about it to me. If you do that and it doesn't work, then I'll help. 
+ - NOTE: When making changes to the client, you must MANUALLY refresh the page for your changes to take effect! When changing hosting settings or server-side code, you must Ctrl + C out and run `firebase emulators:start` again.
+ - `firebase serve` might work too, but that's not what I use.
 
 <br />
 

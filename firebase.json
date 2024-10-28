@@ -11,5 +11,28 @@
         "*.local"
       ]
     }
-  ]
+  ],
+  "hosting": {
+    "public": "/",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "cleanUrls": true,
+    "rewrites": [
+      {
+         "source": "/u/**",
+         "destination": "/u.html"
+      },
+      {
+         "source": "/note/**",
+         "destination": "/note.html"
+      },
+      {
+         "source": "/userstudio/**",
+         "destination": "/userstudio.html"
+      }
+    ]
+  }
 }

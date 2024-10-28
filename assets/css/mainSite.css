@@ -3132,3 +3132,16 @@ small {
 .formBox .badge i {
    color: var(--hovered-button-text);
 }
+
+/* fix header breaking on mobile */
+@media (max-width: 510px) {
+   #transsocialHeaderLogo {
+      transform: translate(45px, 0px);
+   }
+
+   #hamburgerMenu {
+      display: block;
+      position: fixed;
+      transform: translateY(5px);
+   }
+}

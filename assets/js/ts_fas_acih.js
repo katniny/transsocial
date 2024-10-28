@@ -443,7 +443,7 @@ if (document.getElementById("404page")) {
    document.getElementById("404page").textContent = `We were unable to find ${pathName}. The page does not exist, got moved, or got lost to time.`;
 
    const pageWithoutSlash = pathName.substring(1);
-   document.getElementById("profile404").href = `/u?id=${pageWithoutSlash}`;
+   document.getElementById("profile404").href = `/u/${pageWithoutSlash}`;
 }
 
 // If user is on the register page and is not signed in, redirect to /
@@ -1183,7 +1183,7 @@ function linkButtonToAcc() {
             .then(function (snapshot) {
                const username = snapshot.val();
 
-               button.href = `/u?id=${username}`;
+               button.href = `/u/${username}`;
             })
       }
    })
@@ -1208,7 +1208,7 @@ function linkify(text) {
    const usernamePattern = /@(\w+)/g;
 
    let linkedText = text.replace(urlPattern, '<a href="javascript:void(0)" onclick="openLink(`$1`)">$1</a>');
-   linkedText = linkedText.replace(usernamePattern, '<a href="/u?id=$1">@$1</a>');
+   linkedText = linkedText.replace(usernamePattern, '<a href="/u/$1">@$1</a>');
 
    return linkedText;
 }
@@ -1262,7 +1262,7 @@ let isLoading = false;
 let lastNoteKey = null;
 let loadedNotesId = [];
 
-if (pathName === "/home" || pathName === "/home.html" || pathName === "/u" || pathName === "/u.html" || pathName === "/note" || pathName === "/note.html" || pathName === "/favorites") {
+if (pathName === "/home" || pathName === "/home.html" || pathName === "/u" || pathName === "/u.html" || pathName === "/note" || pathName === "/note.html" || pathName === "/favorites" || pathName.startsWith("/u/") || pathName.startsWith("/note/")) {
    let userAutoplayPreference = null;
 
    // function to fetch and cache user's autoplay pref
@@ -1328,7 +1328,7 @@ if (pathName === "/home" || pathName === "/home.html" || pathName === "/u" || pa
    });
 
    function loadInitalNotes() {
-      if (pathName !== "/note" && pathName !== "/u") {
+      if (pathName !== "/note" && pathName !== "/u" && !pathName.startsWith("/u/") && !pathName.startsWith("/note/")) {
          notesRef.limitToLast(15).once("value").then(function (snapshot) {
             const notesArray = [];
             snapshot.forEach(function (childSnapshot) {
@@ -1343,9 +1343,18 @@ if (pathName === "/home" || pathName === "/home.html" || pathName === "/u" || pa
 
             renderNotes(notesArray);
          });
-      } else if (pathName === "/note") {
+      } else if (pathName === "/note" || pathName.startsWith("/note/")) {
          const url = new URL(window.location.href);
-         const noteParam = url.searchParams.get("id");
+         let noteParam = null;
+
+         if (pathName.startsWith("/note/")) {
+            const segments = pathName.split("/");
+            noteParam = segments[2];
+
+            console.log(noteParam);
+         } else {
+            noteParam = url.searchParams.get("id");
+         }
 
          notesRef.once("value")
             .then(function(snapshot) {
@@ -1370,9 +1379,18 @@ if (pathName === "/home" || pathName === "/home.html" || pathName === "/u" || pa
                   }
                });
             })
-         } else if (pathName === "/u") {
+         } else if (pathName === "/u" || pathName.startsWith("/u/")) {
             const url = new URL(window.location.href);
-            const userParam = url.searchParams.get("id");
+            let userParam = null;
+
+            if (pathName.startsWith("/u/")) {
+               const segments = pathName.split("/");
+               userParam = segments[2];
+
+               console.log(userParam);
+            } else {
+               userParam = url.searchParams.get("id");
+            }
    
             firebase.database().ref(`taken-usernames/${userParam}`).once("value", (snapshot) => {
                const id = snapshot.val();
@@ -1607,7 +1625,7 @@ if (pathName === "/home" || pathName === "/home.html" || pathName === "/u" || pa
          firebase.database().ref("users/" + noteContent.whoSentIt).once("value", (snapshot) => {
             const fetchedUser = snapshot.val();
             displayName.textContent = fetchedUser.display;
-            displayName.href = `/u?id=${fetchedUser.username}`;
+            displayName.href = `/u/${fetchedUser.username}`;
 
             const badges = document.createElement("span");
             if (fetchedUser.isVerified === true) {
@@ -1642,7 +1660,7 @@ if (pathName === "/home" || pathName === "/home.html" || pathName === "/u" || pa
 
                username.textContent = `@${fetchedUser.username} • ${displayDate}`;
             }
-            username.href = `/u?id=${fetchedUser.username}`;
+            username.href = `/u/${fetchedUser.username}`;
          })
          noteDiv.appendChild(username);
 
@@ -1651,7 +1669,7 @@ if (pathName === "/home" || pathName === "/home.html" || pathName === "/u" || pa
          text.innerHTML = sanitizeAndLinkify(noteContent.text)
          text.classList.add("noteText");
          if (noteContent.replyingTo === undefined) {
-            text.setAttribute("onclick", `window.location.href="/note?id=${noteContent.id}"`);
+            text.setAttribute("onclick", `window.location.href="/note/${noteContent.id}"`);
          }
          text.querySelectorAll('a').forEach(link => {
             link.addEventListener('click', (event) => {
@@ -1723,7 +1741,7 @@ if (pathName === "/home" || pathName === "/home.html" || pathName === "/u" || pa
          if (noteContent.quoting) {
             const container = document.createElement("div");
             container.classList.add("quoteContainer");
-            container.setAttribute("onclick", `window.location.replace("/note?id=${noteContent.quoting}")`);
+            container.setAttribute("onclick", `window.location.replace("/note/${noteContent.quoting}")`);
             noteDiv.appendChild(container);
 
             firebase.database().ref(`notes/${noteContent.quoting}`).once("value", (snapshot) => {
@@ -1882,8 +1900,8 @@ if (pathName === "/home" || pathName === "/home.html" || pathName === "/u" || pa
          } else {
             replyBtn.innerHTML = `<i class="fa-solid fa-comment"></i> 0`;
          }
-         if (pathName !== "/note") {
-            replyBtn.setAttribute("onclick", `window.location.href="/note?id=${noteContent.id}";`);
+         if (pathName !== "/note" && !pathName.startsWith("/note/")) {
+            replyBtn.setAttribute("onclick", `window.location.href="/note/${noteContent.id}";`);
          } else {
             replyBtn.setAttribute("onclick", "replyToNote(this);");
          }
@@ -1939,10 +1957,19 @@ if (pathName === "/home" || pathName === "/home.html" || pathName === "/u" || pa
          })
 
          // If all is okay, do it fine.
-         if (pathName === "/home" || pathName === "/u") {
-            if (pathName === "/u") {
+         if (pathName === "/home" || pathName === "/u" || pathName.startsWith("/u/")) {
+            if (pathName === "/u" || pathName.startsWith("/u/")) {
                const url = new URL(window.location.href);
-               const userParam = url.searchParams.get("id");
+               let userParam = null;
+
+               if (pathName.startsWith("/u/")) {
+                  const segments = pathName.split("/");
+                  userParam = segments[2];
+
+                  console.log(userParam);
+               } else {
+                  userParam = url.searchParams.get("id");
+               }
                
                firebase.database().ref(`taken-usernames/${userParam}`).once("value", (snapshot) => {
                   const sender = snapshot.val();
@@ -1977,9 +2004,18 @@ if (pathName === "/home" || pathName === "/home.html" || pathName === "/u" || pa
             });
          }
 
-         if (pathName === "/note") {
+         if (pathName === "/note" || pathName.startsWith("/note/")) {
             const url = new URL(window.location.href);
-            const noteParam = url.searchParams.get("id");
+            let noteParam = null;
+
+            if (pathName.startsWith("/note/")) {
+               const segments = pathName.split("/");
+               noteParam = segments[2];
+
+               console.log(noteParam);
+            } else {
+               noteParam = url.searchParams.get("id");
+            }
 
             if (noteContent.replyingTo === noteParam) {
                if (noteContent.isDeleted !== true) {
@@ -2276,7 +2312,7 @@ function closeCreateNotePopup() {
    document.getElementById("uploadingImage").style.display = "none";
    removeImage();
    document.getElementById("hasntBeenUploadedNotice").style.display = "none";
-   if (pathName === "/note" || pathName === "/note.html") {
+   if (pathName === "/note" || pathName === "/note.html" || pathName.startsWith("/note/")) {
       document.getElementById("replyingOrCreating").innerText = "Create a Note!";
       isReplying_notehtml = false;
    }
@@ -2363,7 +2399,7 @@ if (!pathName.startsWith("/auth/")) {
       if (data !== null) {
          document.getElementById(`katninyPfp`).src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2FG6GaJr8vPpeVdvenAntjOFYlbwr2%2F${data.pfp}?alt=media`;
          document.getElementById(`katninyDisplay`).innerHTML = data.display + ` <i class="fa-solid fa-circle-check" style="color: var(--main-color);"></i> <i class="fa-solid fa-heart" style="color: var(--main-color);"></i>`;
-         document.getElementById(`followBtn-1`).href = `/u?id=${data.username}`;
+         document.getElementById(`followBtn-1`).href = `/u/${data.username}`;
          document.getElementById(`katninyUser-pronouns`).textContent = `@${data.username}`;
       }
    });
@@ -2373,7 +2409,7 @@ if (!pathName.startsWith("/auth/")) {
       if (data !== null) {
          document.getElementById(`transsocialPfp`).src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F80vDnNb0rJbSjCvbiTF9EtvqtXw1%2F${data.pfp}?alt=media`;
          document.getElementById(`transsocialDisplay`).innerHTML = data.display + ` <i class="fa-solid fa-circle-check" style="color: var(--main-color);"></i>`;
-         document.getElementById(`followBtn-2`).href = `/u?id=${data.username}`;
+         document.getElementById(`followBtn-2`).href = `/u/${data.username}`;
          document.getElementById(`transsocialUser-pronouns`).textContent = `@${data.username}`;
       }
    });
@@ -2383,18 +2419,27 @@ if (!pathName.startsWith("/auth/")) {
       if (data !== null) {
          document.getElementById(`katninystudiosPfp`).src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F4luqDI8627asR5EV8hOqb0YrRQF3%2F${data.pfp}?alt=media`;
          document.getElementById(`katninystudiosDisplay`).innerHTML = data.display + ` <i class="fa-solid fa-circle-check" style="color: var(--main-color);"></i>`;
-         document.getElementById(`followBtn-3`).href = `/u?id=${data.username}`;
+         document.getElementById(`followBtn-3`).href = `/u/${data.username}`;
          document.getElementById(`katninystudiosUser-pronouns`).textContent = `@${data.username}`;
       }
    });
 }
 
 // Get the user's information to display on the profile
-if (pathName === "/u.html" || pathName === "/u") {
+if (pathName === "/u.html" || pathName === "/u" || pathName.startsWith("/u/")) {
    const url = new URL(window.location.href);
-   const userParam = url.searchParams.get("id");
+   let userParam = null;
    let profileExists = null;
    let profileData = null;
+
+   if (pathName.startsWith("/u/")) {
+      const segments = pathName.split("/");
+      userParam = segments[2];
+
+      console.log(userParam);
+   } else {
+      userParam = url.searchParams.get("id");
+   }
 
    database.ref(`taken-usernames/${userParam.toLowerCase()}`).once("value", (snapshot) => {
       profileExists = snapshot.val();
@@ -2839,9 +2884,17 @@ function removeNsfw(buttonId) {
 let uniNoteId_notehtml = null;
 let isReplying_notehtml = false;
 
-if (pathName === "/note.html" || pathName === "/note") {
+if (pathName === "/note.html" || pathName === "/note" || pathName.startsWith("/u/") || pathName.startsWith("/note/")) {
    const url = new URL(window.location.href);
-   const userParam = url.searchParams.get("id");
+   let userParam = null;
+   if (pathName.startsWith("/note/")) {
+      const segments = pathName.split("/");
+      userParam = segments[2];
+
+      console.log(userParam);
+   } else {
+      userParam = url.searchParams.get("id");
+   }
    isReplying_notehtml = false;
 
    database.ref(`notes/${userParam}`).once("value", (snapshot) => {
@@ -2877,7 +2930,7 @@ if (pathName === "/note.html" || pathName === "/note") {
                            ext: '.svg'
                         });
 
-                        document.getElementById("quotingNote_note").setAttribute("onclick", `window.location.href="/note?id=${quoteData.id}"`);
+                        document.getElementById("quotingNote_note").setAttribute("onclick", `window.location.href="/note/${quoteData.id}"`);
                      })
                   } else {
                      document.getElementById("noteQuotePfp").src = `/assets/imgs/defaultPfp.png`;
@@ -2920,9 +2973,9 @@ if (pathName === "/note.html" || pathName === "/note") {
                }
                document.getElementById(`melissa`).style.display = "block";
                document.getElementById(`userImage-profile`).src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${noteData.whoSentIt}%2F${profileData.pfp}?alt=media`;
-               document.getElementById(`userImage-profile`).setAttribute("onclick", `window.location.href="/u?id=${profileData.username}"`);
+               document.getElementById(`userImage-profile`).setAttribute("onclick", `window.location.href="/u/${profileData.username}"`);
                document.getElementById(`display-profile`).textContent = profileData.display;
-               document.getElementById(`display-profile`).setAttribute("onclick", `window.location.href="/u?id=${profileData.username}"`);
+               document.getElementById(`display-profile`).setAttribute("onclick", `window.location.href="/u/${profileData.username}"`);
                const verifiedBadge = document.createElement("span");
                if (profileData.isVerified === true) {
                   verifiedBadge.innerHTML = `<i class="fa-solid fa-circle-check fa-sm"></i>`;
@@ -2937,12 +2990,12 @@ if (pathName === "/note.html" || pathName === "/note") {
                }
                document.getElementById("display-profile").appendChild(verifiedBadge);
                document.getElementById(`username-profile`).textContent = `@${profileData.username}`;
-               document.getElementById(`username-profile`).setAttribute("onclick", `window.location.href="/u?id=${profileData.username}"`);
+               document.getElementById(`username-profile`).setAttribute("onclick", `window.location.href="/u/${profileData.username}"`);
                if (profileData.pronouns === undefined || profileData.pronouns === null || profileData.pronouns === "") {
                   document.getElementById(`pronouns-profile`).remove();
                } else {
                   document.getElementById(`pronouns-profile`).textContent = profileData.pronouns;
-                  document.getElementById(`pronouns-profile`).setAttribute("onclick", `window.location.href="/u?id=${profileData.username}"`);
+                  document.getElementById(`pronouns-profile`).setAttribute("onclick", `window.location.href="/u/${profileData.username}"`);
                }
 
                document.getElementById("noteContent").innerHTML = sanitizeAndLinkify(noteData.text);
@@ -3019,7 +3072,7 @@ if (pathName === "/note.html" || pathName === "/note") {
          } else if (noteData === undefined) {
             document.getElementById("melissa").style.display = "none";
          } else if (noteData.replyingTo !== undefined) {
-            window.location.replace(`/note?id=${noteData.replyingTo}`);
+            window.location.replace(`/note/${noteData.replyingTo}`);
          } else {
             document.getElementById("melissa").style.display = "none";
          }
@@ -3307,7 +3360,7 @@ async function publishNote() {
          if (isReplying_notehtml === true) {
             unlockAchievement("Chatterbox");
 
-            if (pathName === "/note" || pathName === "/note.html") {
+            if (pathName === "/note" || pathName === "/note.html" || pathName.startsWith("/note/")) {
                postData.replyingTo = uniNoteId_notehtml;
 
                firebase.database().ref(`notes/${uniNoteId_notehtml}`).once("value", (snapshot) => {
@@ -3356,7 +3409,7 @@ async function publishNote() {
             document.getElementById("uploadingImage").style.display = "none";
             removeImage();
             document.getElementById("hasntBeenUploadedNotice").style.display = "none";
-            if (pathName === "/note" || pathName === "/note.html") {
+            if (pathName === "/note" || pathName === "/note.html" || pathName.startsWith("/note/")) {
                document.getElementById("replyingOrCreating").innerText = "Create a Note!";
                isReplying_notehtml = false;
             }
@@ -4830,10 +4883,10 @@ if (pathName === "/notifications" || pathName === "/notifications.html") {
                         const user = snapshot.exists() ? snapshot.val() : fakeUserData;
 
                         newNotificationDiv.innerHTML = `<i class="fa-solid fa-user-plus fa-lg" style="color: var(--main-color);"></i> <img class="notificationPfp" draggable=false src="https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${notification.who}%2F${user.pfp}?alt=media" /> @${user.username} followed you!`;
-                        newNotificationDiv.setAttribute("onclick", `window.location.href="/u?id=${user.username}"`);
+                        newNotificationDiv.setAttribute("onclick", `window.location.href="/u/${user.username}"`);
                      })
                   } else if (notification.type === "Reply") {
-                     newNotificationDiv.setAttribute("onclick", `window.location.href="/note?id=${notification.postId}"`);
+                     newNotificationDiv.setAttribute("onclick", `window.location.href="/note/${notification.postId}"`);
 
                      firebase.database().ref(`users/${notification.who}`).on("value", (snapshot) => {
                         const user = snapshot.exists() ? snapshot.val() : fakeUserData;
@@ -4841,7 +4894,7 @@ if (pathName === "/notifications" || pathName === "/notifications.html") {
                         newNotificationDiv.innerHTML = `<i class="fa-solid fa-comment fa-lg" style="color: var(--main-color);"></i> <img class="notificationPfp" draggable=false src="https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${notification.who}%2F${user.pfp}?alt=media" /> @${user.username} replied to your note!`;
                      })
                   } else if (notification.type === "Love") {
-                     newNotificationDiv.setAttribute("onclick", `window.location.href="/note?id=${notification.postId}"`);
+                     newNotificationDiv.setAttribute("onclick", `window.location.href="/note/${notification.postId}"`);
 
                      firebase.database().ref(`users/${notification.who}`).on("value", (snapshot) => {
                         const user = snapshot.exists() ? snapshot.val() : fakeUserData;
@@ -4849,7 +4902,7 @@ if (pathName === "/notifications" || pathName === "/notifications.html") {
                         newNotificationDiv.innerHTML = `<i class="fa-solid fa-heart fa-lg" style="color: var(--like-color);"></i> <img class="notificationPfp" draggable=false src="https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${notification.who}%2F${user.pfp}?alt=media" /> @${user.username} loved your note!`;
                      })
                   } else if (notification.type === "Renote") {
-                     newNotificationDiv.setAttribute("onclick", `window.location.href="/note?id=${notification.postId}"`);
+                     newNotificationDiv.setAttribute("onclick", `window.location.href="/note/${notification.postId}"`);
 
                      firebase.database().ref(`users/${notification.who}`).on("value", (snapshot) => {
                         const user = snapshot.exists() ? snapshot.val() : fakeUserData;
@@ -4857,7 +4910,7 @@ if (pathName === "/notifications" || pathName === "/notifications.html") {
                         newNotificationDiv.innerHTML = `<i class="fa-solid fa-retweet fa-lg" style="color: var(--renote-color);"></i> <img class="notificationPfp" draggable=false src="https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${notification.who}%2F${user.pfp}?alt=media" /> @${user.username} renoted your note!`;
                      })
                   } else if (notification.type === "Mention") {
-                     newNotificationDiv.setAttribute("onclick", `window.location.href="/note?id=${notification.postId}"`);
+                     newNotificationDiv.setAttribute("onclick", `window.location.href="/note/${notification.postId}"`);
 
                      firebase.database().ref(`users/${notification.who}`).on("value", (snapshot) => {
                         const user = snapshot.exists() ? snapshot.val() : fakeUserData;
@@ -5138,7 +5191,7 @@ function reportType_other_finish() {
 }
 
 // Edit/Deleting Notes
-if (pathName === "/home" || pathName === "/home.html" || pathName === "/note" || pathName === "/note.html" || pathName === "/u" || pathName === "/u.html") {
+if (pathName === "/home" || pathName === "/home.html" || pathName === "/note" || pathName === "/note.html" || pathName === "/u" || pathName === "/u.html" || pathName.startsWith("/u/") || pathName.startsWith("/note/")) {
    let editingNote = null;
 
    // Getting the note and making sure it actually belongs to the user
@@ -6506,7 +6559,7 @@ if (pathName === "/create_theme") {
                               // let the user know its finished
                               document.getElementById("themeSuccessfullyPublished").style.display = "block";
                               document.getElementById("themeSuccessfullyPublished").style.color = "var(--success-color)";
-                              document.getElementById("themeSuccessfullyPublished").innerHTML = `Your theme has been successfully published! It is available on the TransSocial User Studio <a href="/userstudio?theme=${newKey}" style="color: var(--main-color)">here.</a>`;
+                              document.getElementById("themeSuccessfullyPublished").innerHTML = `Your theme has been successfully published! It is available on the TransSocial User Studio <a href="/userstudio/${newKey}" style="color: var(--main-color)">here.</a>`;
                            }
                         });
                      } else if (input.type === "rgb") {
@@ -6568,10 +6621,19 @@ if (pathName === "/create_theme") {
 }
 
 // User Studio
-if (pathName === "/userstudio") {
+if (pathName === "/userstudio" || pathName.startsWith("/userstudio/")) {
    // see if user has a theme applied or not
    const url = new URL(window.location.href);
-   const themeParam = url.searchParams.get("theme");
+   let themeParam = null;
+
+   if (pathName.startsWith("/userstudio/")) {
+      const segments = pathName.split("/");
+      themeParam = segments[2];
+
+      console.log(themeParam);
+   } else {
+      themeParam = url.searchParams.get("id");
+   }
 
    if (!themeParam) {
       firebase.database().ref("themes/").once("value", (snapshot) => {
@@ -6619,7 +6681,7 @@ if (pathName === "/userstudio") {
             themeDiv.appendChild(title);
             themeDiv.appendChild(desc);
             themeDiv.appendChild(creator);
-            themeDiv.setAttribute("onclick", `window.location.replace("/userstudio?theme=${themeKey}")`);
+            themeDiv.setAttribute("onclick", `window.location.replace("/userstudio/${themeKey}")`);
             
             // append the theme to the entire page
             if (themeData.canAppearOnStore !== "false") {
@@ -6655,7 +6717,7 @@ if (pathName === "/userstudio") {
             firebase.database().ref(`users/${themeData.creator}/username`).once("value", (snapshot) => {
                const user = snapshot.val();
 
-               document.getElementById("themeCreator").setAttribute("href", `/u?id=${user}`);
+               document.getElementById("themeCreator").setAttribute("href", `/u/${user}`);
                document.getElementById("themeCreator").textContent = `by @${user}`;
             });
 
@@ -6988,7 +7050,7 @@ if (pathName === "/search") {
                      // show them
                      const container = document.createElement("div");
                      container.classList.add("note"); // yep
-                     container.setAttribute("onclick", `window.location.href="/u?id=${userData.username}"`);
+                     container.setAttribute("onclick", `window.location.href="/u/${userData.username}"`);
 
                      const pfp = document.createElement("img");
                      pfp.classList.add("notePfp");
@@ -6997,14 +7059,14 @@ if (pathName === "/search") {
                      pfp.setAttribute("loading", "lazy");
                      
                      const display = document.createElement("a");
-                     display.href = `/u?id=${userData.username}`;
+                     display.href = `/u/${userData.username}`;
                      display.textContent = userData.display;
                      display.classList.add("noteDisplay");
 
                      const breakpoint = document.createElement("br");
 
                      const username = document.createElement("a");
-                     username.href = `/u?id=${userData.username}`;
+                     username.href = `/u/${userData.username}`;
                      if (userData.pronouns !== undefined && userData.pronouns !== "") {
                         username.textContent = `@${userData.username} • ${userData.pronouns}`;
                      } else {
@@ -7042,7 +7104,7 @@ if (pathName === "/search") {
                   // create note div 
                   const noteDiv = document.createElement("div");
                   noteDiv.classList.add("note");
-                  noteDiv.setAttribute("onclick", `window.location.replace("/note?id=${noteContent.id}")`);
+                  noteDiv.setAttribute("onclick", `window.location.replace("/note/${noteContent.id}")`);
                   
                   // check nsfw/sensitive/political status
                   if (noteContent.isNsfw === true) {
@@ -7202,7 +7264,7 @@ if (pathName === "/search") {
                   firebase.database().ref("users/" + noteContent.whoSentIt).once("value", (snapshot) => {
                      const fetchedUser = snapshot.val();
                      displayName.textContent = fetchedUser.display;
-                     displayName.href = `/u?id=${fetchedUser.username}`;
+                     displayName.href = `/u/${fetchedUser.username}`;
 
                      const badges = document.createElement("span");
                      if (fetchedUser.isVerified === true) {
@@ -7237,7 +7299,7 @@ if (pathName === "/search") {
 
                         username.textContent = `@${fetchedUser.username} • ${displayDate}`;
                      }
-                     username.href = `/u?id=${fetchedUser.username}`;
+                     username.href = `/u/${fetchedUser.username}`;
                   })
                   noteDiv.appendChild(username);
 
@@ -7246,7 +7308,7 @@ if (pathName === "/search") {
                   text.innerHTML = sanitizeAndLinkify(noteContent.text)
                   text.classList.add("noteText");
                   if (noteContent.replyingTo === undefined) {
-                     text.setAttribute("onclick", `window.location.href="/note?id=${noteContent.id}"`);
+                     text.setAttribute("onclick", `window.location.href="/note/${noteContent.id}"`);
                   }
                   text.querySelectorAll('a').forEach(link => {
                      link.addEventListener('click', (event) => {
@@ -7318,7 +7380,7 @@ if (pathName === "/search") {
                   if (noteContent.quoting) {
                      const container = document.createElement("div");
                      container.classList.add("quoteContainer");
-                     container.setAttribute("onclick", `window.location.replace("/note?id=${noteContent.quoting}")`);
+                     container.setAttribute("onclick", `window.location.replace("/note/${noteContent.quoting}")`);
                      noteDiv.appendChild(container);
       
                      firebase.database().ref(`notes/${noteContent.quoting}`).once("value", (snapshot) => {
@@ -7476,8 +7538,8 @@ if (pathName === "/search") {
                   } else {
                      replyBtn.innerHTML = `<i class="fa-solid fa-comment"></i> 0`;
                   }
-                  if (pathName !== "/note") {
-                     replyBtn.setAttribute("onclick", `window.location.href="/note?id=${noteContent.id}";`);
+                  if (pathName !== "/note" && !pathName.startsWith("/note/")) {
+                     replyBtn.setAttribute("onclick", `window.location.href="/note/${noteContent.id}";`);
                   } else {
                      replyBtn.setAttribute("onclick", "replyToNote(this);");
                   }

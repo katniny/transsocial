@@ -1,5 +1,10 @@
 const functions = require("firebase-functions/v2");
-const cors = require("cors")({ origin: "transs.social" });
+const express = require("express");
+const cors = require("cors");
+
+const app = express();
+
+app.use(cors({ origin: true }));
 
 // test
 exports.thisIsATest = functions.https.onRequest((req, res) => {
