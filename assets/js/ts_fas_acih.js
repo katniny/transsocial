@@ -30,7 +30,7 @@ let isOnDesktopApp = null;
 
 // TransSocial Version
 let transsocialVersion = "v2024.10.28";
-let transsocialUpdate = "v20241028-1";
+let transsocialUpdate = "v20241028-2";
 let transsocialReleaseVersion = "pre-alpha";
 
 const notices = document.getElementsByClassName("version-notice");
@@ -2900,187 +2900,192 @@ if (pathName === "/note.html" || pathName === "/note" || pathName.startsWith("/u
    database.ref(`notes/${userParam}`).once("value", (snapshot) => {
       const noteData = snapshot.val();
 
-      uniNoteId_notehtml = noteData.id;
+      if (uniNoteId_notehtml !== null) {
+         uniNoteId_notehtml = noteData.id;
+      
 
-      if (noteData.isDeleted !== true) {
-         if (noteData.user !== null && noteData.replyingTo === undefined) {
-            document.getElementById("melissa").style.display = "block";
-            document.getElementById("noteNotFound").style.display = "none";
+         if (noteData.isDeleted !== true) {
+            if (noteData.user !== null && noteData.replyingTo === undefined) {
+               document.getElementById("melissa").style.display = "block";
+               document.getElementById("noteNotFound").style.display = "none";
 
-            document.getElementById("quoteRenoteButton").setAttribute("onclick", `quoteRenote("${noteData.id}")`);
-            if (noteData.quoting) {
-               firebase.database().ref(`notes/${noteData.quoting}`).once("value", (snapshot) => {
-                  const quoteData = snapshot.val();
+               document.getElementById("quoteRenoteButton").setAttribute("onclick", `quoteRenote("${noteData.id}")`);
+               if (noteData.quoting) {
+                  firebase.database().ref(`notes/${noteData.quoting}`).once("value", (snapshot) => {
+                     const quoteData = snapshot.val();
 
-                  if (quoteData.isDeleted !== true) {
-                     firebase.database().ref(`users/${quoteData.whoSentIt}`).once("value", (snapshot) => {
-                        const quoteUser = snapshot.val();
+                     if (quoteData.isDeleted !== true) {
+                        firebase.database().ref(`users/${quoteData.whoSentIt}`).once("value", (snapshot) => {
+                           const quoteUser = snapshot.val();
 
-                        document.getElementById("noteQuotePfp").src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${quoteData.whoSentIt}%2F${quoteUser.pfp}?alt=media`;
-                        document.getElementById("noteQuoteDisplay").textContent = quoteUser.display;
-                        document.getElementById("noteQuoteUsername").textContent = `@${quoteUser.username}`;
-                        document.getElementById("noteQuoteText").innerHTML = sanitizeAndLinkify(quoteData.text);
-                        let content = sanitizeAndLinkify(quoteData.text);
-                           if (content.length > 247) { // check length
-                              content = content.substring(0, 247) + "...";
-                           }
-                           document.getElementById("noteQuoteText").innerHTML = content;
-                        twemoji.parse(document.getElementById("noteQuoteText"), {
-                           folder: 'svg',
-                           ext: '.svg'
-                        });
-
-                        document.getElementById("quotingNote_note").setAttribute("onclick", `window.location.href="/note/${quoteData.id}"`);
-                     })
-                  } else {
-                     document.getElementById("noteQuotePfp").src = `/assets/imgs/defaultPfp.png`;
-                     document.getElementById("noteQuoteDisplay").textContent = "Unknown User";
-                     document.getElementById("noteQuoteUsername").textContent = `@unknownuser`;
-                     document.getElementById("noteQuoteText").innerHTML = "You do not have permission to view this note.";
-                  }
-               })
-            } else {
-               document.getElementById("quotingNote_note").style.display = "none";
-            }
-
-            // check if music
-            if (noteData.music) {
-               document.getElementById("songEmbed").src = `https://open.spotify.com/embed/track/${noteData.music}`;
-            } else {
-               document.getElementById("songEmbed").remove();
-            }
-
-            // check for favorites
-            // also make the favorite button do smth
-            document.getElementById("favoriteButton").setAttribute("onclick", `favoriteNoteView("${noteData.id}")`);
-
-            firebase.auth().onAuthStateChanged((user) => {
-               if (user) {
-                  firebase.database().ref(`users/${user.uid}/favorites/${noteData.id}`).once("value", (snapshot) => {
-                     if (snapshot.exists()) {
-                        document.getElementById("favoriteButton_icon").style.color = "var(--main-color)";
-                     }
-                  });
-               }
-            });
-
-            database.ref(`users/${noteData.whoSentIt}`).once("value", (snapshot) => {
-               const profileData = snapshot.val();
-               if (noteData.text !== "") {
-                  document.title = `"${noteData.text}" / @${profileData.username} on TransSocial`;
-               } else {
-                  document.title = `@${profileData.username} on TransSocial`;
-               }
-               document.getElementById(`melissa`).style.display = "block";
-               document.getElementById(`userImage-profile`).src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${noteData.whoSentIt}%2F${profileData.pfp}?alt=media`;
-               document.getElementById(`userImage-profile`).setAttribute("onclick", `window.location.href="/u/${profileData.username}"`);
-               document.getElementById(`display-profile`).textContent = profileData.display;
-               document.getElementById(`display-profile`).setAttribute("onclick", `window.location.href="/u/${profileData.username}"`);
-               const verifiedBadge = document.createElement("span");
-               if (profileData.isVerified === true) {
-                  verifiedBadge.innerHTML = `<i class="fa-solid fa-circle-check fa-sm"></i>`;
-                  verifiedBadge.classList.add("noteBadges");
-                  verifiedBadge.style.marginLeft = "7px";
-               }
-               if (profileData.isSubscribed === true) {
-                  verifiedBadge.innerHTML = `${verifiedBadge.innerHTML}<i class="fa-solid fa-heart fa-sm" style="margin-left: 3px;"></i>`
-               }
-               if (profileData.activeContributor === true) {
-                  verifiedBadge.innerHTML = `${verifiedBadge.innerHTML}<i class="fa-solid fa-handshake-angle fa-sm" style="margin-left: 3px;"></i>`;
-               }
-               document.getElementById("display-profile").appendChild(verifiedBadge);
-               document.getElementById(`username-profile`).textContent = `@${profileData.username}`;
-               document.getElementById(`username-profile`).setAttribute("onclick", `window.location.href="/u/${profileData.username}"`);
-               if (profileData.pronouns === undefined || profileData.pronouns === null || profileData.pronouns === "") {
-                  document.getElementById(`pronouns-profile`).remove();
-               } else {
-                  document.getElementById(`pronouns-profile`).textContent = profileData.pronouns;
-                  document.getElementById(`pronouns-profile`).setAttribute("onclick", `window.location.href="/u/${profileData.username}"`);
-               }
-
-               document.getElementById("noteContent").innerHTML = sanitizeAndLinkify(noteData.text);
-               twemoji.parse(document.getElementById("noteContent"), {
-                  folder: 'svg',
-                  ext: '.svg'
-               });
-               document.getElementById("likeButton").innerHTML = `<i class="fa-solid fa-heart"></i> ${noteData.likes}`;
-               document.getElementById("renoteButton").innerHTML = `<i class="fa-solid fa-retweet"></i> ${noteData.renotes}`;
-
-               if (noteData.image) {
-                  let imageFileName = noteData.image;
-                  let imageExtension = imageFileName.split(".").pop();
-                  const url = imageExtension;
-                  const cleanUrl = url.split('?')[0];
-
-                  if (cleanUrl === "mp4") {
-                     document.getElementById("uploadedVideo-main").src = noteData.image;
-                     document.getElementById("uploadedVideo-main").setAttribute("alt", `${noteData.alt}`);
-                     firebase.auth().onAuthStateChanged((user) => {
-                        if (user) {
-                           firebase.database().ref(`users/${user.uid}/autoplayVideos`).once("value", (snapshot) => {
-                              const evenExists = snapshot.exists();
-                              const pref = snapshot.val();
-
-                              if (evenExists === true) {
-                                 if (pref === "true") {
-                                    // :p
-                                 } else if (pref === false) {
-                                    document.getElementById("uploadedVideo-main").pause();
-                                 } else {
-                                    // :p
-                                 }
-                              } else {
-                                 // :p
+                           document.getElementById("noteQuotePfp").src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${quoteData.whoSentIt}%2F${quoteUser.pfp}?alt=media`;
+                           document.getElementById("noteQuoteDisplay").textContent = quoteUser.display;
+                           document.getElementById("noteQuoteUsername").textContent = `@${quoteUser.username}`;
+                           document.getElementById("noteQuoteText").innerHTML = sanitizeAndLinkify(quoteData.text);
+                           let content = sanitizeAndLinkify(quoteData.text);
+                              if (content.length > 247) { // check length
+                                 content = content.substring(0, 247) + "...";
                               }
-                           })
-                        } else {
-                           // :p
-                        }
-                     })
-                     document.getElementById("uploadedImg-main").remove();
-                  } else {
-                     document.getElementById("uploadedImg-main").src = noteData.image;
-                     document.getElementById("uploadedImg-main").setAttribute("alt", `${noteData.alt}`);
-                     document.getElementById("uploadedVideo-main").remove();
-                  }
+                              document.getElementById("noteQuoteText").innerHTML = content;
+                           twemoji.parse(document.getElementById("noteQuoteText"), {
+                              folder: 'svg',
+                              ext: '.svg'
+                           });
+
+                           document.getElementById("quotingNote_note").setAttribute("onclick", `window.location.href="/note/${quoteData.id}"`);
+                        })
+                     } else {
+                        document.getElementById("noteQuotePfp").src = `/assets/imgs/defaultPfp.png`;
+                        document.getElementById("noteQuoteDisplay").textContent = "Unknown User";
+                        document.getElementById("noteQuoteUsername").textContent = `@unknownuser`;
+                        document.getElementById("noteQuoteText").innerHTML = "You do not have permission to view this note.";
+                     }
+                  })
                } else {
-                  document.getElementById("uploadedImg-main").remove();
-                  document.getElementById("uploadedVideo-main").remove();
+                  document.getElementById("quotingNote_note").style.display = "none";
                }
+
+               // check if music
+               if (noteData.music) {
+                  document.getElementById("songEmbed").src = `https://open.spotify.com/embed/track/${noteData.music}`;
+               } else {
+                  document.getElementById("songEmbed").remove();
+               }
+
+               // check for favorites
+               // also make the favorite button do smth
+               document.getElementById("favoriteButton").setAttribute("onclick", `favoriteNoteView("${noteData.id}")`);
 
                firebase.auth().onAuthStateChanged((user) => {
                   if (user) {
-                     const uid = user.uid;
+                     firebase.database().ref(`users/${user.uid}/favorites/${noteData.id}`).once("value", (snapshot) => {
+                        if (snapshot.exists()) {
+                           document.getElementById("favoriteButton_icon").style.color = "var(--main-color)";
+                        }
+                     });
+                  }
+               });
 
-                     if (noteData.whoLiked && noteData.whoLiked[uid]) {
-                        document.getElementById("likeButton").classList.add("liked");
+               database.ref(`users/${noteData.whoSentIt}`).once("value", (snapshot) => {
+                  const profileData = snapshot.val();
+                  if (noteData.text !== "") {
+                     document.title = `"${noteData.text}" / @${profileData.username} on TransSocial`;
+                  } else {
+                     document.title = `@${profileData.username} on TransSocial`;
+                  }
+                  document.getElementById(`melissa`).style.display = "block";
+                  document.getElementById(`userImage-profile`).src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${noteData.whoSentIt}%2F${profileData.pfp}?alt=media`;
+                  document.getElementById(`userImage-profile`).setAttribute("onclick", `window.location.href="/u/${profileData.username}"`);
+                  document.getElementById(`display-profile`).textContent = profileData.display;
+                  document.getElementById(`display-profile`).setAttribute("onclick", `window.location.href="/u/${profileData.username}"`);
+                  const verifiedBadge = document.createElement("span");
+                  if (profileData.isVerified === true) {
+                     verifiedBadge.innerHTML = `<i class="fa-solid fa-circle-check fa-sm"></i>`;
+                     verifiedBadge.classList.add("noteBadges");
+                     verifiedBadge.style.marginLeft = "7px";
+                  }
+                  if (profileData.isSubscribed === true) {
+                     verifiedBadge.innerHTML = `${verifiedBadge.innerHTML}<i class="fa-solid fa-heart fa-sm" style="margin-left: 3px;"></i>`
+                  }
+                  if (profileData.activeContributor === true) {
+                     verifiedBadge.innerHTML = `${verifiedBadge.innerHTML}<i class="fa-solid fa-handshake-angle fa-sm" style="margin-left: 3px;"></i>`;
+                  }
+                  document.getElementById("display-profile").appendChild(verifiedBadge);
+                  document.getElementById(`username-profile`).textContent = `@${profileData.username}`;
+                  document.getElementById(`username-profile`).setAttribute("onclick", `window.location.href="/u/${profileData.username}"`);
+                  if (profileData.pronouns === undefined || profileData.pronouns === null || profileData.pronouns === "") {
+                     document.getElementById(`pronouns-profile`).remove();
+                  } else {
+                     document.getElementById(`pronouns-profile`).textContent = profileData.pronouns;
+                     document.getElementById(`pronouns-profile`).setAttribute("onclick", `window.location.href="/u/${profileData.username}"`);
+                  }
+
+                  document.getElementById("noteContent").innerHTML = sanitizeAndLinkify(noteData.text);
+                  twemoji.parse(document.getElementById("noteContent"), {
+                     folder: 'svg',
+                     ext: '.svg'
+                  });
+                  document.getElementById("likeButton").innerHTML = `<i class="fa-solid fa-heart"></i> ${noteData.likes}`;
+                  document.getElementById("renoteButton").innerHTML = `<i class="fa-solid fa-retweet"></i> ${noteData.renotes}`;
+
+                  if (noteData.image) {
+                     let imageFileName = noteData.image;
+                     let imageExtension = imageFileName.split(".").pop();
+                     const url = imageExtension;
+                     const cleanUrl = url.split('?')[0];
+
+                     if (cleanUrl === "mp4") {
+                        document.getElementById("uploadedVideo-main").src = noteData.image;
+                        document.getElementById("uploadedVideo-main").setAttribute("alt", `${noteData.alt}`);
+                        firebase.auth().onAuthStateChanged((user) => {
+                           if (user) {
+                              firebase.database().ref(`users/${user.uid}/autoplayVideos`).once("value", (snapshot) => {
+                                 const evenExists = snapshot.exists();
+                                 const pref = snapshot.val();
+
+                                 if (evenExists === true) {
+                                    if (pref === "true") {
+                                       // :p
+                                    } else if (pref === false) {
+                                       document.getElementById("uploadedVideo-main").pause();
+                                    } else {
+                                       // :p
+                                    }
+                                 } else {
+                                    // :p
+                                 }
+                              })
+                           } else {
+                              // :p
+                           }
+                        })
+                        document.getElementById("uploadedImg-main").remove();
+                     } else {
+                        document.getElementById("uploadedImg-main").src = noteData.image;
+                        document.getElementById("uploadedImg-main").setAttribute("alt", `${noteData.alt}`);
+                        document.getElementById("uploadedVideo-main").remove();
+                     }
+                  } else {
+                     document.getElementById("uploadedImg-main").remove();
+                     document.getElementById("uploadedVideo-main").remove();
+                  }
+
+                  firebase.auth().onAuthStateChanged((user) => {
+                     if (user) {
+                        const uid = user.uid;
+
+                        if (noteData.whoLiked && noteData.whoLiked[uid]) {
+                           document.getElementById("likeButton").classList.add("liked");
+                        } else {
+                           document.getElementById("likeButton").classList.remove("liked");
+                        }
+
+                        if (noteData.whoRenoted && noteData.whoRenoted[uid]) {
+                           document.getElementById("renoteButton").classList.add("renoted");
+                        } else {
+                           document.getElementById("renoteButton").classList.remove("renoted");
+                        }
                      } else {
                         document.getElementById("likeButton").classList.remove("liked");
                      }
+                  })
 
-                     if (noteData.whoRenoted && noteData.whoRenoted[uid]) {
-                        document.getElementById("renoteButton").classList.add("renoted");
-                     } else {
-                        document.getElementById("renoteButton").classList.remove("renoted");
-                     }
-                  } else {
-                     document.getElementById("likeButton").classList.remove("liked");
-                  }
                })
+            } else if (noteData === undefined) {
+               document.getElementById("melissa").style.display = "none";
+            } else if (noteData.replyingTo !== undefined) {
+               window.location.replace(`/note/${noteData.replyingTo}`);
+            } else {
+               document.getElementById("melissa").style.display = "none";
+            }
 
-            })
-         } else if (noteData === undefined) {
-            document.getElementById("melissa").style.display = "none";
-         } else if (noteData.replyingTo !== undefined) {
-            window.location.replace(`/note/${noteData.replyingTo}`);
-         } else {
-            document.getElementById("melissa").style.display = "none";
+            if (userParam === "" || userParam === "undefined") {
+               document.getElementById("melissa").style.display = "none";
+               document.getElementById("noteNotFound").style.display = "block";
+            }
          }
-
-         if (userParam === "" || userParam === "undefined") {
-            document.getElementById("melissa").style.display = "none";
-            document.getElementById("noteNotFound").style.display = "block";
-         }
+      } else {
+         document.getElementById("notes").innerHTML += `<p style="color: var(--error-text);"><i style="color: var(--error-text);" class="fa-solid fa-bug"></i> We encountered an error loading 1 or more notes. This probably isn't your fault or your internets fault as this is a known issue on our end. Please bare with us as we investigate this issue.</p>`;
       }
    })
 
@@ -7020,6 +7025,40 @@ if (pathName === "/search") {
    if (query) {
       // make sure the query isn't empty
       if (query.trim() !== "") {
+         // easter eggs
+         // if you're here to cheat, boo on you >:(
+         if (query.toLowerCase() === "nacht der untoten") {
+            document.getElementById("easterEggFound").style.display = "block";
+            document.getElementById("easterEggFound").innerHTML += `<br/>All copyrighted material remains property of its respective owners. The inclusion of references of "Call of Duty: World at War Zombies" is not endorsed by Activision Publishing, Inc or Treyarch. These references are intended as homage and fan content in appreciation of the original game series.`;
+            new Audio("/assets/audio/gameover_nacht.mp3").play();
+         } else if (query.toLowerCase() === "i have 950 points") {
+            document.getElementById("easterEggFound").style.display = "block";
+            document.getElementById("easterEggFound").innerHTML += `<br/>All copyrighted material remains property of its respective owners. The inclusion of references of "Call of Duty: Black Ops Zombies" is not endorsed by Activision Publishing, Inc or Treyarch. These references are intended as homage and fan content in appreciation of the original game series.`;
+            new Audio("/assets/audio/mysterybox_rolling.mp3").play();
+         } else if (query.toLowerCase() === "what happened to samanthas dog, fluffy?") {
+            document.getElementById("easterEggFound").style.display = "block";
+            document.getElementById("easterEggFound").innerHTML += `<br/>All copyrighted material remains property of its respective owners. The inclusion of references of "Call of Duty: Black Ops Zombies" is not endorsed by Activision Publishing, Inc or Treyarch. These references are intended as homage and fan content in appreciation of the original game series.`;
+            new Audio("/assets/audio/samanthasdog.mp3").play();
+         } else if (query.toLowerCase() === "reach for juggernog tonight") {
+            document.getElementById("easterEggFound").style.display = "block";
+            document.getElementById("easterEggFound").innerHTML += `<br/>All copyrighted material remains property of its respective owners. The inclusion of references of "Call of Duty: Black Ops Zombies" is not endorsed by Activision Publishing, Inc or Treyarch. These references are intended as homage and fan content in appreciation of the original game series.`;
+            new Audio("/assets/audio/reachforjuggernogtonight.mp3").play();
+         } else if (query.toLowerCase() === "speed cola speeds up your life") {
+            document.getElementById("easterEggFound").style.display = "block";
+            document.getElementById("easterEggFound").innerHTML += `<br/>All copyrighted material remains property of its respective owners. The inclusion of references of "Call of Duty: Black Ops Zombies" is not endorsed by Activision Publishing, Inc or Treyarch. These references are intended as homage and fan content in appreciation of the original game series.`;
+            new Audio("/assets/audio/speedcolaspeedsupyourlife.mp3").play();
+         } else if (query.toLowerCase() === "you need a little revive") {
+            document.getElementById("easterEggFound").style.display = "block";
+            document.getElementById("easterEggFound").innerHTML += `<br/>All copyrighted material remains property of its respective owners. The inclusion of references of "Call of Duty: Black Ops Zombies" is not endorsed by Activision Publishing, Inc or Treyarch. These references are intended as homage and fan content in appreciation of the original game series.`;
+            new Audio("/assets/audio/youneedalittlerevive.mp3").play();
+         } else if (query.toLowerCase() === "easter egg") {
+            document.getElementById("easterEggFound").style.display = "block";
+            document.getElementById("easterEggFound").innerHTML = `Here's your easter egg. No sound, no nothing. Just me, some boring old text.`;
+         } else if (query.toLowerCase() === "meow") {
+            document.getElementById("easterEggFound").style.display = "block";
+            new Audio("/assets/audio/meow.wav").play();
+         }
+
          // hide "no term" and show "term"
          document.getElementById("noTerm").remove();
          document.getElementById("term").style.display = "block";
