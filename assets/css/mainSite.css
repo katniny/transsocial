@@ -1044,7 +1044,7 @@ body {
 #notSignedIn-banner {
    position: fixed;
    bottom: 0;
-   width: 350px;
+   width: 100%;
    right: 0;
    background: var(--main-color);
    padding: 15px;
@@ -1063,6 +1063,7 @@ body {
 
 #notSignedIn-banner button:hover {
    background: var(--banner-button-bg);
+   color: var(--text);
 }
 
 @media (max-width: 768px) {

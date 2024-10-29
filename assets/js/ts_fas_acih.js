@@ -29,8 +29,8 @@ const pathName = pageURL.pathname;
 let isOnDesktopApp = null;
 
 // TransSocial Version
-let transsocialVersion = "v2024.10.27";
-let transsocialUpdate = "v20241027-1";
+let transsocialVersion = "v2024.10.28";
+let transsocialUpdate = "v20241028-1";
 let transsocialReleaseVersion = "pre-alpha";
 
 const notices = document.getElementsByClassName("version-notice");
@@ -422,8 +422,8 @@ firebase.auth().onAuthStateChanged((user) => {
          }
       })
    } else {
-      if (document.getElementById("newestUpdates")) {
-         document.getElementById("newestUpdates").showModal();
+      if (document.getElementById("updatesBtn") && pathName !== "/updates") {
+         document.getElementById("updatesBtn").innerHTML = `<i class="fa-solid fa-wrench"></i> Updates <span class="badge">New!</span>`;
       }
    }
 })
@@ -1852,11 +1852,15 @@ if (pathName === "/home" || pathName === "/home.html" || pathName === "/u" || pa
 
          const buttonRow = document.createElement("div");
          buttonRow.classList.add("buttonRow");
-         firebase.database().ref(`users/${firebase.auth().currentUser.uid}/experiments`).once("value", (val) => {
-            if (val.val().noteButtonLayout) {
-               buttonRow.classList.add("buttonRowExperiment");
+         firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+               firebase.database().ref(`users/${firebase.auth().currentUser.uid}/experiments`).once("value", (val) => {
+                  if (val.val().noteButtonLayout) {
+                     buttonRow.classList.add("buttonRowExperiment");
+                  }
+               })
             }
-         })
+         });
 
          // Add love button
          const loveBtn = document.createElement("p");
@@ -2146,8 +2150,6 @@ if (pathName === "/home" || pathName === "/home.html" || pathName === "/u" || pa
                   return;
                })
             }
-         } else {
-            loginPrompt();
          }
       })
    });
@@ -2217,8 +2219,6 @@ if (pathName === "/home" || pathName === "/home.html" || pathName === "/u" || pa
                   return;
                })
             }
-         } else {
-            loginPrompt();
          }
       })
    });
