@@ -29,8 +29,8 @@ const pathName = pageURL.pathname;
 let isOnDesktopApp = null;
 
 // TransSocial Version
-let transsocialVersion = "v2024.10.28";
-let transsocialUpdate = "v20241028-2";
+let transsocialVersion = "v2024.10.30";
+let transsocialUpdate = "v20241030-1";
 let transsocialReleaseVersion = "pre-alpha";
 
 const notices = document.getElementsByClassName("version-notice");
@@ -7809,8 +7809,11 @@ const checkSubscription = () => {
                      }
 
                      // show user since when they've been subscribed and when their subscription renews
-                     document.getElementById("subMemberSince").textContent = `You've been subscribed since ${convertUnixTimestampToDate(data.current_period_start)}`;
-                     document.getElementById("subRenewalDay").textContent = `Your subscription gets renewed on ${convertUnixTimestampToDate(data.current_period_end)} (unless you canceled your subscription)`;
+                     document.getElementById("subMemberSince").textContent = `Current billing period: ${convertUnixTimestampToDate(data.current_period_start)} to ${convertUnixTimestampToDate(data.current_period_end)}`;
+                     document.getElementById("subRenewalDay").textContent = `Subscription status: ${data.status}`;
+                     if (data.status === "active") { // i wish stripe told me whether their subscription is cancelled or not
+                        document.getElementById("subRenewalDay").innerHTML += `<br />(unless you cancelled your subscription)`;
+                     }
                   }
 
                   document.getElementById("enchantedSidebar").style.display = "none";
