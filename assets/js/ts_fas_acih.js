@@ -29,8 +29,8 @@ const pathName = pageURL.pathname;
 let isOnDesktopApp = null;
 
 // TransSocial Version
-let transsocialVersion = "v2024.10.30";
-let transsocialUpdate = "v20241030-1";
+let transsocialVersion = "v2024.11.17";
+let transsocialUpdate = "v20241117-1";
 let transsocialReleaseVersion = "pre-alpha";
 
 const notices = document.getElementsByClassName("version-notice");
@@ -1754,8 +1754,11 @@ if (pathName === "/home" || pathName === "/home.html" || pathName === "/u" || pa
                      const quotePfp = document.createElement("img");
                      quotePfp.classList.add("quotePfp");
                      quotePfp.setAttribute("draggable", "false");
-                     quotePfp.src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${quoteData.whoSentIt}%2F${quoteUser.pfp}?alt=media`;
-
+                     if (quoteUser.suspensionStatus !== "suspended") {
+                        quotePfp.src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${quoteData.whoSentIt}%2F${quoteUser.pfp}?alt=media`;
+                     } else {
+                        quotePfp.src = `/assets/imgs/defaultPfp.png`;
+                     }
                      const quoteContent = document.createElement("div");
                      quoteContent.classList.add("quoteContent");
 
@@ -1764,14 +1767,22 @@ if (pathName === "/home" || pathName === "/home.html" || pathName === "/u" || pa
 
                      const quoteDisplay = document.createElement("span");
                      quoteDisplay.classList.add("quoteDisplay");
-                     quoteDisplay.textContent = quoteUser.display;
+                     if (quoteUser.suspensionStatus !== "suspended") {
+                        quoteDisplay.textContent = quoteUser.display;
+                     } else {
+                        quoteDisplay.textContent = "User Unavailable";
+                     }
 
                      const quoteUsername = document.createElement("span");
                      quoteUsername.classList.add("quoteUsername");
-                     if (quoteUser.pronouns !== undefined || quoteUser.pronouns !== "") {
-                        quoteUsername.textContent = `@${quoteUser.username} • ${quoteUser.pronouns}`;
+                     if (quoteUser.suspensionStatus !== "suspended") {
+                        if (quoteUser.pronouns !== undefined && quoteUser.pronouns !== "") {
+                           quoteUsername.textContent = `@${quoteUser.username} • ${quoteUser.pronouns}`;
+                        } else {
+                           quoteUsername.textContent = `@${quoteUser.username}`;
+                        }
                      } else {
-                        quoteUsername.textContent = `@${quoteUser.username}`;
+                        quoteUsername.textContent = `User Unavailable`;
                      }
 
                      const quoteText = document.createElement("span");
@@ -1780,7 +1791,11 @@ if (pathName === "/home" || pathName === "/home.html" || pathName === "/u" || pa
                      if (content.length > 247) { // check length
                         content = content.substring(0, 247) + "...";
                      }
-                     quoteText.innerHTML = content;
+                     if (quoteUser.suspensionStatus !== "suspended") {
+                        quoteText.innerHTML = content;
+                     } else {
+                        quoteText.textContent = `@${quoteUser.username} is suspended, and notes by this user cannot be viewed.`;
+                     }
 
                      container.appendChild(quotePfp);
                      container.appendChild(quoteContent);
@@ -2448,75 +2463,89 @@ if (pathName === "/u.html" || pathName === "/u" || pathName.startsWith("/u/")) {
          document.getElementById("userNotFound").style.display = "none";
          database.ref(`users/${profileExists.user}`).once("value", (snapshot) => {
             profileData = snapshot.val();
-            document.title = `${profileData.display} (@${profileData.username}) | TransSocial`;
-            document.getElementById(`melissa`).style.display = "block";
-            document.getElementById(`userImage-profile`).src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${profileExists.user}%2F${profileData.pfp}?alt=media`;
-            document.getElementById(`display-profile`).textContent = profileData.display;
-            const verifiedBadge = document.createElement("span");
-            if (profileData.isVerified) {
-               verifiedBadge.innerHTML = `<i class="fa-solid fa-circle-check"></i>`;
-               verifiedBadge.style.marginLeft = "7px";
-            }
-            if (profileData.isSubscribed === true) {
-               verifiedBadge.innerHTML = `${verifiedBadge.innerHTML}<i class="fa-solid fa-heart" style="margin-left: 3px;"></i>`;
-            }
-            if (profileData.activeContributor === true) {
-               verifiedBadge.innerHTML = `${verifiedBadge.innerHTML}<i class="fa-solid fa-handshake-angle fa-sm"></i>`;
-            }
-            verifiedBadge.classList.add("noteBadges");
-            document.getElementById(`display-profile`).appendChild(verifiedBadge);
-            document.getElementById(`username-profile`).textContent = `@${profileData.username}`;
 
-            if (profileData.banner) {
-               document.getElementById(`userImage-banner`).src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fbanner%2F${profileExists.user}%2F${profileData.banner}?alt=media`;
-            }
-
-            document.getElementById("interactingWithWho").textContent = `User Actions for @${profileData.username}`;
-
-            firebase.auth().onAuthStateChanged((user) => {
-               if (user) {
-                  if (user.uid === profileExists.user) {
-                     document.getElementById("blockUser").style.display = "none";
-                     document.getElementById("interactingWithWho_desc").textContent = "Would you like to do with your profile?";
-                     document.getElementById("profileSidebar").classList.add("active");
-                  } else {
-                     document.getElementById("editProfile").remove();
-                  }
-
-                  firebase.database().ref(`users/${user.uid}/blocked/${profileExists.user}`).once("value", (snapshot) => {
-                     const isBlocked = snapshot.val();
-
-                     if (isBlocked === null) {
-                        document.getElementById("ifUserBlocked_Current").style.display = "none";
-                     } else if (isBlocked !== null) {
-                        document.getElementById("ifUserBlocked_Current").style.display = "block";
-                        document.getElementById("blockUser").style.display = "none";
-                        document.getElementById("unblockUser").style.display = "block";
-                        document.getElementById("whoIsBlocked").textContent = `@${profileData.username} is blocked`;
-                        document.getElementById("whoIsBlocked_desc").textContent = `@${profileData.username} is blocked. Would you like to view their notes anyway or unblock them?`;
-                        document.getElementById("followButton").remove();
-                        document.getElementById("userActions").style.marginLeft = "15px";
-                     }
-                  })
-
-                  firebase.database().ref(`users/${profileExists.user}/blocked/${user.uid}`).once("value", (snapshot) => {
-                     const blocked = snapshot.val();
-
-                     if (blocked === null) {
-                        // Don't do anything, it's possible that this would hide the warning if the user visiting has blocked the other.
-                     } else if (blocked !== null) {
-                        document.getElementById("ifUserBlocked_Current").style.display = "block";
-                        document.getElementById("blockUser").style.display = "none";
-                        document.getElementById("unblockUser").style.display = "none";
-                        document.getElementById("whoIsBlocked").textContent = `@${profileData.username} blocked you`;
-                        document.getElementById("whoIsBlocked_desc").textContent = `@${profileData.username} blocked you. You may not see their notes.`;
-                        // document.getElementById("followButton").remove();
-                        document.getElementById("showNotesButton").remove();
-                        document.getElementById("unblockUserButton").remove();
-                     }
-                  })
+            if (profileData.suspensionStatus !== "suspended") {
+               document.title = `${profileData.display} (@${profileData.username}) | TransSocial`;
+               document.getElementById(`melissa`).style.display = "block";
+               document.getElementById(`userImage-profile`).src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${profileExists.user}%2F${profileData.pfp}?alt=media`;
+               document.getElementById(`display-profile`).textContent = profileData.display;
+               const verifiedBadge = document.createElement("span");
+               if (profileData.isVerified) {
+                  verifiedBadge.innerHTML = `<i class="fa-solid fa-circle-check"></i>`;
+                  verifiedBadge.style.marginLeft = "7px";
                }
-            })
+               if (profileData.isSubscribed === true) {
+                  verifiedBadge.innerHTML = `${verifiedBadge.innerHTML}<i class="fa-solid fa-heart" style="margin-left: 3px;"></i>`;
+               }
+               if (profileData.activeContributor === true) {
+                  verifiedBadge.innerHTML = `${verifiedBadge.innerHTML}<i class="fa-solid fa-handshake-angle fa-sm"></i>`;
+               }
+               verifiedBadge.classList.add("noteBadges");
+               document.getElementById(`display-profile`).appendChild(verifiedBadge);
+               document.getElementById(`username-profile`).textContent = `@${profileData.username}`;
+
+               if (profileData.banner) {
+                  document.getElementById(`userImage-banner`).src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fbanner%2F${profileExists.user}%2F${profileData.banner}?alt=media`;
+               }
+
+               document.getElementById("interactingWithWho").textContent = `User Actions for @${profileData.username}`;
+
+               firebase.auth().onAuthStateChanged((user) => {
+                  if (user) {
+                     if (user.uid === profileExists.user) {
+                        document.getElementById("blockUser").style.display = "none";
+                        document.getElementById("interactingWithWho_desc").textContent = "Would you like to do with your profile?";
+                        document.getElementById("profileSidebar").classList.add("active");
+                     } else {
+                        document.getElementById("editProfile").remove();
+                     }
+
+                     firebase.database().ref(`users/${user.uid}/blocked/${profileExists.user}`).once("value", (snapshot) => {
+                        const isBlocked = snapshot.val();
+
+                        if (isBlocked === null) {
+                           document.getElementById("ifUserBlocked_Current").style.display = "none";
+                        } else if (isBlocked !== null) {
+                           document.getElementById("ifUserBlocked_Current").style.display = "block";
+                           document.getElementById("blockUser").style.display = "none";
+                           document.getElementById("unblockUser").style.display = "block";
+                           document.getElementById("whoIsBlocked").textContent = `@${profileData.username} is blocked`;
+                           document.getElementById("whoIsBlocked_desc").textContent = `@${profileData.username} is blocked. Would you like to view their notes anyway or unblock them?`;
+                           document.getElementById("followButton").remove();
+                           document.getElementById("userActions").style.marginLeft = "15px";
+                        }
+                     })
+
+                     firebase.database().ref(`users/${profileExists.user}/blocked/${user.uid}`).once("value", (snapshot) => {
+                        const blocked = snapshot.val();
+
+                        if (blocked === null) {
+                           // Don't do anything, it's possible that this would hide the warning if the user visiting has blocked the other.
+                        } else if (blocked !== null) {
+                           document.getElementById("ifUserBlocked_Current").style.display = "block";
+                           document.getElementById("blockUser").style.display = "none";
+                           document.getElementById("unblockUser").style.display = "none";
+                           document.getElementById("whoIsBlocked").textContent = `@${profileData.username} blocked you`;
+                           document.getElementById("whoIsBlocked_desc").textContent = `@${profileData.username} blocked you. You may not see their notes.`;
+                           // document.getElementById("followButton").remove();
+                           document.getElementById("showNotesButton").remove();
+                           document.getElementById("unblockUserButton").remove();
+                        }
+                     })
+                  }
+               })
+            } else {
+               document.getElementById(`melissa`).style.display = "none";
+               document.getElementById("userNotFound").style.display = "block";
+
+               document.getElementById("userNotFound").innerHTML = `
+                  <h1>User is unavailable.</h1>
+                  <p>This user is suspended from TransSocial, so you cannot view their profile. If they get unsuspended--if ever--their profile will be available to view again.</p>
+
+                  <a href="/home"><button>Go Home</button></a>
+               `
+            }
+            
 
             if (profileData.pronouns === undefined || profileData.pronouns === null || profileData.pronouns === "") {
                document.getElementById(`pronouns-profile`).remove();
@@ -2918,19 +2947,27 @@ if (pathName === "/note.html" || pathName === "/note" || pathName.startsWith("/u
                      firebase.database().ref(`users/${quoteData.whoSentIt}`).once("value", (snapshot) => {
                         const quoteUser = snapshot.val();
 
-                        document.getElementById("noteQuotePfp").src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${quoteData.whoSentIt}%2F${quoteUser.pfp}?alt=media`;
-                        document.getElementById("noteQuoteDisplay").textContent = quoteUser.display;
-                        document.getElementById("noteQuoteUsername").textContent = `@${quoteUser.username}`;
-                        document.getElementById("noteQuoteText").innerHTML = sanitizeAndLinkify(quoteData.text);
-                        let content = sanitizeAndLinkify(quoteData.text);
-                           if (content.length > 247) { // check length
-                              content = content.substring(0, 247) + "...";
-                           }
-                           document.getElementById("noteQuoteText").innerHTML = content;
-                        twemoji.parse(document.getElementById("noteQuoteText"), {
-                           folder: 'svg',
-                           ext: '.svg'
-                        });
+                        if (quoteUser.suspensionStatus !== "suspended") {
+                           document.getElementById("noteQuotePfp").src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${quoteData.whoSentIt}%2F${quoteUser.pfp}?alt=media`;
+                           document.getElementById("noteQuoteDisplay").textContent = quoteUser.display;
+                           document.getElementById("noteQuoteUsername").textContent = `@${quoteUser.username}`;
+                           document.getElementById("noteQuoteText").innerHTML = sanitizeAndLinkify(quoteData.text);
+                           let content = sanitizeAndLinkify(quoteData.text);
+                              if (content.length > 247) { // check length
+                                 content = content.substring(0, 247) + "...";
+                              }
+                              document.getElementById("noteQuoteText").innerHTML = content;
+                           twemoji.parse(document.getElementById("noteQuoteText"), {
+                              folder: 'svg',
+                              ext: '.svg'
+                           });
+                        } else {
+                           document.getElementById("noteQuotePfp").src = `/assets/imgs/defaultPfp.png`;
+                           document.getElementById("noteQuoteDisplay").textContent = "User Unavailable";
+                           document.getElementById("noteQuoteUsername").textContent = `User Unavailable`;
+                           document.getElementById("noteQuoteText").innerHTML = sanitizeAndLinkify(quoteData.text);
+                           document.getElementById("noteQuoteText").innerHTML = `@${quoteUser.username} is suspended, and notes by this user cannot be viewed.`;
+                        }
 
                         document.getElementById("quotingNote_note").setAttribute("onclick", `window.location.href="/note/${quoteData.id}"`);
                      })
@@ -2968,107 +3005,119 @@ if (pathName === "/note.html" || pathName === "/note" || pathName.startsWith("/u
 
             database.ref(`users/${noteData.whoSentIt}`).once("value", (snapshot) => {
                const profileData = snapshot.val();
-               if (noteData.text !== "") {
-                  document.title = `"${noteData.text}" / @${profileData.username} on TransSocial`;
-               } else {
-                  document.title = `@${profileData.username} on TransSocial`;
-               }
-               document.getElementById(`melissa`).style.display = "block";
-               document.getElementById(`userImage-profile`).src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${noteData.whoSentIt}%2F${profileData.pfp}?alt=media`;
-               document.getElementById(`userImage-profile`).setAttribute("onclick", `window.location.href="/u/${profileData.username}"`);
-               document.getElementById(`display-profile`).textContent = profileData.display;
-               document.getElementById(`display-profile`).setAttribute("onclick", `window.location.href="/u/${profileData.username}"`);
-               const verifiedBadge = document.createElement("span");
-               if (profileData.isVerified === true) {
-                  verifiedBadge.innerHTML = `<i class="fa-solid fa-circle-check fa-sm"></i>`;
-                  verifiedBadge.classList.add("noteBadges");
-                  verifiedBadge.style.marginLeft = "7px";
-               }
-               if (profileData.isSubscribed === true) {
-                  verifiedBadge.innerHTML = `${verifiedBadge.innerHTML}<i class="fa-solid fa-heart fa-sm" style="margin-left: 3px;"></i>`
-               }
-               if (profileData.activeContributor === true) {
-                  verifiedBadge.innerHTML = `${verifiedBadge.innerHTML}<i class="fa-solid fa-handshake-angle fa-sm" style="margin-left: 3px;"></i>`;
-               }
-               document.getElementById("display-profile").appendChild(verifiedBadge);
-               document.getElementById(`username-profile`).textContent = `@${profileData.username}`;
-               document.getElementById(`username-profile`).setAttribute("onclick", `window.location.href="/u/${profileData.username}"`);
-               if (profileData.pronouns === undefined || profileData.pronouns === null || profileData.pronouns === "") {
-                  document.getElementById(`pronouns-profile`).remove();
-               } else {
-                  document.getElementById(`pronouns-profile`).textContent = profileData.pronouns;
-                  document.getElementById(`pronouns-profile`).setAttribute("onclick", `window.location.href="/u/${profileData.username}"`);
-               }
+               if (profileData.suspensionStatus !== "suspended") {
+                  if (noteData.text !== "") {
+                     document.title = `"${noteData.text}" / @${profileData.username} on TransSocial`;
+                  } else {
+                     document.title = `@${profileData.username} on TransSocial`;
+                  }
+                  document.getElementById(`melissa`).style.display = "block";
+                  document.getElementById(`userImage-profile`).src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${noteData.whoSentIt}%2F${profileData.pfp}?alt=media`;
+                  document.getElementById(`userImage-profile`).setAttribute("onclick", `window.location.href="/u/${profileData.username}"`);
+                  document.getElementById(`display-profile`).textContent = profileData.display;
+                  document.getElementById(`display-profile`).setAttribute("onclick", `window.location.href="/u/${profileData.username}"`);
+                  const verifiedBadge = document.createElement("span");
+                  if (profileData.isVerified === true) {
+                     verifiedBadge.innerHTML = `<i class="fa-solid fa-circle-check fa-sm"></i>`;
+                     verifiedBadge.classList.add("noteBadges");
+                     verifiedBadge.style.marginLeft = "7px";
+                  }
+                  if (profileData.isSubscribed === true) {
+                     verifiedBadge.innerHTML = `${verifiedBadge.innerHTML}<i class="fa-solid fa-heart fa-sm" style="margin-left: 3px;"></i>`
+                  }
+                  if (profileData.activeContributor === true) {
+                     verifiedBadge.innerHTML = `${verifiedBadge.innerHTML}<i class="fa-solid fa-handshake-angle fa-sm" style="margin-left: 3px;"></i>`;
+                  }
+                  document.getElementById("display-profile").appendChild(verifiedBadge);
+                  document.getElementById(`username-profile`).textContent = `@${profileData.username}`;
+                  document.getElementById(`username-profile`).setAttribute("onclick", `window.location.href="/u/${profileData.username}"`);
+                  if (profileData.pronouns === undefined || profileData.pronouns === null || profileData.pronouns === "") {
+                     document.getElementById(`pronouns-profile`).remove();
+                  } else {
+                     document.getElementById(`pronouns-profile`).textContent = profileData.pronouns;
+                     document.getElementById(`pronouns-profile`).setAttribute("onclick", `window.location.href="/u/${profileData.username}"`);
+                  }
 
-               document.getElementById("noteContent").innerHTML = sanitizeAndLinkify(noteData.text);
-               twemoji.parse(document.getElementById("noteContent"), {
-                  folder: 'svg',
-                  ext: '.svg'
-               });
-               document.getElementById("likeButton").innerHTML = `<i class="fa-solid fa-heart"></i> ${noteData.likes}`;
-               document.getElementById("renoteButton").innerHTML = `<i class="fa-solid fa-retweet"></i> ${noteData.renotes}`;
+                  document.getElementById("noteContent").innerHTML = sanitizeAndLinkify(noteData.text);
+                  twemoji.parse(document.getElementById("noteContent"), {
+                     folder: 'svg',
+                     ext: '.svg'
+                  });
+                  document.getElementById("likeButton").innerHTML = `<i class="fa-solid fa-heart"></i> ${noteData.likes}`;
+                  document.getElementById("renoteButton").innerHTML = `<i class="fa-solid fa-retweet"></i> ${noteData.renotes}`;
 
-               if (noteData.image) {
-                  let imageFileName = noteData.image;
-                  let imageExtension = imageFileName.split(".").pop();
-                  const url = imageExtension;
-                  const cleanUrl = url.split('?')[0];
+                  if (noteData.image) {
+                     let imageFileName = noteData.image;
+                     let imageExtension = imageFileName.split(".").pop();
+                     const url = imageExtension;
+                     const cleanUrl = url.split('?')[0];
 
-                  if (cleanUrl === "mp4") {
-                     document.getElementById("uploadedVideo-main").src = noteData.image;
-                     document.getElementById("uploadedVideo-main").setAttribute("alt", `${noteData.alt}`);
-                     firebase.auth().onAuthStateChanged((user) => {
-                        if (user) {
-                           firebase.database().ref(`users/${user.uid}/autoplayVideos`).once("value", (snapshot) => {
-                              const evenExists = snapshot.exists();
-                              const pref = snapshot.val();
+                     if (cleanUrl === "mp4") {
+                        document.getElementById("uploadedVideo-main").src = noteData.image;
+                        document.getElementById("uploadedVideo-main").setAttribute("alt", `${noteData.alt}`);
+                        firebase.auth().onAuthStateChanged((user) => {
+                           if (user) {
+                              firebase.database().ref(`users/${user.uid}/autoplayVideos`).once("value", (snapshot) => {
+                                 const evenExists = snapshot.exists();
+                                 const pref = snapshot.val();
 
-                              if (evenExists === true) {
-                                 if (pref === "true") {
-                                    // :p
-                                 } else if (pref === false) {
-                                    document.getElementById("uploadedVideo-main").pause();
+                                 if (evenExists === true) {
+                                    if (pref === "true") {
+                                       // :p
+                                    } else if (pref === false) {
+                                       document.getElementById("uploadedVideo-main").pause();
+                                    } else {
+                                       // :p
+                                    }
                                  } else {
                                     // :p
                                  }
-                              } else {
-                                 // :p
-                              }
-                           })
-                        } else {
-                           // :p
-                        }
-                     })
-                     document.getElementById("uploadedImg-main").remove();
+                              })
+                           } else {
+                              // :p
+                           }
+                        })
+                        document.getElementById("uploadedImg-main").remove();
+                     } else {
+                        document.getElementById("uploadedImg-main").src = noteData.image;
+                        document.getElementById("uploadedImg-main").setAttribute("alt", `${noteData.alt}`);
+                        document.getElementById("uploadedVideo-main").remove();
+                     }
                   } else {
-                     document.getElementById("uploadedImg-main").src = noteData.image;
-                     document.getElementById("uploadedImg-main").setAttribute("alt", `${noteData.alt}`);
+                     document.getElementById("uploadedImg-main").remove();
                      document.getElementById("uploadedVideo-main").remove();
                   }
-               } else {
-                  document.getElementById("uploadedImg-main").remove();
-                  document.getElementById("uploadedVideo-main").remove();
-               }
 
-               firebase.auth().onAuthStateChanged((user) => {
-                  if (user) {
-                     const uid = user.uid;
+                  firebase.auth().onAuthStateChanged((user) => {
+                     if (user) {
+                        const uid = user.uid;
 
-                     if (noteData.whoLiked && noteData.whoLiked[uid]) {
-                        document.getElementById("likeButton").classList.add("liked");
+                        if (noteData.whoLiked && noteData.whoLiked[uid]) {
+                           document.getElementById("likeButton").classList.add("liked");
+                        } else {
+                           document.getElementById("likeButton").classList.remove("liked");
+                        }
+
+                        if (noteData.whoRenoted && noteData.whoRenoted[uid]) {
+                           document.getElementById("renoteButton").classList.add("renoted");
+                        } else {
+                           document.getElementById("renoteButton").classList.remove("renoted");
+                        }
                      } else {
                         document.getElementById("likeButton").classList.remove("liked");
                      }
+                  })
+               } else {
+                  document.getElementById("melissa").style.display = "none";
+                  document.getElementById("noteNotFound").style.display = "block";
 
-                     if (noteData.whoRenoted && noteData.whoRenoted[uid]) {
-                        document.getElementById("renoteButton").classList.add("renoted");
-                     } else {
-                        document.getElementById("renoteButton").classList.remove("renoted");
-                     }
-                  } else {
-                     document.getElementById("likeButton").classList.remove("liked");
-                  }
-               })
+                  document.getElementById("noteNotFound").innerHTML = `
+                     <h1>This note is unavailable</h1>
+                     <p>TransSocial cannot show you this note because the creator is suspended from TransSocial. If this user gets unsuspended--if ever--this note will be available to view again.</p>
+
+                     <a href="/home"><button>Go Home</button></a>
+                  `;
+               }
             })
          } else if (noteData === undefined) {
             document.getElementById("melissa").style.display = "none";
@@ -7428,7 +7477,11 @@ if (pathName === "/search") {
                               const quotePfp = document.createElement("img");
                               quotePfp.classList.add("quotePfp");
                               quotePfp.setAttribute("draggable", "false");
-                              quotePfp.src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${quoteData.whoSentIt}%2F${quoteUser.pfp}?alt=media`;
+                              if (quoteUser.suspensionStatus !== "suspended") {
+                                 quotePfp.src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${quoteData.whoSentIt}%2F${quoteUser.pfp}?alt=media`;
+                              } else {
+                                 quotePfp.src = `/assets/imgs/defaultPfp.png`;
+                              };
       
                               const quoteContent = document.createElement("div");
                               quoteContent.classList.add("quoteContent");
@@ -7438,14 +7491,22 @@ if (pathName === "/search") {
       
                               const quoteDisplay = document.createElement("span");
                               quoteDisplay.classList.add("quoteDisplay");
-                              quoteDisplay.textContent = quoteUser.display;
+                              if (quoteUser.suspensionStatus !== "suspended") {
+                                 quoteDisplay.textContent = quoteUser.display;
+                              } else {
+                                 quoteDisplay.textContent = "User Unavailable";
+                              }
       
                               const quoteUsername = document.createElement("span");
                               quoteUsername.classList.add("quoteUsername");
-                              if (quoteUser.pronouns !== undefined || quoteUser.pronouns !== "") {
-                                 quoteUsername.textContent = `@${quoteUser.username} • ${quoteUser.pronouns}`;
+                              if (quoteUser.suspensionStatus !== "suspended") {
+                                 if (quoteUser.pronouns !== undefined && quoteUser.pronouns !== "") {
+                                    quoteUsername.textContent = `@${quoteUser.username} • ${quoteUser.pronouns}`;
+                                 } else {
+                                    quoteUsername.textContent = `@${quoteUser.username}`;
+                                 }
                               } else {
-                                 quoteUsername.textContent = `@${quoteUser.username}`;
+                                 quoteUsername.textContent = `User Unavailable`;
                               }
       
                               const quoteText = document.createElement("span");
@@ -7454,7 +7515,11 @@ if (pathName === "/search") {
                               if (content.length > 247) { // check length
                                  content = content.substring(0, 247) + "...";
                               }
-                              quoteText.innerHTML = content;
+                              if (quoteUser.suspensionStatus !== "suspended") {
+                                 quoteText.innerHTML = content;
+                              } else {
+                                 quoteText.textContent = `@${quoteUser.username} is suspended, and notes by this user cannot be viewed.`;
+                              }
       
                               container.appendChild(quotePfp);
                               container.appendChild(quoteContent);
