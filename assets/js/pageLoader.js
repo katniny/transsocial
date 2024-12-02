@@ -391,3 +391,18 @@ function countdown() {
         timeLeft--;
     }
 } 
+
+// if december, force christmas mode (merry christmas mfs)
+// or happy holidays, whatever you celebrate :p
+// if you celebrate, idk why im being technical as always in code comments no one will ever see lmaoo
+if (currentMonth === 12) {
+   const hat = document.createElement("img");
+   hat.src = "/assets/imgs/xmas_hat.png";
+   hat.draggable = false;
+   hat.className = "xmasHat";
+   hat.onclick = () => {
+      window.location.replace("/home");
+   }
+
+   document.body.appendChild(hat);
+}
