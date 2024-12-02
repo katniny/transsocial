@@ -30,7 +30,7 @@ let isOnDesktopApp = null;
 
 // TransSocial Version
 let transsocialVersion = "v2024.12.1";
-let transsocialUpdate = "v2024121-1";
+let transsocialUpdate = "v2024121-2";
 let transsocialReleaseVersion = "pre-alpha";
 
 const notices = document.getElementsByClassName("version-notice");
@@ -69,27 +69,35 @@ const userAgent = navigator.userAgent;
 let browserName = "Unknown Browser";
 let browserVersion = "Unknown version";
 
-if (userAgent.indexOf("Firefox") > -1) {
-   browserName = "Mozilla Firefox";
-   browserVersion = userAgent.match(/Firefox\/([0-9.]+)/)[1];
-} else if (userAgent.indexOf("SamsungBrowser") > -1) {
-   browserName = "Samsung Browser";
-   browserVersion = userAgent.match(/SamsungBrowser\/([0-9.]+)/)[1];
-} else if (userAgent.indexOf("Opera") > -1 || userAgent.indexOf("OPR") > -1) {
-   browserName = "Opera";
-   browserVersion = userAgent.match(/(Opera|OPR)\/([0-9.]+)/)[2];
-} else if (userAgent.indexOf("Trident") > -1) {
-   browserName = "Internet Explorer";
-   browserVersion = userAgent.match(/rv:([0-9.]+)/)[1];
-} else if (userAgent.indexOf("Edge") > -1) {
-   browserName = "Microsoft Edge";
-   browserVersion = userAgent.match(/Edge\/([0-9.]+)/)[1];
-} else if (userAgent.indexOf("Chrome") > -1) {
-   browserName = "Google Chrome";
-   browserVersion = userAgent.match(/Chrome\/([0-9.]+)/)[1];
-} else if (userAgent.indexOf("Safari") > -1) {
-   browserName = "Apple Safari";
-   browserVersion = userAgent.match(/Version\/([0-9.]+)/)[1];
+const meowserAgentSubstring = "meowser";
+console.log(userAgent);
+if (userAgent.indexOf(meowserAgentSubstring) > -1) {
+   browserName = "Meowser";
+   let versionMatch = userAgent.match(/meowser\/([\d.]+)/);
+   browserVersion = versionMatch ? versionMatch[1] : "unknown version";
+} else {
+   if (userAgent.indexOf("Firefox") > -1) {
+      browserName = "Mozilla Firefox";
+      browserVersion = userAgent.match(/Firefox\/([0-9.]+)/)[1];
+   } else if (userAgent.indexOf("SamsungBrowser") > -1) {
+      browserName = "Samsung Browser";
+      browserVersion = userAgent.match(/SamsungBrowser\/([0-9.]+)/)[1];
+   } else if (userAgent.indexOf("OPR") > -1 || userAgent.indexOf("Opera") > -1) {
+      browserName = "Opera";
+      browserVersion = userAgent.match(/(Opera|OPR)\/([0-9.]+)/)[2];
+   } else if (userAgent.indexOf("Trident") > -1) {
+      browserName = "Internet Explorer";
+      browserVersion = userAgent.match(/rv:([0-9.]+)/)[1];
+   } else if (userAgent.indexOf("Edge") > -1) {
+      browserName = "Microsoft Edge";
+      browserVersion = userAgent.match(/Edge\/([0-9.]+)/)[1];
+   } else if (userAgent.indexOf("Chrome") > -1) {
+      browserName = "Google Chrome";
+      browserVersion = userAgent.match(/Chrome\/([0-9.]+)/)[1];
+   } else if (userAgent.indexOf("Safari") > -1) {
+      browserName = "Apple Safari";
+      browserVersion = userAgent.match(/Version\/([0-9.]+)/)[1];
+   }
 }
 
 if (document.getElementById("userBrowser")) { // environment settings
