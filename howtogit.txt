@@ -1,4 +1,0 @@
-(always ensure api keys are empty)
-git add .
-git commit -m "[Update log thing]"
-git push -u origin main
