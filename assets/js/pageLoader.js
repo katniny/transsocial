@@ -401,7 +401,11 @@ if (currentMonth === 12) {
    hat.draggable = false;
    hat.className = "xmasHat";
    hat.onclick = () => {
-      window.location.replace("/home");
+      if (isSidebarOpen === false) {
+         isSidebarOpen = true;
+      } else {
+         isSidebarOpen = false;
+      }
    }
 
    document.body.appendChild(hat);
