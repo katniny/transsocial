@@ -4,14 +4,14 @@
 // katniny Firebase Configuration
 // before pushing to git, always make sure the firebase config doesn't expose yours
 const firebaseConfig = {
-   apiKey: "REPLACE",
-   authDomain: "REPLACE",
-   databaseURL: "REPLACE",
-   projectId: "REPLACE",
-   storageBucket: "REPLACE",
-   messagingSenderId: "REPLACE",
-   appId: "REPLACE",
-   measurementId: "REPLACE"
+   apiKey: "AIzaSyCrBeEOpk9vyzIdcCgDk95phPrQX8euAtw",
+   authDomain: "chat-transsocial-test.firebaseapp.com",
+   databaseURL: "https://developers-at-transsocial.firebaseio.com",
+   projectId: "chat-transsocial-test",
+   storageBucket: "chat-transsocial-test.appspot.com",
+   messagingSenderId: "921564672979",
+   appId: "1:921564672979:web:fe73a3934074b91677b526",
+   measurementId: "G-D6PHVBS3Z0"
 };
 
 // Initialize Firebase
@@ -8199,3 +8199,37 @@ function serverTest() {
          console.error("not okay response :(", error);
       });
 }
+
+// aurora promotional
+firebase.auth().onAuthStateChanged((user) => {
+   if (user) {
+      firebase.database().ref(`users/${user.uid}/auroraPromo`).once("value", (snapshot) => {
+         const exists = snapshot.exists();
+         
+         if (!exists && pathName !== "/") {
+            const modal = document.createElement("dialog");
+            modal.innerHTML = 
+            `
+               <h1 style="display: flex; align-items: center; gap: 10px;"><img class="aurora auroraFloat" src="/assets/mascot/excited.png" draggable="false" /> Say hello!</h1>
+               <p style="margin-top: 5px;">Welcome Aurora, the newest member of the TransSocial family! Born December 24, 2024, she's now here and usable in your notes, bio and display name in the form of her own emojis!</p>
+               <p>We have a blog post with more information -> <a href="/blog/welcome-aurora">we recommend reading</a> (we also have a cheat sheet on how to use her emojis in this blog)!</p>
+            `
+            const dismiss = document.createElement("button");
+            dismiss.textContent = "Welcome Aurora!";
+            dismiss.onclick = () => {
+               modal.close();
+               firebase.database().ref(`users/${user.uid}/auroraPromo`).update({
+                  saw: true,
+               });
+               setTimeout(() => {
+                  modal.remove();
+               }, 500);
+            }
+
+            document.body.appendChild(modal);
+            modal.appendChild(dismiss);
+            modal.showModal();
+         }
+      });
+   }
+});
