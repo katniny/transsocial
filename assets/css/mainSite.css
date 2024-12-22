@@ -560,6 +560,14 @@ body {
    overflow-wrap: break-word;
 }
 
+.transsocialAccounts #katninyDisplay .emoji,
+.recommendedAccounts #user1Display .emoji {
+   height: 1em;
+   width: 1em;
+   margin: 0 .05em 0 .1em;
+   vertical-align: -0.1em;
+}
+
 .transsocialAccounts #katninyUser-pronouns,
 .recommendedAccounts #user1User-pronouns {
    float: left;
@@ -662,6 +670,13 @@ body {
    height: auto;
    float: left;
    margin-left: 5px;
+}
+
+#displayName-sidebar .emoji {
+   height: 1em;
+   width: 1em;
+   margin: 0 .05em 0 .1em;
+   vertical-align: -0.1em;
 }
 
 #username-pronouns-sidebar {
@@ -778,6 +793,13 @@ body {
    font-size: large;
    text-decoration: none;
    color: var(--text);
+}
+
+.note .noteDisplay .emoji {
+   height: 1em;
+   width: 1em;
+   margin: 0 .05em 0 .1em;
+   vertical-align: -0.1em;
 }
 
 .note .noteDisplay .noteBadges i {
