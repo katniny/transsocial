@@ -1162,7 +1162,7 @@ function getUserInfoSidebar() {
             .then(function (snapshot) {
                const display = snapshot.val();
 
-               displayNameSidebar.textContent = display;
+               displayNameSidebar.innerHTML = escapeAndEmoji(display);
             })
 
          const usernameRef = firebase.database().ref(`users/${uid}/username`);
@@ -1252,11 +1252,37 @@ function markdownify(text) {
    return text;
 }
 
+function emojify(text) {
+   const emojiMap = {
+      "concerned": "/assets/mascot/concerned.png",
+      "excited": "/assets/mascot/excited.png",
+      "love": "/assets/mascot/love.png",
+      "peace": "/assets/mascot/peace.png",
+      "smug": "/assets/mascot/smug.png",
+      "tired": "/assets/mascot/tired.png",
+      "violence": "/assets/mascot/violence.png",
+      "yelling": "/assets/mascot/yelling.png",
+   }
+
+   for (const [phrase, imageUrl] of Object.entries(emojiMap)) {
+      const regex = new RegExp(`\\[${phrase}\\]`, "g");
+      text = text.replace(regex, `<img src="${imageUrl}" alt=${phrase} class="emoji aurora" draggable="false" />`);
+   }
+   return text;
+}
+
 function sanitizeAndLinkify(text) {
    let escapedText = escapeHtml(text);
    escapedText = markdownify(escapedText);
+   escapedText = emojify(escapedText);
    escapedText = linkify(escapedText);
    escapedText = addNewlines(escapedText);
+   return escapedText;
+}
+
+function escapeAndEmoji(text) {
+   let escapedText = escapeHtml(text);
+   escapedText = emojify(escapedText);
    return escapedText;
 }
 
@@ -1632,7 +1658,7 @@ if (pathName === "/home" || pathName === "/home.html" || pathName === "/u" || pa
          displayName.classList.add("noteDisplay");
          firebase.database().ref("users/" + noteContent.whoSentIt).once("value", (snapshot) => {
             const fetchedUser = snapshot.val();
-            displayName.textContent = fetchedUser.display;
+            displayName.innerHTML = escapeAndEmoji(fetchedUser.display);
             displayName.href = `/u/${fetchedUser.username}`;
 
             const badges = document.createElement("span");
@@ -2421,7 +2447,7 @@ if (!pathName.startsWith("/auth/")) {
       const data = snapshot.val();
       if (data !== null) {
          document.getElementById(`katninyPfp`).src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2FG6GaJr8vPpeVdvenAntjOFYlbwr2%2F${data.pfp}?alt=media`;
-         document.getElementById(`katninyDisplay`).innerHTML = data.display + ` <i class="fa-solid fa-circle-check" style="color: var(--main-color);"></i> <i class="fa-solid fa-heart" style="color: var(--main-color);"></i>`;
+         document.getElementById(`katninyDisplay`).innerHTML = escapeAndEmoji(data.display) + ` <i class="fa-solid fa-circle-check" style="color: var(--main-color);"></i> <i class="fa-solid fa-heart" style="color: var(--main-color);"></i>`;
          document.getElementById(`followBtn-1`).href = `/u/${data.username}`;
          document.getElementById(`katninyUser-pronouns`).textContent = `@${data.username}`;
       }
@@ -2476,7 +2502,7 @@ if (pathName === "/u.html" || pathName === "/u" || pathName.startsWith("/u/")) {
                document.title = `${profileData.display} (@${profileData.username}) | TransSocial`;
                document.getElementById(`melissa`).style.display = "block";
                document.getElementById(`userImage-profile`).src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${profileExists.user}%2F${profileData.pfp}?alt=media`;
-               document.getElementById(`display-profile`).textContent = profileData.display;
+               document.getElementById(`display-profile`).innerHTML = escapeAndEmoji(profileData.display);
                const verifiedBadge = document.createElement("span");
                if (profileData.isVerified) {
                   verifiedBadge.innerHTML = `<i class="fa-solid fa-circle-check"></i>`;
@@ -3022,7 +3048,7 @@ if (pathName === "/note.html" || pathName === "/note" || pathName.startsWith("/u
                   document.getElementById(`melissa`).style.display = "block";
                   document.getElementById(`userImage-profile`).src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${noteData.whoSentIt}%2F${profileData.pfp}?alt=media`;
                   document.getElementById(`userImage-profile`).setAttribute("onclick", `window.location.href="/u/${profileData.username}"`);
-                  document.getElementById(`display-profile`).textContent = profileData.display;
+                  document.getElementById(`display-profile`).innerHTML = escapeAndEmoji(profileData.display);
                   document.getElementById(`display-profile`).setAttribute("onclick", `window.location.href="/u/${profileData.username}"`);
                   const verifiedBadge = document.createElement("span");
                   if (profileData.isVerified === true) {
@@ -7355,7 +7381,7 @@ if (pathName === "/search") {
                   displayName.classList.add("noteDisplay");
                   firebase.database().ref("users/" + noteContent.whoSentIt).once("value", (snapshot) => {
                      const fetchedUser = snapshot.val();
-                     displayName.textContent = fetchedUser.display;
+                     displayName.innerHTML = escapeAndEmoji(fetchedUser.display);
                      displayName.href = `/u/${fetchedUser.username}`;
 
                      const badges = document.createElement("span");
@@ -8199,3 +8225,37 @@ function serverTest() {
          console.error("not okay response :(", error);
       });
 }
+
+// aurora promotional
+firebase.auth().onAuthStateChanged((user) => {
+   if (user) {
+      firebase.database().ref(`users/${user.uid}/auroraPromo`).once("value", (snapshot) => {
+         const exists = snapshot.exists();
+         
+         if (!exists && pathName !== "/") {
+            const modal = document.createElement("dialog");
+            modal.innerHTML = 
+            `
+               <h1 style="display: flex; align-items: center; gap: 10px;"><img class="aurora auroraFloat" src="/assets/mascot/excited.png" draggable="false" /> Say hello!</h1>
+               <p style="margin-top: 5px;">Welcome Aurora, the newest member of the TransSocial family! Born December 24, 2024, she's now here and usable in your notes, bio and display name in the form of her own emojis!</p>
+               <p>We have a blog post with more information -> <a href="/blog/welcome-aurora">we recommend reading</a> (we also have a cheat sheet on how to use her emojis in this blog)!</p>
+            `
+            const dismiss = document.createElement("button");
+            dismiss.textContent = "Welcome Aurora!";
+            dismiss.onclick = () => {
+               modal.close();
+               firebase.database().ref(`users/${user.uid}/auroraPromo`).update({
+                  saw: true,
+               });
+               setTimeout(() => {
+                  modal.remove();
+               }, 500);
+            }
+
+            document.body.appendChild(modal);
+            modal.appendChild(dismiss);
+            modal.showModal();
+         }
+      });
+   }
+});

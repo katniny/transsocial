@@ -560,6 +560,14 @@ body {
    overflow-wrap: break-word;
 }
 
+.transsocialAccounts #katninyDisplay .emoji,
+.recommendedAccounts #user1Display .emoji {
+   height: 1em;
+   width: 1em;
+   margin: 0 .05em 0 .1em;
+   vertical-align: -0.1em;
+}
+
 .transsocialAccounts #katninyUser-pronouns,
 .recommendedAccounts #user1User-pronouns {
    float: left;
@@ -662,6 +670,13 @@ body {
    height: auto;
    float: left;
    margin-left: 5px;
+}
+
+#displayName-sidebar .emoji {
+   height: 1em;
+   width: 1em;
+   margin: 0 .05em 0 .1em;
+   vertical-align: -0.1em;
 }
 
 #username-pronouns-sidebar {
@@ -778,6 +793,13 @@ body {
    font-size: large;
    text-decoration: none;
    color: var(--text);
+}
+
+.note .noteDisplay .emoji {
+   height: 1em;
+   width: 1em;
+   margin: 0 .05em 0 .1em;
+   vertical-align: -0.1em;
 }
 
 .note .noteDisplay .noteBadges i {
@@ -3161,5 +3183,26 @@ small {
 @media (max-width: 1148px) {
    .xmasHat {
       transform: translate(40px, -35px);
+   }
+}
+
+/* aurora */
+.aurora {
+   width: 75px;
+}
+
+.aurora.auroraFloat {
+   animation: sheFloat 0.8s ease-in-out infinite;
+}
+
+@keyframes sheFloat {
+   0% {
+      transform: translateY(0px);
+   }
+   50% {
+      transform: translateY(-5px);
+   }
+   100% {
+      transform: translateY(0px);
    }
 }
