@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>API Test: fetch-user.js (PUBLIC)</title>
+   </head>
+   
+   <body>
+      <h1>Fetch User Data</h1>
+      <p>Allow either a username to fetch user data. A UID will be faster, but neither are truly slow, and usernames are easier to access.</p>
+      <p>^ Add username functionality tomorrow because it's currently just UID</p>
+      <form id="fetchUserForm">
+         <label for="userId">User ID:</label>
+         <input type="text" id="userId" value="G6GaJr8vPpeVdvenAntjOFYlbwr2" required />
+         <button type="submit">Fetch</button>
+      </form>
+
+      <div id="response">
+         <h2>Response:</h2>
+         <pre id="responseData"></pre>
+      </div>
+
+      <script>
+         // handle form submission
+         document.getElementById("fetchUserForm").addEventListener("submit", async function(event) {
+            event.preventDefault();
+            const userId = document.getElementById("userId").value;
+
+            try {
+               const response = await fetch(`http://127.0.0.1:5001/chat-transsocial-test/us-central1/fetchUser?id=${userId}`);
+
+               if (!response.ok) {
+                  throw new Error("Error: ", response.statusText);
+               }
+
+               const data = await response.json();
+
+               // display the user data or error message
+               document.getElementById("responseData").textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+               document.getElementById("responseData").textContent = `Failed to fetch data; ${error.message}`;
+            }
+         });
+      </script>
+   </body>
+</html>
