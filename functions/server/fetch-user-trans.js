@@ -4,6 +4,13 @@ const rateLimit = require("express-rate-limit");
 const cors = require("cors");
 const express = require("express");
 
+const isEmulator = process.env.FUNCTIONS_EMULATOR === "true";
+if (isEmulator) {
+   console.log("Running in an emulator environment.");
+} else {
+   console.log("Running in production.");
+}
+
 // init firebase admin if not already
 if (!admin.apps.length) {
    admin.initializeApp();
@@ -27,8 +34,17 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
-// allow only get requests
 app.use((req, res, next) => {
+   // only allow transs.social to access this data
+   const allowedDomain = "transs.social";
+   const requestHost = req.get("host");
+   const origin = req.headers["origin"];
+
+   if (requestHost && !requestHost.includes(allowedDomain) && origin && !origin.includes(allowedDomain)) {
+      //if (isEmulator && ) {}
+   }
+
+   // only allow GET requests
    if (req.method !== "GET") {
       return res.status(405).send({ error: "Method not allowed. Only GET requests are allowed." });
    }
@@ -65,26 +81,7 @@ app.get("/", async (req, res) => {
 
       const userData = snapshot.val();
 
-      // create an object to store only the specific fields
-      const filteredUserData = {
-         achievements: userData.achievements || {},
-         banner: `https://firebasestorage.googleapis.com/v0/b/chat-transsocial-test.appspot.com/o/images%2Fbanner%2F${user.val()}%2F${userData.banner}?alt=media` || null,
-         bio: userData.bio || null,
-         display: userData.display || null,
-         followers: userData.followers || 0,
-         following: userData.following || 0,
-         isSubscribed: userData.isSubscribed || false,
-         isVerified: userData.isVerified || false,
-         pfp: `https://firebasestorage.googleapis.com/v0/b/chat-transsocial-test.appspot.com/o/images%2Fpfp%2F${user.val()}%2F${userData.pfp}?alt=media` || null,
-         posts: userData.posts || {},
-         pronouns: userData.pronouns || null,
-         suspensionNotes: userData.suspensionNotes || {},
-         suspensionStatus: userData.suspensionStatus || null,
-         username: userData.username || null,
-         uid: user.val() || "Error occurred fetching UID",
-      };
-
-      return res.status(200).send(filteredUserData);
+      return res.status(200).send(userData);
    } catch (error) {
       console.error("Error fetching user: ", error);
       return res.status(500).send({ error: "Internal server error." });
