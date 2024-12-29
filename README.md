@@ -20,8 +20,8 @@ But until I decide to do that, please note:
 - To contribute to server-side code, you need a Firebase project with the Blaze Plan as Firebase Functions are unavailable otherwise. Otherwise, a Spark Plan project should suffice (but I haven't tested, please let me know if I'm wrong).
 - You need the Firebase CLI installed and connected to a project. You can install it with `npm i -g firebase-tools` (please don't replace our firebase.json, we use it to host!)
 - To test locally, run `firebase emulators:start`. The Firebase Functions will start as well testing hosting. This will ensure things run as you would see on our site. If you don't do this and attempt to visit a page (e.g. /u/katniny) and it doesn't work, don't complain about it to me. If you do that and it doesn't work, then I'll help. 
- - NOTE: When making changes to the client, you must MANUALLY refresh the page for your changes to take effect! When changing hosting settings or server-side code, you must Ctrl + C out and run `firebase emulators:start` again.
- - `firebase serve` might work too, but that's not what I use.
+   - NOTE: When making changes to the client, you must MANUALLY refresh the page for your changes to take effect (if your changes don't take effect, refresh without cache (Ctrl + Shift + R))! When changing hosting settings or server-side code, you may sometimes need to Ctrl + C out and run `firebase emulators:start` again.
+   - `firebase serve` might work too, I have not tested it though.
 
 <br />
 
