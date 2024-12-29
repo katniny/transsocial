@@ -8,11 +8,28 @@
    
    <body>
       <h1>Fetch User Data</h1>
-      <p>Allow either a username to fetch user data. A UID will be faster, but neither are truly slow, and usernames are easier to access.</p>
-      <p>^ Add username functionality tomorrow because it's currently just UID</p>
+      <p>Put in a username to fetch their public data.</p>
+      <p>~180ms per request (on average)</p>
       <form id="fetchUserForm">
-         <label for="userId">User ID:</label>
-         <input type="text" id="userId" value="G6GaJr8vPpeVdvenAntjOFYlbwr2" required />
+         <label for="userId">Username:</label>
+         <input type="text" id="userId" value="katniny" required />
+
+         <br />
+         <br />
+
+         <label for="httpMethod">HTTP Method:</label>
+         <select name="" id="httpMethod">
+            <option value="GET">GET</option>
+            <option value="POST">POST</option>
+            <option value="PUT">PUT</option>
+            <option value="DELETE">DELETE</option>
+         </select>
+
+         <br />
+         <br />
+
+         <textarea id="requestBody" placeholder="Optional request body (JSON)" rows="5" cols="30"></textarea>
+
          <button type="submit">Fetch</button>
       </form>
 
@@ -22,21 +39,36 @@
       </div>
 
       <script>
-         // handle form submission
-         document.getElementById("fetchUserForm").addEventListener("submit", async function(event) {
+         document.getElementById("fetchUserForm").addEventListener("submit", async function (event) {
             event.preventDefault();
+      
             const userId = document.getElementById("userId").value;
-
+            const httpMethod = document.getElementById("httpMethod").value;
+            const requestBody = document.getElementById("requestBody").value;
+      
+            const url = `http://127.0.0.1:5001/chat-transsocial-test/us-central1/fetchUser?id=${userId}`;
+      
+            const options = {
+               method: httpMethod,
+               headers: {
+                  "Content-Type": "application/json",
+               },
+            };
+      
+            // only add body if it's a method that supports it
+            if (httpMethod === "POST" || httpMethod === "PUT") {
+               options.body = requestBody ? requestBody : "{}";
+            }
+      
             try {
-               const response = await fetch(`http://127.0.0.1:5001/chat-transsocial-test/us-central1/fetchUser?id=${userId}`);
-
+               const response = await fetch(url, options);
+      
                if (!response.ok) {
-                  throw new Error("Error: ", response.statusText);
+                  throw new Error(`Error: ${response.statusText} (HTTP ${response.status})`);
                }
-
+      
                const data = await response.json();
-
-               // display the user data or error message
+      
                document.getElementById("responseData").textContent = JSON.stringify(data, null, 2);
             } catch (error) {
                document.getElementById("responseData").textContent = `Failed to fetch data; ${error.message}`;

@@ -27,24 +27,36 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
+// allow only get requests
+app.use((req, res, next) => {
+   if (req.method !== "GET") {
+      return res.status(405).send({ error: "Method not allowed. Only GET requests are allowed." });
+   }
+   next();
+});
+
 // define route
 app.get("/", async (req, res) => {
    try {
-      // get the uid from the query params
+      // get the username from the query params
       const userId = req.query.id;
       if (!userId) {
          return res.status(400).send({ 
-            error: "User ID is required. If you're unsure how to get UID, please visit https://dev.transs.social/docs/enable-dev-mode" 
+            error: "Username is required. If you attempted to use a UID, please use a username instead." 
          });
       }
 
-      // fetch user data from realtime db
-      const userRef = db.ref(`users/${userId}`);
-      const snapshot = await userRef.once("value");
+      // fetch user uid from realtime db
+      const userRef = db.ref(`taken-usernames/${userId}/user`);
+      const user = await userRef.once("value");
 
-      if (!snapshot.exists()) {
+      if (!user.exists()) {
          return res.status(404).send({ error: "User not found." });
       }
+
+      // fetch user uid from realtime db
+      const userDataRef = db.ref(`users/${user.val()}`);
+      const snapshot = await userDataRef.once("value");
 
       // send user data
       res.set("Access-Control-Allow-Origin", "*");
@@ -69,6 +81,7 @@ app.get("/", async (req, res) => {
          suspensionNotes: userData.suspensionNotes || {},
          suspensionStatus: userData.suspensionStatus || null,
          username: userData.username || null,
+         uid: user.val() || "Error occurred fetching UID",
       };
 
       return res.status(200).send(filteredUserData);
