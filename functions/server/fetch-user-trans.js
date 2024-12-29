@@ -23,17 +23,6 @@ const app = express();
 // apply cors
 app.use(cors({ origin: "*" }));
 
-// apply rate limit: max 100 reqs/hr per domain
-const limiter = rateLimit({
-   windowMs: 60 * 60 * 1000, // 1 hour
-   max: 100,
-   keyGenerator: (req) => req.headers["origin"] || req.ip,
-   message: {
-      error: "Too many requests, please try again later.",
-   },
-});
-app.use(limiter);
-
 app.use((req, res, next) => {
    // only allow transs.social to access this data
    const allowedDomain = "transs.social";
@@ -41,7 +30,12 @@ app.use((req, res, next) => {
    const origin = req.headers["origin"];
 
    if (requestHost && !requestHost.includes(allowedDomain) && origin && !origin.includes(allowedDomain)) {
-      //if (isEmulator && ) {}
+      console.log("Request from host: ", requestHost);
+      if (isEmulator && requestHost === "127.0.0.1:5001") {
+         console.log("Allowing request from emulator. If you're not authorized to be here, please report this as a vulnerability bug privately to @katniny on Discord.");
+      } else {
+         return res.status(405).send({ error: "You are not authorized to access this! Please do not try again." });
+      }
    }
 
    // only allow GET requests
@@ -89,4 +83,4 @@ app.get("/", async (req, res) => {
 });
 
 // export the express app wrapped in functions.https.onRequest
-exports.fetchUser = functions.https.onRequest(app);
+exports.fetchUserPriv = functions.https.onRequest(app);
