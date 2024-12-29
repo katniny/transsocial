@@ -32,4 +32,5 @@ TransSocial uses the <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/
 
 ## Thank you to everyone that's contributed to TransSocial
 A maintained version of this list can be found at https://transs.social/contributors
+
 For open source tools that TransSocial uses, please see: https://transs.social/opensource
