@@ -27,18 +27,19 @@ But until I decide to do that, please note:
 
 ## License
 
-Copyright (c) 2025 katniny. All rights reserved.
+Copyright (c) 2025 katniny and contributors. All rights reserved.
 
 Transsocial is licensed under CC NC-BY-SA 4.0: <https://creativecommons.org/licenses/by/4.0/>
 The license is also available in the LICENSE file in the root of this repository.
 
-katniny has full copyright of all contents of this repository barring the following exceptions:
-- assets/emojis:
-  Twemoji <https://github.com/twitter/twemoji>
-  Copyright 2019 Twitter, Inc and other contributors
+A full list of contributors can be found at <https://transs.social/contributors>
+
+The above copyright notice covers all contents of this repository barring the following exceptions:
+- assets/emojis:\
+  Twemoji <https://github.com/twitter/twemoji>\
+  Copyright 2019 Twitter, Inc and other contributors\
   Licensed under CC-BY 4.0: <https://creativecommons.org/licenses/by/4.0/>
 
 Further copyright related information can be found at <https://transs.social/opensource>
 
 ## Thank you to everyone that's contributed to TransSocial
-A maintained version of this list can be found at <https://transs.social/contributors>
