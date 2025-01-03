@@ -29,7 +29,7 @@ But until I decide to do that, please note:
 
 Copyright (c) 2025 katniny and contributors. All rights reserved.
 
-Transsocial is licensed under CC BY-NC-SA 4.0: <https://creativecommons.org/licenses/by-nc-sa/4.0/>\
+TransSocial is licensed under CC BY-NC-SA 4.0: <https://creativecommons.org/licenses/by-nc-sa/4.0/>\
 The license is also available in the [LICENSE](/LICENSE) file in the root of this repository.
 
 A full list of contributors can be found at <https://transs.social/contributors>
