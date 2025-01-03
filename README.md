@@ -26,11 +26,20 @@ But until I decide to do that, please note:
 <br />
 
 ## License
-TransSocial uses the <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> license. Please note you are bound to this license.
 
-<br />
+Copyright (c) 2025 katniny and contributors. All rights reserved.
 
-## Thank you to everyone that's contributed to TransSocial
-A maintained version of this list can be found at https://transs.social/contributors
+TransSocial is licensed under CC BY-NC-SA 4.0: <https://creativecommons.org/licenses/by-nc-sa/4.0/>\
+The license is also available in the [LICENSE](/LICENSE) file in the root of this repository.
 
-For open source tools that TransSocial uses, please see: https://transs.social/opensource
+A full list of contributors can be found at <https://transs.social/contributors>
+
+The above copyright notice covers all contents of this repository barring the following exceptions:
+- assets/emojis:\
+  Twemoji <https://github.com/twitter/twemoji>\
+  Copyright 2019 Twitter, Inc and other contributors\
+  Licensed under CC-BY 4.0: <https://creativecommons.org/licenses/by/4.0/>
+
+Further copyright related information can be found at <https://transs.social/opensource>
+
+## Thank you to everyone that's contributed to TransSocial!
