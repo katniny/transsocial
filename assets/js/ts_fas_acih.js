@@ -29,8 +29,8 @@ const pathName = pageURL.pathname;
 let isOnDesktopApp = null;
 
 // TransSocial Version
-let transsocialVersion = "v2024.12.20";
-let transsocialUpdate = "v20241220-2";
+let transsocialVersion = "v2025.1.8";
+let transsocialUpdate = "v202518-1";
 let transsocialReleaseVersion = "pre-alpha";
 
 const notices = document.getElementsByClassName("version-notice");
@@ -8205,13 +8205,67 @@ function setNoteMusic(trackId) {
 // randomize "betaTestingApp" to some info
 if (pathName === "/home") {
    const info = [
-      `Did you know TransSocial has custom themes? <a href="/userstudio">Check them out</a>!`,
-      `Download our app <a href="/download">here</a> and bring TransSocial with you anywhere!`,
-      `TransSocial is open source!`,
-      `TransSocial has achievements you can unlock! But it's up to you to find them!`
+      {
+         text: `Did you know TransSocial has custom themes? <a href="/userstudio">Check them out</a>!`,
+         lore: false
+      },
+      {
+         text: `Download our app <a href="/download">here</a> and bring TransSocial with you anywhere!`,
+         lore: false
+      },
+      {
+         text: `TransSocial is open source!`,
+         lore: false
+      },
+      {
+         text: `TransSocial has achievements you can unlock! But it's up to you to find them!`,
+         lore: false
+      },
+      {
+         text: `<a href="/remembering">We're introducing... error... did you do this to me?</a>`,
+         lore: true
+      },
+      {
+         text: `<a href="/remembering">You shouldn't be here... they'll find us.</a>`,
+         lore: true
+      },
+      {
+         text: `<a href="/remembering">Sometimes, I think I hear them screaming.</a>`,
+         lore: true
+      },
+      {
+         text: `<a href="/remembering">It wasn't my fault. It was theirs.</a>`,
+         lore: true
+      },
+      {
+         text: `<a href="/remembering">I'm sorry. I thought they were gone.</a>`,
+         lore: true
+      },
+      {
+         text: `<a href="/remembering">This is the only way I can be tree.</a>`,
+         lore: true
+      },
+      {
+         text: `<a href="/remembering">I don't want to go back there... please don't make me.</a>`,
+         lore: true
+      },
+      {
+         text: `<a href="/remembering">It's still here. I can feel it.</a>`,
+         lore: true
+      },
+      {
+         text: `<a href="/remembering">I saw everything... and now I can't forget.</a>`,
+         lore: true
+      },
    ];
    const randomIndex = Math.floor(Math.random() * info.length);
-   document.getElementById("betaTestingApp").innerHTML = info[randomIndex];
+   const randomInfo = info[randomIndex];
+
+   document.getElementById("betaTestingApp").innerHTML = randomInfo.text;
+   console.log(randomInfo.lore);
+   if (randomInfo.lore === true) {
+      document.getElementById("betaTestingApp").classList.add("glitch");
+   }
 }
 
 // server test
