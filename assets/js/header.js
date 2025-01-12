@@ -46,3 +46,12 @@ if (isSignedIn === true) {
       }
    });
 }
+
+// change header pfp
+if (isSignedIn === true) {
+   firebase.database().ref(`users/${firebase.auth().currentUser.uid}`).once("value").then((snapshot) => {
+      const info = snapshot.val();
+
+      document.getElementById("userPfp-header").src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${firebase.auth().currentUser.uid}%2F${info.pfp}?alt=media`;
+   });
+}

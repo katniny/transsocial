@@ -100,7 +100,7 @@ switch (pathName) {
       break;
 }
 
-// hide certain sidebar elements if signed out
+// hide/edit certain sidebar elements if signed out
 if (isSignedIn === false) {
    // sidebar buttons
    document.getElementById("notificationsSidebar").remove();
@@ -116,7 +116,19 @@ if (isSignedIn === false) {
    document.getElementById("displayName-sidebar").remove();
    document.getElementById("username-pronouns-sidebar").remove();
 } else if (isSignedIn === true) {
+   // hide "Log in to explore TransSocial!" message
    document.getElementById("notSignedIn").remove();
+
+   // change sidebar info
+   firebase.database().ref(`users/${firebase.auth().currentUser.uid}`).once("value").then((snapshot) => {
+      const info = snapshot.val();
+
+      document.getElementById("userPfp-sidebar").src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${firebase.auth().currentUser.uid}%2F${info.pfp}?alt=media`;
+      document.getElementById("displayName-sidebar").textContent = info.display;
+      document.getElementById("username-pronouns-sidebar").textContent = `@${info.username}`;
+
+      document.getElementById("linkToAcc").setAttribute("href", `/u/${info.username}`);
+   });
 }
 
 // show profile manager (sidebar) when profileContainer is clicked
