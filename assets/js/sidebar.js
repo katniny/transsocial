@@ -141,3 +141,22 @@ document.getElementById("profileContainer").addEventListener("click", () => {
       }
    }
 });
+
+// get notifications
+let unreadNotifications = null;
+
+firebase.auth().onAuthStateChanged((user) => {
+   if (user) {
+      firebase.database().ref(`users/${user.uid}/notifications/unread`).on("value", (snapshot) => {
+         unreadNotifications = snapshot.val();
+         if (unreadNotifications !== null && unreadNotifications !== 0) {
+            document.getElementById("notificationsCount").classList.add("show");
+            document.getElementById("notificationsCount").innerHTML = `${unreadNotifications}`;
+         } else {
+            if (document.getElementById("notificationsCount")) {
+               document.getElementById("notificationsCount").classList.remove("show");
+            }
+         }
+      })
+   }
+})
