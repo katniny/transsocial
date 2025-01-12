@@ -1,0 +1,34 @@
+name: Feature Request
+description: Got something you think could improve TransSocial?
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: "Don't forget to fill in a title!"
+  - type: textarea
+    id: describe
+    attributes:
+      label: Describe your feature
+      description: Do go into detail.
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: How would your feature improve TransSocial?
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Additional notes
+      description: Got anything else to say?
+  - type: checkboxes
+    id: misc
+    attributes:
+      label: Other
+      options:
+        - label: I will implement this feature myself
+        - label: I have searched for similar issues
+          required: true
