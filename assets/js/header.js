@@ -17,7 +17,7 @@ header.innerHTML = `
       <a href="/download"><button style="margin-right: 20px; transform: translateY(-23px);" id="headerGetApp">Get App</button> <a href="/notifications" id="notificationsHeader"><i class="fa-solid fa-bell fa-lg"></i></a> <a href="/achievements" id="achievementsHeader"><i class="fa-solid fa-trophy fa-lg" style="margin-right: 0px;"></i></a> <img src="" alt="Your profile picture" draggable="false" id="userPfp-header" />
    </div>
 
-   <div class="accountManager" id="accountManager" style="display: none;"
+   <div class="accountManager" id="accountManager" style="display: none;">
       <h3 id="greetingManager">Hello, {user}</h3>
       <a href="/settings"><button><i class="fa-solid fa-gear"></i> Settings</button></a>
       <a href="/achievements"><button><i class="fa-solid fa-award"></i> Achievements</button></a>
@@ -43,6 +43,7 @@ if (isSignedIn === true) {
          document.getElementById("accountManager").style.display = "none";
       } else {
          document.getElementById("accountManager").style.display = "block";
+         document.getElementById("greetingManager").textContent = `Hello, ${document.getElementById("displayName-sidebar").textContent}!`;
       }
    });
 }
