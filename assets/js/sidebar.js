@@ -115,15 +115,17 @@ if (isSignedIn === false) {
    document.getElementById("userPfp-sidebar").remove();
    document.getElementById("displayName-sidebar").remove();
    document.getElementById("username-pronouns-sidebar").remove();
+} else if (isSignedIn === true) {
+   document.getElementById("notSignedIn").remove();
 }
 
 // show profile manager (sidebar) when profileContainer is clicked
-if (isSignedIn === true) {
-   document.getElementById("profileContainer").addEventListener("click", () => {
+document.getElementById("profileContainer").addEventListener("click", () => {
+   if (isSignedIn === true) {
       if (document.getElementById("profile").style.display === "" || document.getElementById("profile").style.display === "block") {
          document.getElementById("profile").style.display = "none";
       } else {
          document.getElementById("profile").style.display = "block";
       }
-   });
-}
+   }
+});

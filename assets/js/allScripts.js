@@ -31,6 +31,7 @@ async function loadAllScripts() {
       await loadScript("/assets/js/getLoggedInUser.js", false);
       await loadScript("/assets/js/header.js", false);
       await loadScript("/assets/js/sidebar.js", false);
+      await loadScript("/assets/js/loadTheme.js", false);
       await loadScript("https://kit.fontawesome.com/be7c331826.js", false);
       await loadScript("https://js.stripe.com/v3/", false);
 

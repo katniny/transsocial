@@ -7,3 +7,4 @@
 - You can no longer open the sidebar's profile manager when signed out
 - The achievements and notifications buttons will no longer appear in the header when signed out
 - You can no longer open the header's profile manager when signed out
+- Added warning when opening developer console (outside of developer environments)
