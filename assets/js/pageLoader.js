@@ -3,8 +3,8 @@ loader.className = "loader";
 loader.setAttribute("id", "loader");
 loader.innerHTML = `
    <p style="position: fixed; left: 0; top: 0; color: var(--text-semi-transparent); transform: translateY(0px);">&copy; Katniny Studios 2025</p>
-   <p style="position: fixed; left: 0; top: 17px; color: var(--text-semi-transparent); transform: translateY(0px);">Uses Katniny Online Services</p>
-   <p style="position: fixed; left: 0; top: 35px; color: var(--text-semi-transparent); transform: translateY(0px);" class="loaderVersion">TransSocial v</p>
+   <p style="position: fixed; left: 0; top: 17px; color: var(--text-semi-transparent); transform: translateY(0px);">Part of Katniny Online Services</p>
+   <p style="position: fixed; left: 0; top: 35px; color: var(--text-semi-transparent); transform: translateY(0px);" class="loaderVersion" id="loaderVersion">TransSocial v</p>
    <img src="/assets/imgs/favicon.png" alt="TransSocial logo" draggable="false" />
    <p><strong>Did you know?</strong></p>
    <p id="loaderQuote" style="position: absolute; margin-top: 40px;"></p>
@@ -15,7 +15,7 @@ loader.innerHTML = `
    </div>
 `
 document.body.appendChild(loader);
-//document.getElementById("loaderVersion").textContent = `TransSocial v${}`;
+document.getElementById("loaderVersion").textContent = `TransSocial ${transsocialVersion}-${transsocialReleaseVersion}`;
 
 // Randomize quote
 const quotes = [

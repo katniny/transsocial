@@ -20,6 +20,7 @@ function loadScript(src, async) {
 
 async function loadAllScripts() {
    try {
+      await loadScript("/assets/js/versioning.js", false);
       await loadScript("/assets/js/pageLoader.js", false);
       await loadScript("https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js", false);
       await loadScript("https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js", false);
