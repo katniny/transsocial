@@ -15,6 +15,6 @@ const auth = firebase.auth();
 const database = firebase.database();
 const storage = firebase.storage();
 const storageRef = storage.ref();
-const timestamp = firebase.database.ServerValue.timestamp
+const timestamp = firebase.database.ServerValue.TIMESTAMP
 
 console.log("Firebase successfully initialized.");
