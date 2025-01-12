@@ -1,0 +1,4 @@
+# Since I won't really be able to just put "Rewrote TransSocial" in the update logs,
+# here's what I *can* put:
+
+- Changed "TransSocial not loading?" support link from Twitter/X to Bluesky
