@@ -1,23 +1,38 @@
 {
-  "functions": [
-    {
-      "source": "functions",
-      "codebase": "default",
-      "ignore": [
-        "node_modules",
-        ".git",
-        "firebase-debug.log",
-        "firebase-debug.*.log",
-        "*.local"
-      ]
-    }
-  ],
-  "hosting": {
-    "public": "/",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ]
-  }
-}
+   "functions": [
+     {
+       "source": "functions",
+       "codebase": "default",
+       "ignore": [
+         "node_modules",
+         ".git",
+         "firebase-debug.log",
+         "firebase-debug.*.log",
+         "*.local"
+       ]
+     }
+   ],
+   "hosting": {
+     "public": "/",
+     "ignore": [
+       "firebase.json",
+       "**/.*",
+       "**/node_modules/**"
+     ],
+     "cleanUrls": true,
+     "rewrites": [
+       {
+          "source": "/u/**",
+          "destination": "/u.html"
+       },
+       {
+          "source": "/note/**",
+          "destination": "/note.html"
+       },
+       {
+          "source": "/userstudio/**",
+          "destination": "/userstudio.html"
+       }
+     ]
+   }
+ }
