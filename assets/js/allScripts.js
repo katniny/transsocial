@@ -22,10 +22,13 @@ async function loadAllScripts() {
    try {
       await loadScript("/assets/js/versioning.js", false);
       await loadScript("/assets/js/pageLoader.js", false);
+      await loadScript("/assets/js/pathName.js", false);
       await loadScript("https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js", false);
       await loadScript("https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js", false);
       await loadScript("https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js", false);
       await loadScript("https://www.gstatic.com/firebasejs/8.6.8/firebase-storage.js", false);
+      await loadScript("/assets/js/firebase.js", false);
+      await loadScript("/assets/js/getLoggedInUser.js", false);
       await loadScript("/assets/js/header.js", false);
       await loadScript("/assets/js/sidebar.js", false);
       await loadScript("https://kit.fontawesome.com/be7c331826.js", false);

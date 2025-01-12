@@ -1,7 +1,11 @@
+let isSignedIn = null;
+
 firebase.auth().onAuthStateChanged((user) => {
    if (user) {
-      console.log("Signed in true.");
+      isSignedIn = true;
+      console.log(`Signed in: ${isSignedIn}`);
    } else {
-      console.log("Signed in false.");
+      isSignedIn = false;
+      console.log(`Signed in: ${isSignedIn}`);
    }
 });

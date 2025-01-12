@@ -1,4 +1,9 @@
-# Since I won't really be able to just put "Rewrote TransSocial" in the update logs,
-# here's what I *can* put:
+# Update logs
 
+- (Dev Env) Rewrote TransSocial to be more efficient, secure, and easier to work with
+   - (See CONTRIBUTING.md on GitHub)
 - Changed "TransSocial not loading?" support link from Twitter/X to Bluesky
+- Changed the Twitter button in the sidebar to Blueksy
+- You can no longer open the sidebar's profile manager when signed out
+- The achievements and notifications buttons will no longer appear in the header when signed out
+- You can no longer open the header's profile manager when signed out
