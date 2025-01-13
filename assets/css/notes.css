@@ -1,0 +1,40 @@
+/* notes container */
+.notes {
+   margin-left: 430px;
+   max-width: 50%;
+   transform: translateY(60px);
+}
+
+@media (max-width: 768px) {
+   .notes {
+      margin-left: 0px;
+      max-width: 100%;
+   }
+}
+
+/* version notice */
+.versionNotice {
+   text-align: center;
+   margin-top: 10px;
+   margin-bottom: 10px;
+}
+
+.versionNotice a {
+   color: var(--main-color);
+}
+
+.versionNotice a:hover {
+   color: var(--main-color-darker);
+   text-decoration: none;
+}
+
+/* glitch effect */
+.lore {
+   position: relative;
+   background-image: linear-gradient(to right, #CE1125, #a60000);
+   background-clip: text;
+   -webkit-background-clip: text;
+   color: transparent;
+   text-shadow: 0.05em 0 0 #00fffc, -0.03em -0.04em 0 #fc00ff, 0.025em 0.04em 0 #fffc00;
+   animation: glitch 325ms infinite;
+}

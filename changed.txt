@@ -8,3 +8,7 @@
 - The achievements and notifications buttons will no longer appear in the header when signed out
 - You can no longer open the header's profile manager when signed out
 - Added warning when opening developer console (outside of developer environments)
+- Added "Good late night!" greeting
+   - Complete list: "Good morning!", "Good afternoon!", "Good evening!", "Good late night!"
+- The notes below "Good ..., {username}" no longer apply animation when flagged as "lore"
+- Fixed a typo in the notes below "Good ..., {username}"
