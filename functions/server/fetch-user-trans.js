@@ -75,7 +75,10 @@ app.get("/", async (req, res) => {
 
       const userData = snapshot.val();
 
-      return res.status(200).send(userData);
+      return res.status(200).send({
+         uid: user.val(),
+         ...userData
+      });
    } catch (error) {
       console.error("Error fetching user: ", error);
       return res.status(500).send({ error: "Internal server error." });
