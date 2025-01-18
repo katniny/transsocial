@@ -39,6 +39,7 @@ async function loadAllScripts() {
       await loadScript("/assets/js/header.js", false);
       await loadScript("/assets/js/sidebar.js", false);
       await loadScript("/assets/js/transsocialAccounts.js", false);
+      await loadScript("/assets/js/policiesSide.js", false);
       await loadScript("/assets/js/signOut.js", false);
       await loadScript("/assets/js/loadTheme.js", false);
       await loadScript("https://kit.fontawesome.com/be7c331826.js", false);
