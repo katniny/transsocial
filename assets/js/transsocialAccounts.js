@@ -56,7 +56,6 @@ async function updateAccounts() {
    results.forEach((data, index) => {
       if (data) {
          const { username, pfp, display, uid } = data;
-         console.log(data);
 
          // update pfp
          const pfpElement = document.getElementById(users[index].pfpId);
