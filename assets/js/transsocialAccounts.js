@@ -2,15 +2,7 @@
 const accountCenter = document.createElement("div");
 accountCenter.className = "transsocialAccounts";
 
-// set the usernames of the 3 users that should displayed
-// WITHOUT the @, or the server will return a 404 as it tries
-// to find @{user} which doesnt exist, it exists as
-// just {user}
-const users = [
-   { username: "katniny", pfpId: "katninyPfp", displayId: "katninyDisplay", pronounsId: "katninyUser-pronouns" },
-   { username: "transsocial", pfpId: "transsocialPfp", displayId: "transsocialDisplay", pronounsId: "transsocialUser-pronouns" },
-   { username: "katninystudios", pfpId: "katninystudiosPfp", displayId: "katninystudiosDisplay", pronounsId: "katninystudiosUser-pronouns" }
-]
+import { users } from "./config.js";
 
 // set transsocialAccounts html
 accountCenter.innerHTML = `
