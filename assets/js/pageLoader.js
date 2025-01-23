@@ -1,5 +1,3 @@
-import { quotes } from "./config.js";
-
 const loader = document.createElement("div");
 loader.className = "loader";
 loader.setAttribute("id", "loader");

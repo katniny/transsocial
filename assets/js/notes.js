@@ -205,9 +205,7 @@ loadInitalNotes();
 
 // infinite loading
 window.addEventListener("scroll", () => {
-   console.log("scroll test");
    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 200) {
-      console.log("test");
       loadMoreNotes();
    }
 });

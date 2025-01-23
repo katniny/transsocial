@@ -2,8 +2,6 @@
 const accountCenter = document.createElement("div");
 accountCenter.className = "transsocialAccounts";
 
-import { users } from "./config.js";
-
 // set transsocialAccounts html
 accountCenter.innerHTML = `
    <h3>TransSocial Accounts</h3>

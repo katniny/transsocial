@@ -1,5 +1,3 @@
-import { info } from "config.js";
-
 // time
 const now = new Date();
 let hours = now.getHours();

@@ -1,5 +1,3 @@
-import { emojiMap } from "./config.js";
-
 function escapeHtml(str) {
    const div = document.createElement('div');
    div.textContent = str;
