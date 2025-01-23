@@ -1,3 +1,5 @@
+import { emojiMap } from "./config.js";
+
 function escapeHtml(str) {
    const div = document.createElement('div');
    div.textContent = str;
@@ -46,17 +48,6 @@ function markdownify(text) {
 }
 
 function emojify(text) {
-   const emojiMap = {
-      "concerned": "/assets/mascot/concerned.png",
-      "excited": "/assets/mascot/excited.png",
-      "love": "/assets/mascot/love.png",
-      "peace": "/assets/mascot/peace.png",
-      "smug": "/assets/mascot/smug.png",
-      "tired": "/assets/mascot/tired.png",
-      "violence": "/assets/mascot/violence.png",
-      "yelling": "/assets/mascot/yelling.png",
-   }
-
    for (const [phrase, imageUrl] of Object.entries(emojiMap)) {
       const regex = new RegExp(`\\[${phrase}\\]`, "g");
       text = text.replace(regex, `<img src="${imageUrl}" alt=${phrase} class="emoji aurora" draggable="false" />`);
