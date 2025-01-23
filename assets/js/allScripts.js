@@ -36,7 +36,11 @@ async function loadAllScripts() {
       // continue
       await loadScript("/assets/js/versioning.js", false);
       await loadScript("/assets/js/pageLoader.js", false);
+      
+      // then wait for pathname, which is really quick so its fine
       await loadScript("/assets/js/pathName.js", false);
+      await pathNameResolved;
+
       await loadScript("/assets/js/header.js", false);
       await loadScript("/assets/js/sidebar.js", false);
       await loadScript("/assets/js/transsocialAccounts.js", false);
