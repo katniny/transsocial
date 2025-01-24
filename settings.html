@@ -83,7 +83,7 @@
          <a href="/notifications" id="notificationsSidebar"><button><i class="fa-solid fa-bell"></i> Notifications</button></a> <a href="/notifications"><p id="notificationsCount">0</p></a>
          <a href="/search"><button><i class="fa-solid fa-magnifying-glass"></i> Explore</button></a>
          <a href="/messages" id="messagesSidebar"><button><i class="fa-solid fa-envelope"></i> Messages (0)</button></a>
-         <a href="/settings?tab=subscription" id="enchantedSidebar"><button><i class="fa-solid fa-heart"></i> Get Katniny+</button></a>
+         <a href="/settings?tab=subscription" id="enchantedSidebar"><button><i class="fa-solid fa-heart"></i> Donate</button></a>
          <a href="/updates"><button id="updatesBtn"><i class="fa-solid fa-wrench"></i> Updates</button></a>
          <a href="/u" id="linkToAcc"><button><i class="fa-solid fa-user"></i> Your Profile</button></a>
          <a href="javascript:void(0);"><button id="showMoreContent"><i class="fa-solid fa-ellipsis"></i> More</button></a>
@@ -147,7 +147,7 @@
                 <div class="blogStyle" style="margin: 15px;">
                     <h1>Settings</h1>
                     <!-- Tabs -->
-                    <div class="settingsTabs"><a href="javascript:void(0);" id="profileTab" onclick="profileTab()" class="active">Profile</a> <a href="javascript:void(1);" id="accountTab" onclick="accountTab()">Account</a> <a href="javascript:void(2);" id="personalizationTab" onclick="personalizationTab()">Personalization</a> <a href="javascript:void(3);" id="subscriptionTab" onclick="subscriptionTab()">Subscription</a> <a href="javascript:void(4);" id="environmentTab" onclick="environmentTab()">Environment</a> <a href="/remembering" id="unknownTab" onclick="unknownTab()">Remembering</a></div>
+                    <div class="settingsTabs"><a href="javascript:void(0);" id="profileTab" onclick="profileTab()" class="active">Profile</a> <a href="javascript:void(1);" id="accountTab" onclick="accountTab()">Account</a> <a href="javascript:void(2);" id="personalizationTab" onclick="personalizationTab()">Personalization</a> <a href="javascript:void(3);" id="subscriptionTab" onclick="subscriptionTab()">Donate</a> <a href="javascript:void(4);" id="environmentTab" onclick="environmentTab()">Environment</a> <a href="/remembering" id="unknownTab" onclick="unknownTab()">Remembering</a></div>
 
                     <!-- Tab #1 (Profile) -->
                     <br />
@@ -319,40 +319,20 @@
                 <!-- Tab #4 (Subscription) -->
                 <div id="profileTab-subscription" style="display: none;">
                     <h2>Subscription</h2>
-                    <p style="color: var(--text-semi-transparent); font-size: 14.5px;">Help us keep the lights on! We now offer subscription benefits! Note that payment is powered and securely processed by Stripe, and your payment details are never saved in TransSocial's database. We appreciate your support! :D</p>
+                    <p style="color: var(--text-semi-transparent); font-size: 14.5px;">Help us keep the lights on! Note that payment is powered and securely processed by Donorbox, and your payment details are never saved in TransSocial's database. We appreciate your support! :D</p>
 
                      <br />
 
-                     <!-- Fetching -->
-                     <div id="fetchingSubscriptionStatus">
-                        <p><i class="fa-solid fa-circle-notch fa-spin"></i> We're fetching your subscription data...</p>
-                     </div>
-
                      <!-- Inactive -->
-                     <div id="subscribe" style="display: none;">
-                        <h3>Get Katniny+ for $4.99USD/month!</h3>
-                        <p style="font-size: 13px; color: var(--text-semi-transparent);">+plus applicable tax. Price is in United States Dollars and may differ depending on your location.</p>
+                     <div id="subscribe">
+                        <h3>Donate to TransSocial</h3>
+                        <p style="font-size: 13px; color: var(--text-semi-transparent);">Payments are handled securely by Donorbox. We only accept PayPal at the moment.</p>
 
                         <br />
 
                         <form id="subscription-form">
-                           <div id="card-element"></div>
-                           <div id="card-errors" role="alert" style="color: var(--error-text); font-size: 14px;"></div>
-                           <br />
-                           <button id="submitSubBtn">Subscribe</button>
+                           
                         </form>
-
-                        <br />
-
-                        <h3>Why subscribe?</h3>
-                        <p>Get exclusive benefits such as,</p>
-                        <ul>
-                           <li>Upload files up to 35MB</li>
-                           <!--<li>Set a custom background on your profile</li> (TO:DO)-->
-                           <li>Set a .gif file as your profile picture</li>
-                           <li>Get a special badge on your profile!</li>
-                        </ul>
-                        <p>and more benefits coming soon!</p>
                      </div>
 
                      <!-- Active -->
