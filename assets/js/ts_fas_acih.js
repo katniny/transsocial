@@ -1760,23 +1760,15 @@ if (pathName === "/home" || pathName === "/home.html" || pathName === "/u" || pa
 
          // if the note has a song, embed it into the note
          if (noteContent.music) {
-            // const embed = document.createElement("iframe");
-            // embed.src = `https://open.spotify.com/embed/track/${noteContent.music}`;
-            // embed.width = "98%";
-            // embed.height = "100";
-            // embed.frameBorder = "0";
-            // embed.allowTransparency = "true";
-            // embed.allow = "encrypted-media";
+            const embed = document.createElement("iframe");
+            embed.src = `https://open.spotify.com/embed/track/${noteContent.music}`;
+            embed.width = "98%";
+            embed.height = "100";
+            embed.frameBorder = "0";
+            embed.allowTransparency = "true";
+            embed.allow = "encrypted-media";
 
-            // noteDiv.appendChild(embed);
-
-            const blocked = document.createElement("p");
-            blocked.style.fontSize = "smaller";
-            blocked.style.color = "var(--text-semi-transparent)";
-            blocked.innerHTML = `<i class="fa-solid fa-circle-exclamation" style="color: var(--text-semi-transparent)"></i> There's supposed to be a song here. However, we found Spotify to be tracking users without your express consent. Until we can find a way to battle these trackers, Spotify is not available on notes or to search. We apologize for the inconvenience and we hope to bring it back soon.`;
-            blocked.style.marginLeft = "10px";
-            blocked.style.marginRight = "10px";
-            noteDiv.appendChild(blocked);
+            noteDiv.appendChild(embed);
          }
 
          // If quoting a note, display the note that the note is quoting
@@ -7491,23 +7483,15 @@ if (pathName === "/search") {
 
                   // if the note has a song, embed it into the note
                   if (noteContent.music) {
-                     // const embed = document.createElement("iframe");
-                     // embed.src = `https://open.spotify.com/embed/track/${noteContent.music}`;
-                     // embed.width = "98%";
-                     // embed.height = "100";
-                     // embed.frameBorder = "0";
-                     // embed.allowTransparency = "true";
-                     // embed.allow = "encrypted-media";
+                     const embed = document.createElement("iframe");
+                     embed.src = `https://open.spotify.com/embed/track/${noteContent.music}`;
+                     embed.width = "98%";
+                     embed.height = "100";
+                     embed.frameBorder = "0";
+                     embed.allowTransparency = "true";
+                     embed.allow = "encrypted-media";
 
-                     // noteDiv.appendChild(embed);
-
-                     const blocked = document.createElement("p");
-                     blocked.style.fontSize = "smaller";
-                     blocked.style.color = "var(--text-semi-transparent)";
-                     blocked.innerHTML = `<i class="fa-solid fa-circle-exclamation" style="color: var(--text-semi-transparent)"></i> There's supposed to be a song here. However, we found Spotify to be tracking users without your express consent. Until we can find a way to battle these trackers, Spotify is not available on notes or to search. We apologize for the inconvenience and we hope to bring it back soon.`;
-                     blocked.style.marginLeft = "10px";
-                     blocked.style.marginRight = "10px";
-                     noteDiv.appendChild(blocked);
+                     noteDiv.appendChild(embed);
                   }
 
                   // If quoting a note, display the note that the note is quoting
@@ -8187,30 +8171,24 @@ async function displayTracks(query) {
    resultsContainer.innerHTML = "";
 
    if (tracks.length > 0) {
-      const blocked = document.createElement("p");
-      blocked.textContent = "We found Spotify to be tracking users without your express consent without violates your rights as stated in our Privacy Policy. Until we find a way to battle these trackers, Spotify is temporarily disabled. We apologize for the inconvenience.";
-      resultsContainer.appendChild(blocked);
-
       tracks.forEach(track => {
-         // // create iframe to embed song
-         // const embed = document.createElement("iframe");
-         // embed.src = `https://open.spotify.com/embed/track/${track.id}`;
-         // embed.width = "100%";
-         // embed.height = "100";
-         // embed.frameBorder = "0";
-         // embed.allowTransparency = "true";
-         // embed.allow = "encrypted-media";
+         // create iframe to embed song
+         const embed = document.createElement("iframe");
+         embed.src = `https://open.spotify.com/embed/track/${track.id}`;
+         embed.width = "100%";
+         embed.height = "100";
+         embed.frameBorder = "0";
+         embed.allowTransparency = "true";
+         embed.allow = "encrypted-media";
 
-         // // allow users to add the song to their note
-         // const addToNote = document.createElement("button");
-         // addToNote.textContent = `Add ${track.name} by ${track.artists[0].name}`;
-         // addToNote.className = "addToNote";
-         // addToNote.setAttribute("onclick", `setNoteMusic("${track.id}")`);//
+         // allow users to add the song to their note
+         const addToNote = document.createElement("button");
+         addToNote.textContent = `Add ${track.name} by ${track.artists[0].name}`;
+         addToNote.className = "addToNote";
+         addToNote.setAttribute("onclick", `setNoteMusic("${track.id}")`);//
 
-         // resultsContainer.appendChild(embed);
-         // resultsContainer.appendChild(addToNote);
-
-         
+         resultsContainer.appendChild(embed);
+         resultsContainer.appendChild(addToNote);
       });
    } else {
       resultsContainer.innerHTML = "No results found.";
