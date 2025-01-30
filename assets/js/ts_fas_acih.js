@@ -29,8 +29,8 @@ const pathName = pageURL.pathname;
 let isOnDesktopApp = null;
 
 // TransSocial Version
-let transsocialVersion = "v2025.1.29";
-let transsocialUpdate = "v2025129-1";
+let transsocialVersion = "v2025.1.30";
+let transsocialUpdate = "v2025130-1";
 let transsocialReleaseVersion = "pre-alpha";
 
 const notices = document.getElementsByClassName("version-notice");
@@ -395,7 +395,7 @@ firebase.auth().onAuthStateChanged((user) => {
          unreadNotifications = snapshot.val();
          if (unreadNotifications !== null && unreadNotifications !== 0) {
             document.getElementById("notificationsCount").classList.add("show");
-            document.getElementById("notificationsCount").innerHTML = `${unreadNotifications}`;
+            document.getElementById("notificationsCount").textContent = `${unreadNotifications}`;
          } else {
             if (document.getElementById("notificationsCount")) {
                document.getElementById("notificationsCount").classList.remove("show");
@@ -474,8 +474,6 @@ if (pathName === "/auth/register" || pathName === "/auth/register.html") {
          } else {
             window.location.replace(`/auth/policies?return_to=${urlParam}`);
          }
-      } else {
-         // no need to do anything
       }
    })
 }
@@ -1103,7 +1101,7 @@ function profileCard() {
             .then(function (snapshot) {
                const username = snapshot.val();
 
-               userUsername.innerHTML = `@${username}`;
+               userUsername.textContent = `@${username}`;
             })
 
          // Display user pronouns
@@ -1113,7 +1111,7 @@ function profileCard() {
             .then(function (snapshot) {
                const pronouns = snapshot.val();
 
-               userPronouns.innerHTML = pronouns;
+               userPronouns.textContent = pronouns;
 
                if (pronouns === '') {
                   userDisplay.style.marginTop = "8px";
@@ -1703,7 +1701,7 @@ if (pathName === "/home" || pathName === "/home.html" || pathName === "/u" || pa
          text.innerHTML = sanitizeAndLinkify(noteContent.text)
          text.classList.add("noteText");
          if (noteContent.replyingTo === undefined) {
-            text.addEventListener("onclick", () => window.location.href = `/note/${noteContent.id}`);
+            text.addEventListener("click", () => window.location.href = `/note/${noteContent.id}`);
          }
          text.querySelectorAll('a').forEach(link => {
             link.addEventListener('click', (event) => {
@@ -1775,7 +1773,7 @@ if (pathName === "/home" || pathName === "/home.html" || pathName === "/u" || pa
          if (noteContent.quoting) {
             const container = document.createElement("div");
             container.classList.add("quoteContainer");
-            container.addEventListener("onclick", () => window.location.replace(`/note/${noteContent.quoting}`));
+            container.addEventListener("click", () => window.location.replace(`/note/${noteContent.quoting}`));
             noteDiv.appendChild(container);
 
             firebase.database().ref(`notes/${noteContent.quoting}`).once("value", (snapshot) => {
@@ -1954,7 +1952,7 @@ if (pathName === "/home" || pathName === "/home.html" || pathName === "/u" || pa
             replyBtn.innerHTML = `<i class="fa-solid fa-comment"></i> 0`;
          }
          if (pathName !== "/note" && !pathName.startsWith("/note/")) {
-            replyBtn.addEventListener("onclick", () => window.location.href = `/note/${noteContent.id}`);
+            replyBtn.addEventListener("click", () => window.location.href = `/note/${noteContent.id}`);
          } else {
             replyBtn.setAttribute("onclick", "replyToNote(this);");
          }
@@ -1964,14 +1962,14 @@ if (pathName === "/home" || pathName === "/home.html" || pathName === "/u" || pa
          const quoteRenote = document.createElement("p");
          quoteRenote.classList.add("quoteRenoteBtn");
          quoteRenote.innerHTML = `<i class="fa-solid fa-quote-left"></i>`;
-         quoteRenote.addEventListener("onclick", () => quoteRenote(`${noteContent.id}`));
+         quoteRenote.addEventListener("click", () => quoteRenote(`${noteContent.id}`));
          buttonRow.appendChild(quoteRenote);
 
          // Add favorite button
          const favorite = document.createElement("p");
          favorite.classList.add("quoteRenoteBtn"); // eh. just reuse a class tbh
          favorite.innerHTML = `<i class="fa-solid fa-bookmark fa-xs" id="favorite-${noteContent.id}"></i>`; // apply the id to the favorites button or it will not change colors
-         favorite.addEventListener("onclick", () => favorite(`${noteContent.id}`));
+         favorite.addEventListener("click", () => favorite(`${noteContent.id}`));
          firebase.auth().onAuthStateChanged((user) => {
             if (user) {
                firebase.database().ref(`users/${user.uid}/favorites/${noteContent.id}`).once("value", (snapshot) => {
@@ -2613,7 +2611,7 @@ if (pathName === "/u.html" || pathName === "/u" || pathName.startsWith("/u/")) {
             firebase.auth().onAuthStateChanged((user) => {
                if (user.uid === profileExists.user) {
                   document.getElementById("followButton").textContent = "Edit Profile";
-                  document.getElementById("followButton").addEventListener("onclick", () => window.location.href = "/settings");
+                  document.getElementById("followButton").addEventListener("click", () => window.location.href = "/settings");
                } else {
                   const currentUserUid = user.uid;
                   const profileUserUid = profileExists.user;
@@ -2972,7 +2970,7 @@ if (pathName === "/note.html" || pathName === "/note" || pathName.startsWith("/u
             document.getElementById("melissa").style.display = "block";
             document.getElementById("noteNotFound").style.display = "none";
 
-            document.getElementById("quoteRenoteButton").addEventListener("onclick", () => quoteRenote(`${noteData.id}`));
+            document.getElementById("quoteRenoteButton").addEventListener("click", () => quoteRenote(`${noteData.id}`));
             if (noteData.quoting) {
                firebase.database().ref(`notes/${noteData.quoting}`).once("value", (snapshot) => {
                   const quoteData = snapshot.val();
@@ -3000,10 +2998,10 @@ if (pathName === "/note.html" || pathName === "/note" || pathName.startsWith("/u
                            document.getElementById("noteQuoteDisplay").textContent = "User Unavailable";
                            document.getElementById("noteQuoteUsername").textContent = `User Unavailable`;
                            document.getElementById("noteQuoteText").innerHTML = sanitizeAndLinkify(quoteData.text);
-                           document.getElementById("noteQuoteText").innerHTML = `@${quoteUser.username} is suspended, and notes by this user cannot be viewed.`;
+                           document.getElementById("noteQuoteText").textContent = `@${quoteUser.username} is suspended, and notes by this user cannot be viewed.`;
                         }
 
-                        document.getElementById("quotingNote_note").addEventListener("onclick", () => window.location.href = `/note/${quoteData.id}`);
+                        document.getElementById("quotingNote_note").addEventListener("click", () => window.location.href = `/note/${quoteData.id}`);
                      })
                   } else {
                      document.getElementById("noteQuotePfp").src = `/assets/imgs/defaultPfp.png`;
@@ -3025,7 +3023,7 @@ if (pathName === "/note.html" || pathName === "/note" || pathName.startsWith("/u
 
             // check for favorites
             // also make the favorite button do smth
-            document.getElementById("favoriteButton").addEventListener("onclick", () => favoriteNoteView(`${noteData.id}`));
+            document.getElementById("favoriteButton").addEventListener("click", () => favoriteNoteView(`${noteData.id}`));
 
             firebase.auth().onAuthStateChanged((user) => {
                if (user) {
@@ -3047,9 +3045,9 @@ if (pathName === "/note.html" || pathName === "/note" || pathName.startsWith("/u
                   }
                   document.getElementById(`melissa`).style.display = "block";
                   document.getElementById(`userImage-profile`).src = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${noteData.whoSentIt}%2F${profileData.pfp}?alt=media`;
-                  document.getElementById(`userImage-profile`).addEventListener("onclick", () => window.location.href = `/u/${profileData.username}`);
+                  document.getElementById(`userImage-profile`).addEventListener("click", () => window.location.href = `/u/${profileData.username}`);
                   document.getElementById(`display-profile`).innerHTML = escapeAndEmoji(profileData.display);
-                  document.getElementById(`display-profile`).addEventListener("onclick", () => window.location.href = `/u/${profileData.username}`);
+                  document.getElementById(`display-profile`).addEventListener("click", () => window.location.href = `/u/${profileData.username}`);
                   const verifiedBadge = document.createElement("span");
                   if (profileData.isVerified === true) {
                      verifiedBadge.innerHTML = `<i class="fa-solid fa-circle-check fa-sm"></i>`;
@@ -3064,12 +3062,12 @@ if (pathName === "/note.html" || pathName === "/note" || pathName.startsWith("/u
                   }
                   document.getElementById("display-profile").appendChild(verifiedBadge);
                   document.getElementById(`username-profile`).textContent = `@${profileData.username}`;
-                  document.getElementById(`username-profile`).addEventListener("onclick", () => window.location.href = `/u/${profileData.username}`);
+                  document.getElementById(`username-profile`).addEventListener("click", () => window.location.href = `/u/${profileData.username}`);
                   if (profileData.pronouns === undefined || profileData.pronouns === null || profileData.pronouns === "") {
                      document.getElementById(`pronouns-profile`).remove();
                   } else {
                      document.getElementById(`pronouns-profile`).textContent = profileData.pronouns;
-                     document.getElementById(`pronouns-profile`).addEventListener("onclick", () => window.location.href = `/u/${profileData.username}`);
+                     document.getElementById(`pronouns-profile`).addEventListener("click", () => window.location.href = `/u/${profileData.username}`);
                   }
 
                   document.getElementById("noteContent").innerHTML = sanitizeAndLinkify(noteData.text);
@@ -4967,10 +4965,10 @@ if (pathName === "/notifications" || pathName === "/notifications.html") {
                         const user = snapshot.exists() ? snapshot.val() : fakeUserData;
 
                         newNotificationDiv.innerHTML = `<i class="fa-solid fa-user-plus fa-lg" style="color: var(--main-color);"></i> <img class="notificationPfp" draggable=false src="https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${notification.who}%2F${user.pfp}?alt=media" /> @${user.username} followed you!`;
-                        newNotificationDiv.addEventListener("onclick", () => window.location.href = `/u/${user.username}`);
+                        newNotificationDiv.addEventListener("click", () => window.location.href = `/u/${user.username}`);
                      })
                   } else if (notification.type === "Reply") {
-                     newNotificationDiv.addEventListener("onclick", () => window.location.href = `/note/${notification.postId}`);
+                     newNotificationDiv.addEventListener("click", () => window.location.href = `/note/${notification.postId}`);
 
                      firebase.database().ref(`users/${notification.who}`).on("value", (snapshot) => {
                         const user = snapshot.exists() ? snapshot.val() : fakeUserData;
@@ -4978,7 +4976,7 @@ if (pathName === "/notifications" || pathName === "/notifications.html") {
                         newNotificationDiv.innerHTML = `<i class="fa-solid fa-comment fa-lg" style="color: var(--main-color);"></i> <img class="notificationPfp" draggable=false src="https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${notification.who}%2F${user.pfp}?alt=media" /> @${user.username} replied to your note!`;
                      })
                   } else if (notification.type === "Love") {
-                     newNotificationDiv.addEventListener("onclick", () => window.location.href = `/note/${notification.postId}`);
+                     newNotificationDiv.addEventListener("click", () => window.location.href = `/note/${notification.postId}`);
 
                      firebase.database().ref(`users/${notification.who}`).on("value", (snapshot) => {
                         const user = snapshot.exists() ? snapshot.val() : fakeUserData;
@@ -4986,7 +4984,7 @@ if (pathName === "/notifications" || pathName === "/notifications.html") {
                         newNotificationDiv.innerHTML = `<i class="fa-solid fa-heart fa-lg" style="color: var(--like-color);"></i> <img class="notificationPfp" draggable=false src="https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${notification.who}%2F${user.pfp}?alt=media" /> @${user.username} loved your note!`;
                      })
                   } else if (notification.type === "Renote") {
-                     newNotificationDiv.addEventListener("onclick", () => window.location.href = `/note/${notification.postId}`);
+                     newNotificationDiv.addEventListener("click", () => window.location.href = `/note/${notification.postId}`);
 
                      firebase.database().ref(`users/${notification.who}`).on("value", (snapshot) => {
                         const user = snapshot.exists() ? snapshot.val() : fakeUserData;
@@ -4994,7 +4992,7 @@ if (pathName === "/notifications" || pathName === "/notifications.html") {
                         newNotificationDiv.innerHTML = `<i class="fa-solid fa-retweet fa-lg" style="color: var(--renote-color);"></i> <img class="notificationPfp" draggable=false src="https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/images%2Fpfp%2F${notification.who}%2F${user.pfp}?alt=media" /> @${user.username} renoted your note!`;
                      })
                   } else if (notification.type === "Mention") {
-                     newNotificationDiv.addEventListener("onclick", () => window.location.href = `/note/${notification.postId}`);
+                     newNotificationDiv.addEventListener("click", () => window.location.href = `/note/${notification.postId}`);
 
                      firebase.database().ref(`users/${notification.who}`).on("value", (snapshot) => {
                         const user = snapshot.exists() ? snapshot.val() : fakeUserData;
@@ -5678,7 +5676,7 @@ if (pathName === "/download") {
       document.getElementById("downloadButton").style.display = "none";
       document.getElementById("systemRequirement").textContent = "Unavailable for Windows Phone.";
    } else if (/win/i.test(userAgent)) {
-      document.getElementById("downloadButton").addEventListener("onclick", () => window.location.href='/assets/releases/windows/ts_installer.msi');
+      document.getElementById("downloadButton").addEventListener("click", () => window.location.href='/assets/releases/windows/ts_installer.msi');
       document.getElementById("downloadButton").textContent = "Get TransSocial for Windows";
       document.getElementById("systemRequirement").textContent = "Requires Windows 8 or later.";
       // macOS    
@@ -5691,7 +5689,7 @@ if (pathName === "/download") {
       document.getElementById("systemRequirement").textContent = "Unavailable for iOS at this time.";
       // Android
    } else if (/android/i.test(userAgent)) {
-      document.getElementById("downloadButton").addEventListener("onclick", () => window.location.href = '/assets/releases/android/app-release.apk');
+      document.getElementById("downloadButton").addEventListener("click", () => window.location.href = '/assets/releases/android/app-release.apk');
       document.getElementById("downloadButton").textContent = "Get TransSocial for Windows";
       document.getElementById("systemRequirement").textContent = "Requires Android 6 or later.";
       // Linux
@@ -6765,7 +6763,7 @@ if (pathName === "/userstudio" || pathName.startsWith("/userstudio/")) {
             themeDiv.appendChild(title);
             themeDiv.appendChild(desc);
             themeDiv.appendChild(creator);
-            themeDiv.addEventListener("onclick", () => window.location.replace(`/userstudio/${themeKey}`));
+            themeDiv.addEventListener("click", () => window.location.replace(`/userstudio/${themeKey}`));
             
             // append the theme to the entire page
             if (themeData.canAppearOnStore !== "false") {
@@ -6806,7 +6804,7 @@ if (pathName === "/userstudio" || pathName.startsWith("/userstudio/")) {
             });
 
             // allow the user to get the theme
-            document.getElementById("installTheme").addEventListener("onclick", () => installTheme(`${snapshot.key}`));
+            document.getElementById("installTheme").addEventListener("click", () => installTheme(`${snapshot.key}`));
          }
       });
    }
@@ -7168,7 +7166,7 @@ if (pathName === "/search") {
                      // show them
                      const container = document.createElement("div");
                      container.classList.add("note"); // yep
-                     container.addEventListener("onclick", () => window.location.href = `/u/${userData.username}`);
+                     container.addEventListener("click", () => window.location.href = `/u/${userData.username}`);
 
                      const pfp = document.createElement("img");
                      pfp.classList.add("notePfp");
@@ -7222,7 +7220,7 @@ if (pathName === "/search") {
                   // create note div 
                   const noteDiv = document.createElement("div");
                   noteDiv.classList.add("note");
-                  noteDiv.addEventListener("onclick", () => window.location.replace(`/note/${noteContent.id}`));
+                  noteDiv.addEventListener("click", () => window.location.replace(`/note/${noteContent.id}`));
                   
                   // check nsfw/sensitive/political status
                   if (noteContent.isNsfw === true) {
@@ -7426,7 +7424,7 @@ if (pathName === "/search") {
                   text.innerHTML = sanitizeAndLinkify(noteContent.text)
                   text.classList.add("noteText");
                   if (noteContent.replyingTo === undefined) {
-                     text.addEventListener("onclick", () => window.location.href = `/note/${noteContent.id}` );
+                     text.addEventListener("click", () => window.location.href = `/note/${noteContent.id}` );
                   }
                   text.querySelectorAll('a').forEach(link => {
                      link.addEventListener('click', (event) => {
@@ -7498,7 +7496,7 @@ if (pathName === "/search") {
                   if (noteContent.quoting) {
                      const container = document.createElement("div");
                      container.classList.add("quoteContainer");
-                     container.addEventListener("onclick", () => window.location.replace(`/note/${noteContent.quoting}`));
+                     container.addEventListener("click", () => window.location.replace(`/note/${noteContent.quoting}`));
                      noteDiv.appendChild(container);
       
                      firebase.database().ref(`notes/${noteContent.quoting}`).once("value", (snapshot) => {
@@ -7673,7 +7671,7 @@ if (pathName === "/search") {
                      replyBtn.innerHTML = `<i class="fa-solid fa-comment"></i> 0`;
                   }
                   if (pathName !== "/note" && !pathName.startsWith("/note/")) {
-                     replyBtn.addEventListener("onclick", () => window.location.href=`/note/${noteContent.id}`);
+                     replyBtn.addEventListener("click", () => window.location.href=`/note/${noteContent.id}`);
                   } else {
                      replyBtn.setAttribute("onclick", "replyToNote(this);");
                   }
@@ -7683,14 +7681,14 @@ if (pathName === "/search") {
                   const quoteRenote = document.createElement("p");
                   quoteRenote.classList.add("quoteRenoteBtn");
                   quoteRenote.innerHTML = `<i class="fa-solid fa-quote-left"></i>`;
-                  quoteRenote.addEventListener("onclick", () => quoteRenote(`${noteContent.id}`));
+                  quoteRenote.addEventListener("click", () => quoteRenote(`${noteContent.id}`));
                   buttonRow.appendChild(quoteRenote);
 
                   // Add favorite button
                   const favorite = document.createElement("p");
                   favorite.classList.add("quoteRenoteBtn"); // eh. just reuse a class tbh
                   favorite.innerHTML = `<i class="fa-solid fa-bookmark fa-xs" id="favorite-${noteContent.id}"></i>`; // apply the id to the favorites button or it will not change colors
-                  favorite.addEventListener("onclick", () => favorite(`${noteContent.id}`));
+                  favorite.addEventListener("click", () => favorite(`${noteContent.id}`));
                   firebase.auth().onAuthStateChanged((user) => {
                      if (user) {
                         firebase.database().ref(`users/${user.uid}/favorites/${noteContent.id}`).once("value", (snapshot) => {
@@ -7857,8 +7855,8 @@ function seeData_reauth() {
                      if (user) {
                         firebase.database().ref(`users/${user.uid}`).once("value", (snapshot) => {
                            const data = snapshot.val();
-                           const tableHTML = objectToTable(data);
-                           document.getElementById("dataDisplay").innerHTML = tableHTML;
+                           const table = objectToTable(data);
+                           document.getElementById("dataDisplay").appendChild(table);
                         });
                      }
                   });
@@ -7873,20 +7871,44 @@ function seeData_reauth() {
 }
 
 function objectToTable(data, level = 0) {
-   let html = '<table border="1" style="border-collapse: collapse; width: 100%;">';
+   let table = document.createElement("table");
    
    for (const [key, value] of Object.entries(data)) {
-      html += `<tr><td style="padding: 8px; border: 1px solid #ddd;"><strong>${key}:</strong></td>`;
+      let row = document.createElement("tr");
+
+      let cell = document.createElement("td");
+      cell.style = "padding: 8px; border: 1px solid #ddd;";
+
+      let name = document.createElement("strong");
+      name.textContent = key;
+      cell.appendChild(name);
+
+      row.appendChild(cell);
+
+      let data = document.createElement("td");
+      data.style = "padding: 8px; border: 1px solid #ddd;";
        
       if (typeof value === 'object' && value !== null) {
-         html += `<td style="padding: 8px; border: 1px solid #ddd;">${level > 0 ? '' : '<button onclick="toggleVisibility(this)">Show</button>'}<div style="display: ${level > 0 ? 'block' : 'none'};">${objectToTable(value, level + 1)}</div></td></tr>`;
+         if (level <= 0) {
+            let button = document.createElement("button");
+            button.addEventListener("click", () => toggleVisibility(button));
+            button.textContent = "Show";
+            data.appendChild(button);
+         }
+         
+         let div = document.createElement("div");
+         div.style.display = level > 0 ? "block" : "none";
+         div.appendChild(objectToTable(value, level + 1));
+         data.appendChild(div);
       } else {
-         html += `<td style="padding: 8px; border: 1px solid #ddd;">${value}</td></tr>`;
+         data.textContent = value;
       }
+      
+      row.appendChild(data);
+      table.appendChild(row);
    }
    
-   html += '</table>';
-   return html;
+   return table;
 }
 
 function toggleVisibility(button) {
@@ -7982,7 +8004,7 @@ async function displayTracks(query) {
          const addToNote = document.createElement("button");
          addToNote.textContent = `Add ${track.name} by ${track.artists[0].name}`;
          addToNote.className = "addToNote";
-         addToNote.addEventListener("onclick", () => setNoteMusic(`${track.id}`));//
+         addToNote.addEventListener("click", () => setNoteMusic(`${track.id}`));//
 
          resultsContainer.appendChild(embed);
          resultsContainer.appendChild(addToNote);
