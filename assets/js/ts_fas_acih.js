@@ -7857,8 +7857,8 @@ function seeData_reauth() {
                      if (user) {
                         firebase.database().ref(`users/${user.uid}`).once("value", (snapshot) => {
                            const data = snapshot.val();
-                           const tableHTML = objectToTable(data);
-                           document.getElementById("dataDisplay").innerHTML = tableHTML;
+                           const table = objectToTable(data);
+                           document.getElementById("dataDisplay").appendChild(table);
                         });
                      }
                   });
@@ -7873,20 +7873,44 @@ function seeData_reauth() {
 }
 
 function objectToTable(data, level = 0) {
-   let html = '<table border="1" style="border-collapse: collapse; width: 100%;">';
+   let table = document.createElement("table");
    
    for (const [key, value] of Object.entries(data)) {
-      html += `<tr><td style="padding: 8px; border: 1px solid #ddd;"><strong>${key}:</strong></td>`;
+      let row = document.createElement("tr");
+
+      let cell = document.createElement("td");
+      cell.style = "padding: 8px; border: 1px solid #ddd;";
+
+      let name = document.createElement("strong");
+      name.textContent = key;
+      cell.appendChild(name);
+
+      row.appendChild(cell);
+
+      let data = document.createElement("td");
+      data.style = "padding: 8px; border: 1px solid #ddd;";
        
       if (typeof value === 'object' && value !== null) {
-         html += `<td style="padding: 8px; border: 1px solid #ddd;">${level > 0 ? '' : '<button onclick="toggleVisibility(this)">Show</button>'}<div style="display: ${level > 0 ? 'block' : 'none'};">${objectToTable(value, level + 1)}</div></td></tr>`;
+         if (level <= 0) {
+            let button = document.createElement("button");
+            button.addEventListener("click", () => toggleVisibility(button));
+            button.textContent = "Show";
+            data.appendChild(button);
+         }
+         
+         let div = document.createElement("div");
+         div.style.display = level > 0 ? "block" : "none";
+         div.appendChild(objectToTable(value, level + 1));
+         data.appendChild(div);
       } else {
-         html += `<td style="padding: 8px; border: 1px solid #ddd;">${value}</td></tr>`;
+         data.textContent = value;
       }
+      
+      row.appendChild(data);
+      table.appendChild(row);
    }
    
-   html += '</table>';
-   return html;
+   return table;
 }
 
 function toggleVisibility(button) {
