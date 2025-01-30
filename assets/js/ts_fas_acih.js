@@ -395,7 +395,7 @@ firebase.auth().onAuthStateChanged((user) => {
          unreadNotifications = snapshot.val();
          if (unreadNotifications !== null && unreadNotifications !== 0) {
             document.getElementById("notificationsCount").classList.add("show");
-            document.getElementById("notificationsCount").innerHTML = `${unreadNotifications}`;
+            document.getElementById("notificationsCount").textContent = `${unreadNotifications}`;
          } else {
             if (document.getElementById("notificationsCount")) {
                document.getElementById("notificationsCount").classList.remove("show");
@@ -474,8 +474,6 @@ if (pathName === "/auth/register" || pathName === "/auth/register.html") {
          } else {
             window.location.replace(`/auth/policies?return_to=${urlParam}`);
          }
-      } else {
-         // no need to do anything
       }
    })
 }
@@ -1103,7 +1101,7 @@ function profileCard() {
             .then(function (snapshot) {
                const username = snapshot.val();
 
-               userUsername.innerHTML = `@${username}`;
+               userUsername.textContent = `@${username}`;
             })
 
          // Display user pronouns
@@ -1113,7 +1111,7 @@ function profileCard() {
             .then(function (snapshot) {
                const pronouns = snapshot.val();
 
-               userPronouns.innerHTML = pronouns;
+               userPronouns.textContent = pronouns;
 
                if (pronouns === '') {
                   userDisplay.style.marginTop = "8px";
@@ -3000,7 +2998,7 @@ if (pathName === "/note.html" || pathName === "/note" || pathName.startsWith("/u
                            document.getElementById("noteQuoteDisplay").textContent = "User Unavailable";
                            document.getElementById("noteQuoteUsername").textContent = `User Unavailable`;
                            document.getElementById("noteQuoteText").innerHTML = sanitizeAndLinkify(quoteData.text);
-                           document.getElementById("noteQuoteText").innerHTML = `@${quoteUser.username} is suspended, and notes by this user cannot be viewed.`;
+                           document.getElementById("noteQuoteText").textContent = `@${quoteUser.username} is suspended, and notes by this user cannot be viewed.`;
                         }
 
                         document.getElementById("quotingNote_note").addEventListener("click", () => window.location.href = `/note/${quoteData.id}`);
