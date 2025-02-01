@@ -1071,6 +1071,7 @@ body {
    background: var(--main-color);
    padding: 15px;
    text-align: right;
+   transition: opacity 0.15s ease;
 }
 
 #notSignedIn-banner button {

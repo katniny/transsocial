@@ -8132,3 +8132,16 @@ firebase.auth().onAuthStateChanged((user) => {
       });
    }
 });
+
+// check if near the bottom, if user is,
+// hide the login/signup prompt
+window.addEventListener("scroll", () => {
+   let loginPrompt = document.getElementById("notSignedIn-banner");
+   let nearBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 50;
+
+   if (nearBottom) {
+      loginPrompt.style.opacity = "0";
+   } else {
+      loginPrompt.style.opacity = "1";
+   }
+});
