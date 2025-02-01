@@ -22,11 +22,7 @@
 <br />
 
 ## 🧑‍💻 How to Contribute
-This needs to be rewritten as we've upgraded and changed our hosting provider to Firebase Hosting. Please bear with me.
-But until I decide to do that (which will be soon), please note:
-- Contributing to TransSocial (the website/app) requires the "Pay as you go" (aka Blaze plan) plan for Firebase. Unfortunately, this is due to changes to our own setup, as well as Firebase itself, such as storage now requiring the Blaze Plan because TransSocial relies on storage heavily for profile pictures, banners, etc.
-   - **NOTE**: Pay as you go requires a credit card and a Google Cloud Billing Account. You will not be charged under certain usage limits, which one individual should not reach by themselves. Learn more about Pay as you go usage limits at https://firebase.google.com/pricing
-- The TransSocial Desktop/Mobile applications are currently not open source and are hardly maintained. Due to issues with how the old autoupdater worked on these applications, we need to rewrite it using Tauri's own autoupdater, which is more reliable. Once we do this, we will open source them <a href="/app">here</a>. We are unsure how we will build these apps, so we will not be providing available platforms as of yet.
+See our <a href="/CONTRIBUTING.md">CONTRIBUTING.md</a> guide! This is just temporary, as TransSocial is being rewritten, available [here](https://github.com/katniny/transsocial/tree/rewritten)
 
 <br />
 
