@@ -1959,28 +1959,28 @@ if (pathName === "/home" || pathName === "/home.html" || pathName === "/u" || pa
          buttonRow.appendChild(replyBtn);
 
          // Add quote renote button
-         const quoteRenote = document.createElement("p");
-         quoteRenote.classList.add("quoteRenoteBtn");
-         quoteRenote.innerHTML = `<i class="fa-solid fa-quote-left"></i>`;
-         quoteRenote.addEventListener("click", () => quoteRenote(`${noteContent.id}`));
-         buttonRow.appendChild(quoteRenote);
+         const quotingNote = document.createElement("p");
+         quotingNote.classList.add("quoteRenoteBtn");
+         quotingNote.innerHTML = `<i class="fa-solid fa-quote-left"></i>`;
+         quotingNote.addEventListener("click", () => quoteRenote(noteContent.id));
+         buttonRow.appendChild(quotingNote);
 
          // Add favorite button
-         const favorite = document.createElement("p");
-         favorite.classList.add("quoteRenoteBtn"); // eh. just reuse a class tbh
-         favorite.innerHTML = `<i class="fa-solid fa-bookmark fa-xs" id="favorite-${noteContent.id}"></i>`; // apply the id to the favorites button or it will not change colors
-         favorite.addEventListener("click", () => favorite(`${noteContent.id}`));
+         const favoritingNote = document.createElement("p");
+         favoritingNote.classList.add("quoteRenoteBtn"); // eh. just reuse a class tbh
+         favoritingNote.innerHTML = `<i class="fa-solid fa-bookmark fa-xs" id="favorite-${noteContent.id}"></i>`; // apply the id to the favorites button or it will not change colors
+         favoritingNote.addEventListener("click", () => favorite(`${noteContent.id}`));
          firebase.auth().onAuthStateChanged((user) => {
             if (user) {
                firebase.database().ref(`users/${user.uid}/favorites/${noteContent.id}`).once("value", (snapshot) => {
                   if (snapshot.exists()) {
                      // checked if the user has already favorited this. if they have, change the color to indicate that
-                     favorite.innerHTML = `<i class="fa-solid fa-bookmark fa-xs" id="favorite-${noteContent.id}" style="color: var(--main-color);"></i>`;
+                     favoritingNote.innerHTML = `<i class="fa-solid fa-bookmark fa-xs" id="favorite-${noteContent.id}" style="color: var(--main-color);"></i>`;
                   }
                });
             }
          });
-         buttonRow.appendChild(favorite);
+         buttonRow.appendChild(favoritingNote);
 
          // If user created the note, allow them to edit/delete
          firebase.auth().onAuthStateChanged((user) => {
