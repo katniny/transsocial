@@ -23,17 +23,17 @@ accountCenter.innerHTML = `
 document.body.appendChild(accountCenter);
 
 // get the accounts then append children (or whatever it should be, idk im tired)
+// changed: client-side as we only need publicly available data anyways
 async function fetchUserData(username) {
-   const url = `http://127.0.0.1:5001/chat-transsocial-test/us-central1/fetchUserPriv?id=${username}`;
-
+   const url = `taken-usernames/${username}`;
    try {
-      const response = await fetch(url, { method: "GET" });
-      if (!response.ok) {
-         throw new Error(`Error: ${response.statusText} (HTTP ${response.status})`);
-      }
+      const usernameSnapshot = await firebase.database().ref(url).once("value");
+      const uid = usernameSnapshot.val().user;
+      if (!uid) return null;
 
-      const data = await response.json();
-      return data;
+      // get user data and include the UID
+      const userSnapshot = await firebase.database().ref(`users/${uid}`).once("value");
+      return { ...userSnapshot.val(), uid };  // Add the UID to the returned data
    } catch (error) {
       console.error(`Failed to fetch data for ${username}: ${error.message}`);
       return null;
@@ -41,25 +41,33 @@ async function fetchUserData(username) {
 }
 
 async function updateAccounts() {
-   const results = await Promise.all(users.map(user => fetchUserData(user.username)));
+   try {
+      const results = await Promise.all(users.map(user => fetchUserData(user.username)));
+      results.forEach((data, index) => {
+         if (data) {
+            const { username, pfp, display, uid } = data;
+            // update pfp
+            const pfpElement = document.getElementById(users[index].pfpId);
+            if (pfpElement) {
+               pfpElement.src = pfp ? `https://firebasestorage.googleapis.com/v0/b/chat-transsocial-test.appspot.com/o/images%2Fpfp%2F${uid}%2F${pfp}?alt=media` : "/assets/imgs/defaultPfp.png";
+            }
 
-   results.forEach((data, index) => {
-      if (data) {
-         const { username, pfp, display, uid } = data;
+            // update display
+            const displayElement = document.getElementById(users[index].displayId);
+            if (displayElement) {
+               displayElement.textContent = display || username;
+            }
 
-         // update pfp
-         const pfpElement = document.getElementById(users[index].pfpId);
-         if (pfpElement) pfpElement.src = `https://firebasestorage.googleapis.com/v0/b/chat-transsocial-test.appspot.com/o/images%2Fpfp%2F${uid}%2F${pfp}?alt=media` || "/assets/imgs/defaultPfp.png";
-
-         // update display
-         const displayElement = document.getElementById(users[index].displayId);
-         if (displayElement) displayElement.textContent = display || username;
-
-         // update username
-         const usernameElement = document.getElementById(users[index].pronounsId);
-         if (usernameElement) usernameElement.textContent = `@${username}` || "error";
-      }
-   });
+            // update username
+            const usernameElement = document.getElementById(users[index].pronounsId);
+            if (usernameElement) {
+               usernameElement.textContent = username ? `@${username}` : "error";
+            }
+         }
+      });
+   } catch (error) {
+      console.error("Error updating accounts:", error);
+   }
 }
 
 updateAccounts();
