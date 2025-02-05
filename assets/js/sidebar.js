@@ -10,7 +10,7 @@ sidebar.innerHTML = `
    <a href="/notifications" id="notificationsSidebar"><button><i class="fa-solid fa-bell"></i> Notifications</button></a> <a href="/notifications"><p id="notificationsCount">0</p></a>
    <a href="/search"><button id="searchSidebar"><i class="fa-solid fa-magnifying-glass"></i> Explore</button></a>
    <a href="/messages" id="messagesSidebar"><button><i class="fa-solid fa-envelope"></i> Messages (0)</button></a>
-   <a href="/settings?tab=subscription" id="enchantedSidebar"><button><i class="fa-solid fa-heart"></i> Get Katniny+</button></a>
+   <a href="/settings?tab=subscription" id="enchantedSidebar"><button><i class="fa-solid fa-heart"></i> Donate</button></a>
    <a href="/updates"><button id="updatesBtn" id="updatesSidebar"><i class="fa-solid fa-wrench"></i> Updates</button></a>
    <a href="/u" id="linkToAcc"><button id="meSidebar"><i class="fa-solid fa-user"></i> Your Profile</button></a>
    <a href="javascript:void(0);"><button id="showMoreContent"><i class="fa-solid fa-ellipsis"></i> More</button></a>
