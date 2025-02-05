@@ -271,7 +271,7 @@ function renderNotes(notesArray) {
                      const closeButton = document.createElement("button");
                      closeButton.classList.add("closeWarning");
                      closeButton.setAttribute("id", `${noteContent.id}-closeWarning`);
-                     closeButton.setAttribute("onclick", "removeNsfw(this.id);");
+                     closeButton.addEventListener("click", () => removeNsfw(this.id));
                      closeButton.textContent = "View";
 
                      // Show all children
@@ -318,7 +318,7 @@ function renderNotes(notesArray) {
                      const closeButton = document.createElement("button");
                      closeButton.classList.add("closeWarning");
                      closeButton.setAttribute("id", `${noteContent.id}-closeWarning`);
-                     closeButton.setAttribute("onclick", "removeNsfw(this.id);");
+                     closeButton.addEventListener("click", () => removeNsfw(this.id));
                      closeButton.textContent = "View";
 
                      // Show all children
@@ -365,7 +365,7 @@ function renderNotes(notesArray) {
                      const closeButton = document.createElement("button");
                      closeButton.classList.add("closeWarning");
                      closeButton.setAttribute("id", `${noteContent.id}-closeWarning`);
-                     closeButton.setAttribute("onclick", "removeNsfw(this.id);");
+                     closeButton.addEventListener("click", () => removeNsfw(this.id));
                      closeButton.textContent = "View";
                      closeButton.style.marginTop = "25px";
 
@@ -448,7 +448,7 @@ function renderNotes(notesArray) {
       text.innerHTML = sanitizeAndLinkify(noteContent.text)
       text.classList.add("noteText");
       if (noteContent.replyingTo === undefined) {
-         text.setAttribute("onclick", `window.location.href="/note/${noteContent.id}"`);
+         text.addEventListener("click", () => window.location.href=`/note/${noteContent.id}`);
       }
       text.querySelectorAll('a').forEach(link => {
          link.addEventListener('click', (event) => {
@@ -520,7 +520,7 @@ function renderNotes(notesArray) {
       if (noteContent.quoting) {
          const container = document.createElement("div");
          container.classList.add("quoteContainer");
-         container.setAttribute("onclick", `window.location.replace("/note/${noteContent.quoting}")`);
+         container.addEventListener("click", () => window.location.replace(`/note/${noteContent.quoting}`));
          noteDiv.appendChild(container);
 
          firebase.database().ref(`notes/${noteContent.quoting}`).once("value", (snapshot) => {
@@ -663,7 +663,7 @@ function renderNotes(notesArray) {
          loveBtn.innerHTML = `<i class="fa-solid fa-heart"></i> ${noteContent.likes}`;
 
          firebase.auth().onAuthStateChanged((user) => {
-            if (noteContent.whoLiked && noteContent.whoLiked[user.uid]) {
+            if (isSignedIn === true && noteContent.whoLiked && noteContent.whoLiked[user.uid]) {
                loveBtn.classList.add("liked");
             }
          })
@@ -680,7 +680,7 @@ function renderNotes(notesArray) {
          renoteBtn.innerHTML = `<i class="fa-solid fa-retweet"></i> ${noteContent.renotes}`;
 
          firebase.auth().onAuthStateChanged((user) => {
-            if (noteContent.whoRenoted && noteContent.whoRenoted[user.uid]) {
+            if (isSignedIn && noteContent.whoRenoted && noteContent.whoRenoted[user.uid]) {
                renoteBtn.classList.add("renoted");
             }
          })
@@ -699,9 +699,9 @@ function renderNotes(notesArray) {
          replyBtn.innerHTML = `<i class="fa-solid fa-comment"></i> 0`;
       }
       if (pathName !== "/note" && !pathName.startsWith("/note/")) {
-         replyBtn.setAttribute("onclick", `window.location.href="/note/${noteContent.id}";`);
+         replyBtn.addEventListener("click", () => window.location.href=`/note/${noteContent.id}`);
       } else {
-         replyBtn.setAttribute("onclick", "replyToNote(this);");
+         replyBtn.addEventListener("click", () => replyToNote(this));
       }
       buttonRow.appendChild(replyBtn);
 
@@ -709,14 +709,14 @@ function renderNotes(notesArray) {
       const quoteRenote = document.createElement("p");
       quoteRenote.classList.add("quoteRenoteBtn");
       quoteRenote.innerHTML = `<i class="fa-solid fa-quote-left"></i>`;
-      quoteRenote.setAttribute("onclick", `quoteRenote("${noteContent.id}")`);
+      quoteRenote.addEventListener("click", () => quoteRenote(`${noteContent.id}`))
       buttonRow.appendChild(quoteRenote);
 
       // Add favorite button
       const favorite = document.createElement("p");
       favorite.classList.add("quoteRenoteBtn"); // eh. just reuse a class tbh
       favorite.innerHTML = `<i class="fa-solid fa-bookmark fa-xs" id="favorite-${noteContent.id}"></i>`; // apply the id to the favorites button or it will not change colors
-      favorite.setAttribute("onclick", `favorite("${noteContent.id}")`);
+      favorite.addEventListener("click", () => favorite(`${noteContent.id}`));
       firebase.auth().onAuthStateChanged((user) => {
          if (user) {
             firebase.database().ref(`users/${user.uid}/favorites/${noteContent.id}`).once("value", (snapshot) => {

@@ -151,7 +151,7 @@ firebase.auth().onAuthStateChanged((user) => {
          unreadNotifications = snapshot.val();
          if (unreadNotifications !== null && unreadNotifications !== 0) {
             document.getElementById("notificationsCount").classList.add("show");
-            document.getElementById("notificationsCount").innerHTML = `${unreadNotifications}`;
+            document.getElementById("notificationsCount").textContent = `${unreadNotifications}`;
          } else {
             if (document.getElementById("notificationsCount")) {
                document.getElementById("notificationsCount").classList.remove("show");

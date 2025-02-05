@@ -4,13 +4,13 @@ replyToNote.className = "replyToNote";
 
 // set transsocialAccounts html
 if (pathName === "/home") {
-   replyToNote.innerHTML = `
+   replyToNote.textContent = `
       What's on your mind?
    `;
    
    replyToNote.classList.add("homepage");
 } else if (pathName.startsWith("/note/")) {
-   replyToNote.innerHTML = `
+   replyToNote.textContent = `
       Reply
    `;
 }

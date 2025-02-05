@@ -11,25 +11,25 @@ if (isSignedIn === true) {
       const greetWho = snapshot.val();
       console.log(hours);
 
-      if (hours < 12 && hours > 5) {
-         timeGreeting.innerHTML = `Good morning, ${greetWho}!`;
-      } else if (hours < 17 && hours > 12) {
-         timeGreeting.innerHTML = `Good afternoon, ${greetWho}!`;
-      } else if (hours < 22 && hours > 17) {
-         timeGreeting.innerHTML = `Good evening, ${greetWho}!`;
+      if (hours < 12) {
+         timeGreeting.textContent = `Good morning, ${greetWho}!`;
+      } else if (hours === 12 || hours > 12) {
+         timeGreeting.textContent = `Good afternoon, ${greetWho}!`;
+      } else if (hours === 17 || hours > 17) {
+         timeGreeting.textContent = `Good evening, ${greetWho}!`;
       } else {
-         timeGreeting.innerHTML = `Good late night, ${greetWho}!`;
+         timeGreeting.textContent = `Good late night, ${greetWho}!`;
       }
    });
 } else {
-   if (hours < 12 && hours > 5) {
-      timeGreeting.innerHTML = `Good morning!`;
-   } else if (hours < 17 && hours > 12) {
-      timeGreeting.innerHTML = `Good afternoon!`;
-   } else if (hours < 22 && hours > 17) {
-      timeGreeting.innerHTML = `Good evening!`;
+   if (hours < 12) {
+      timeGreeting.textContent = `Good morning!`;
+   } else if (hours === 12 || hours > 12) {
+      timeGreeting.textContent = `Good afternoon!`;
+   } else if (hours === 17 || hours > 17) {
+      timeGreeting.textContent = `Good evening!`;
    } else {
-      timeGreeting.innerHTML = `Good late night!`;
+      timeGreeting.textContent = `Good late night!`;
    }
 }
 

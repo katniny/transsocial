@@ -1,0 +1,82 @@
+# 👩‍💻 TransSocial Rewrite To-Do List
+- [ ] Universal
+   - [x] Allow loading scripts that are used in most/all places with one
+   - [x] Allow loading page specific scripts *after* the main scripts for lower script priority
+   - [x] Migrate sidebar
+   - [x] Migrate header
+   - [x] Migrate TransSocial Accounts area
+   - [x] Migrate policies area
+   - [x] Migrate TransSocial login prompt
+   - [x] (As of Jan 29, 2025) Readd security fixes merged with https://github.com/katniny/TransSocial/pull/29 and https://github.com/katniny/TransSocial/pull/33
+   - [x] Migrate page loader
+   - [ ] Migrate create note popup
+   - [ ] Migrate note creation to the server-side
+- [ ] Home
+   - [x] Render notes
+   - [ ] Migrate note liking/renoting to the server-side 
+   - [x] Migrate "TransSocial is in the ..." text
+   - [x] Migrate "What's on your mind?" text prompt
+   - [x] Migrate "Good [time]" and text underneath
+- [ ] Auth
+   - [ ] Migrate login
+   - [ ] Add "Forgot Password?" thing
+      - I keep forgetting... 😅 Sorry everyone who forgot their password.
+   - [ ] Migrate sign up
+      - With the plans for security rules, it's not really necessary to do anything!
+- [ ] Blogs
+   - [ ] Migrate why-transsocial
+   - [ ] Migrate welcome-aurora
+      - These won't be hard.
+- [ ] Policies
+   - [ ] Migrate Child Safety
+   - [ ] Migrate Cookies
+   - [ ] Migrate Copyright
+   - [ ] Migrate Community Guidelines
+   - [ ] Migrate index
+   - [ ] Migrate Privacy Policy
+   - [ ] Migrate Terms of Service
+- [ ] 404
+   - [ ] Migrate 404 page
+- [ ] Achievements
+   - [ ] Migrate achievements
+   - [ ] Migrate unlocking achievements to the server-side
+- [ ] Contributors
+   - [ ] Migrate contributors list
+   - [ ] Probably should make the pfps automatic (especially because of me who changes pfps constantly).
+- [ ] Create Theme
+   - [ ] Migrate create theme
+   - [ ] Migrate theme creation to the server-side
+- [ ] Download
+   - [ ] Just make the download page a "Coming Soon" page for now
+- [ ] Favorites
+   - [ ] Migrate favorites
+- [ ] Indev
+   - [ ] Migrate indev
+- [ ] Index
+   - [ ] There isn't an issue with the index page, but I'm not super happy with it so I want to re-do it.
+- [ ] Messages
+   - [ ] Messages don't work, so uh. 
+- [ ] Music
+   - [ ] Migrate music.html
+- [ ] Note
+   - [ ] Migrate notes
+- [ ] Notifications
+   - [ ] Migrate notifications
+- [ ] Open Source
+   - [ ] Migrate open source
+- [x] Remembering
+   - [x] Migrate remembering
+- [ ] Search
+   - [ ] Migrate search function
+- [ ] Settings
+   - [ ] Migrate search
+- [ ] Suspended
+   - [ ] Migrate suspension page
+- [ ] u
+   - [ ] Migrate /u page
+- [ ] Unsupported
+   - [ ] Migrate unsupported
+- [ ] Updates
+   - [ ] Migrate updates page
+- [ ] User Studio
+   - [ ] Migrate user studio
