@@ -3,6 +3,7 @@
 const { fetchUser } = require("./public/fetch-user");
 const { fetchUserPriv } = require("./server/fetch-user-trans");
 const { fetchUserFromId } = require("./server/fetch-user-from-id");
+const { likeNote } = require("./server/likeNote");
 
 module.exports = {
    // public api
@@ -14,4 +15,5 @@ module.exports = {
    // server api
    fetchUserPriv,
    fetchUserFromId,
+   likeNote,
 };

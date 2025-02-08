@@ -26,7 +26,7 @@ app.use(cors({ origin: "*" }));
 app.use((req, res, next) => {
    // only allow transs.social to access this data
    const allowedDomain = "transs.social";
-   const requestHost = req.get("host");
+   const requestHost = req.get("x-forwarded-host") || req.get("host");
    const origin = req.headers["origin"];
 
    if (requestHost && !requestHost.includes(allowedDomain) && origin && !origin.includes(allowedDomain)) {

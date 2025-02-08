@@ -900,49 +900,31 @@ document.addEventListener('click', function (event) {
             const likeButton = event.target;
             const noteId = findNoteId(likeButton);
 
-            const loveCountRef = firebase.database().ref(`notes/${noteId}/likes`);
-            loveCountRef.once("value", (snapshot) => {
-               const data = snapshot.val();
-               //console.log(data);
+            console.log(noteId);
 
-               firebase.database().ref(`notes/${noteId}/whoLiked`).once("value", (snapshot) => {
-                  const likedData = snapshot.val();
-                  if (likedData && likedData[uid]) {
-                     firebase.database().ref(`notes/${noteId}`).update({
-                        likes: data - 1
-                     });
-
-                     firebase.database().ref(`notes/${noteId}/whoLiked/${uid}`).remove();
-                  } else {
-                     firebase.database().ref(`notes/${noteId}`).update({
-                        likes: data + 1
-                     });
-
-                     firebase.database().ref(`notes/${noteId}/whoLiked/${uid}`).update({
-                        uid: uid
-                     });
-
-                     loveCountRef.off();
-
-                     firebase.database().ref(`notes/${noteId}`).once("value", (snapshot) => {
-                        const whoSentIt_note = snapshot.val();
-
-                        if (user.uid !== whoSentIt_note.whoSentIt) {
-                           firebase.database().ref(`notes/${noteId}`).once("value", (snapshot) => {
-                              const getUser = snapshot.val();
-                              sendNotification(getUser.whoSentIt, {
-                                 type: "Love",
-                                 who: user.uid,
-                                 postId: noteId,
-                              });
-                           })
-                        }
-                     })
-                  }
-               });
-
-               return;
+            fetch("/api/likeNote", {
+               method: "POST",
+               headers: {
+                  "Content-Type": "application/json",
+               },
+               body: JSON.stringify({ noteId: noteId, userId: uid }),
             })
+            .then(async (response) => {
+               const text = await response.text();
+               console.log("Raw response:", text);
+               try {
+                  return JSON.parse(text);
+               } catch (err) {
+                  console.error("Invalid JSON response:", text);
+                  throw new Error("Invalid JSON received from server");
+               }
+            })
+            .then((data) => {
+               console.log("Response from server: ", data);
+            })
+            .catch((error) => {
+               console.error("Error liking note: ", error);
+            });
          }
       }
    })

@@ -14,6 +14,8 @@
 - [ ] Home
    - [x] Render notes
    - [ ] Migrate note liking/renoting to the server-side 
+      - Liking is done, renoting needs to be migrated still.
+      - [ ] Add "client-side prediction", so there isn't a weird feeling pause.
    - [x] Migrate "TransSocial is in the ..." text
    - [x] Migrate "What's on your mind?" text prompt
    - [x] Migrate "Good [time]" and text underneath

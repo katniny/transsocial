@@ -32,6 +32,18 @@
          {
             "source": "/userstudio/**",
             "destination": "/userstudio.html"
+         },
+         {
+            "source": "/api/fetch-user-from-id",
+            "function": "fetchUserPriv"
+         },
+         {
+            "source": "/api/fetch-user-trans",
+            "function": "fetchUserPriv"
+         },
+         {
+            "source": "/api/likeNote",
+            "function": "likeNote"
          }
       ]
    }
