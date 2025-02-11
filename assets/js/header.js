@@ -14,7 +14,7 @@ header.innerHTML = `
    </div>
 
    <div class="right">
-      <a href="/download"><button style="margin-right: 20px; transform: translateY(-23px);" id="headerGetApp">Get App</button> <a href="/notifications" id="notificationsHeader"><i class="fa-solid fa-bell fa-lg"></i></a> <a href="/achievements" id="achievementsHeader"><i class="fa-solid fa-trophy fa-lg" style="margin-right: 0px;"></i></a> <img src="" alt="Your profile picture" draggable="false" id="userPfp-header" />
+      <!--<a href="/download"><button style="margin-right: 20px; transform: translateY(-23px);" id="headerGetApp">Get App</button>--> <a href="/notifications" id="notificationsHeader"><i class="fa-solid fa-bell fa-lg"></i></a> <a href="/achievements" id="achievementsHeader"><i class="fa-solid fa-trophy fa-lg" style="margin-right: 0px;"></i></a> <img src="" alt="Your profile picture" draggable="false" id="userPfp-header" />
    </div>
 
    <div class="accountManager" id="accountManager" style="display: none;">

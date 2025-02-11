@@ -98,10 +98,10 @@
          text: `Did you know TransSocial has custom themes? <a href="/userstudio">Check them out</a>!`,
          lore: false
       },
-      {
-         text: `Download our app <a href="/download">here</a> and bring TransSocial with you anywhere!`,
-         lore: false
-      },
+      //{
+      //   text: `Download our app <a href="/download">here</a> and bring TransSocial with you anywhere!`,
+      //   lore: false
+      //},
       {
          text: `TransSocial is open source!`,
          lore: false

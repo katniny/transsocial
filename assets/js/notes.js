@@ -891,16 +891,26 @@ firebase.database().ref("notes/").on("child_changed", (snapshot) => {
    })
 });
 
+let processingLove = false;
 document.addEventListener('click', function (event) {
    firebase.auth().onAuthStateChanged((user) => {
       if (user) {
          const uid = user.uid;
 
+         if (processingLove === true) return;
+         processingLove = true;
+
          if (event.target.classList.contains("likeBtn") || event.target.classList.contains("fa-solid" && "fa-heart")) {
             const likeButton = event.target;
             const noteId = findNoteId(likeButton);
 
-            console.log(noteId);
+            if (!document.getElementById(`like-${noteId}`).classList.contains("liked")) {
+               document.getElementById(`like-${noteId}`).classList.add("liked");
+               document.getElementById(`like-${noteId}`).innerHTML = `<i class="fa-solid fa-heart" aria-hidden="true"></i> ${+document.getElementById(`like-${noteId}`).textContent + 1}`;
+            } else {
+               document.getElementById(`like-${noteId}`).classList.remove("liked");
+               document.getElementById(`like-${noteId}`).innerHTML = `<i class="fa-solid fa-heart" aria-hidden="true"></i> ${+document.getElementById(`like-${noteId}`).textContent - 1}`;
+            }
 
             fetch("/api/likeNote", {
                method: "POST",
@@ -921,9 +931,11 @@ document.addEventListener('click', function (event) {
             })
             .then((data) => {
                console.log("Response from server: ", data);
+               processingLove = false;
             })
             .catch((error) => {
                console.error("Error liking note: ", error);
+               processingLove = false;
             });
          }
       }
