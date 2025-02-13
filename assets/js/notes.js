@@ -2,6 +2,8 @@
 const newNotesAvailable = document.createElement("div");
 newNotesAvailable.setAttribute("id", "newNotesAvailable");
 newNotesAvailable.className = "newNotesAvailable";
+newNotesAvailable.setAttribute("onclick", "loadNotesFromButton()");
+newNotesAvailable.textContent = "New Notes";
 document.body.appendChild(newNotesAvailable);
 
 // determine when notes were created
@@ -857,9 +859,7 @@ function renderNotes(notesArray) {
 firebase.database().ref("notes/").on("child_added", (snapshot) => {
    const isReply = snapshot.val();
    if (isReply.replyingTo === undefined) {
-      if (pathName === "/home" || pathName === "/home.html") {
-         document.getElementById("newNotesAvailable").style.display = "block";
-      }
+      newNotesAvailable.style.display = "block";
    }
 })
 
