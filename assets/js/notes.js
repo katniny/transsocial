@@ -897,7 +897,7 @@ document.addEventListener('click', function (event) {
       if (user) {
          const uid = user.uid;
 
-         if (processingLove === true) return;
+         //if (processingLove === true) return;
          processingLove = true;
 
          if (event.target.classList.contains("likeBtn") || event.target.classList.contains("fa-solid" && "fa-heart")) {
@@ -923,8 +923,10 @@ document.addEventListener('click', function (event) {
                const text = await response.text();
                console.log("Raw response:", text);
                try {
+                  processingLove = false;
                   return JSON.parse(text);
                } catch (err) {
+                  processingLove = false;
                   console.error("Invalid JSON response:", text);
                   throw new Error("Invalid JSON received from server");
                }

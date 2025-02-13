@@ -1,50 +1,61 @@
 {
-   "functions": [
-      {
-         "source": "functions",
-         "codebase": "default",
-         "ignore": [
-            "node_modules",
-            ".git",
-            "firebase-debug.log",
-            "firebase-debug.*.log",
-            "*.local"
-         ]
-      }
-   ],
-   "hosting": {
-      "public": "/",
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
       "ignore": [
-         "firebase.json",
-         "**/.*",
-         "**/node_modules/**"
-      ],
-      "cleanUrls": true,
-      "rewrites": [
-         {
-            "source": "/u/**",
-            "destination": "/u.html"
-         },
-         {
-            "source": "/note/**",
-            "destination": "/note.html"
-         },
-         {
-            "source": "/userstudio/**",
-            "destination": "/userstudio.html"
-         },
-         {
-            "source": "/api/fetch-user-from-id",
-            "function": "fetchUserPriv"
-         },
-         {
-            "source": "/api/fetch-user-trans",
-            "function": "fetchUserPriv"
-         },
-         {
-            "source": "/api/likeNote",
-            "function": "likeNote"
-         }
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
       ]
-   }
+    },
+    {
+      "source": "transsocial",
+      "codebase": "transsocial",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ]
+    }
+  ],
+  "hosting": {
+    "public": "/",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "cleanUrls": true,
+    "rewrites": [
+      {
+        "source": "/u/**",
+        "destination": "/u.html"
+      },
+      {
+        "source": "/note/**",
+        "destination": "/note.html"
+      },
+      {
+        "source": "/userstudio/**",
+        "destination": "/userstudio.html"
+      },
+      {
+        "source": "/api/fetch-user-from-id",
+        "function": "fetchUserPriv"
+      },
+      {
+        "source": "/api/fetch-user-trans",
+        "function": "fetchUserPriv"
+      },
+      {
+        "source": "/api/likeNote",
+        "function": "likeNote"
+      }
+    ]
+  }
 }

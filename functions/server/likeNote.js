@@ -64,18 +64,18 @@ app.post("/api/likeNote", async (req, res) => {
          // if user already liked, remove the like
          await whoLikedRef.remove();
 
-         await noteRef.child("likes").transaction((currentLikes) => {
-            return (currentLikes || 0) > 0 ? currentLikes - 1 : 0; // ensure it never goes below 0
-         });
+         const likesSnapshot = await noteRef.child("likes").once("value");
+         const currentLikes = likesSnapshot.val() || 0;
+         await noteRef.child("likes").set(currentLikes - 1);
 
          return res.json({ success: true, message: "Like removed." });
       } else {
-         // if user hasnt liked, add their uid and increase likes count
+         // if user hasn't liked, add their uid and increase likes count
          await whoLikedRef.set({ uid: userId });
 
-         await noteRef.child("likes").transaction((currentLikes) => {
-            return (currentLikes || 0) + 1;
-         });
+         const likesSnapshot = await noteRef.child("likes").once("value");
+         const currentLikes = likesSnapshot.val() || 0;
+         await noteRef.child("likes").set(currentLikes + 1);
 
          return res.json({ success: true, message: "Note liked!" });
       }
