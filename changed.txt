@@ -14,3 +14,4 @@
 - Fixed a typo in the notes below "Good ..., {username}"
 - Fixed TransSocial trying to check if a user loved/renoted a note even when signed out
 - Updated /indev to be up-to-date
+- Updated 404 page

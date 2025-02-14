@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>TransSocial | 404</title>
+      <link rel="shortcut icon" href="/assets/imgs/favicon.png" type="image/png" />
+      <noscript>
+         <meta http-equiv="refresh" content="0; url=/noscript">
+      </noscript>
+      <meta name="robots" content="noai, noimageai">
+      <meta name="og:type" content="website">
+      <meta name="og:url" content="https://transs.social/">
+      <meta name="og:title" content="TransSocial">
+      <meta name="og:site_name" content="transs.social">
+      <meta name="og:description" content="See what people are saying on TransSocial!">
+      <meta name="description" content="See what people are saying on TransSocial!">
+      <meta property="og:image" content="https://transs.social/assets/imgs/favicon.png">
+      <meta name="theme-color" content="#ff869a">
+
+      <!-- css -->
+      <link rel="stylesheet" href="/assets/css/all.css">
+      
+      <!-- scripts -->
+      <script src="/assets/js/allScripts.js"></script>
+      <script>
+         document.addEventListener("DOMContentLoaded", () => {
+            setTimeout(() => {
+               document.getElementById("replaceWithPathname").textContent = pathName;
+            }, 500);
+         });
+      </script>
+   </head>
+   
+   <body>
+      <div class="notes" id="notes">
+         <div class="noteFilter" id="noteFilter">
+            <div class="blogStyle" style="margin: 15px;">
+               <h1>Oops...</h1>
+               <h3>We were unable to find <span id="replaceWithPathname">/page</span>. This page doesn't exist, got moved, or got lost to time.</h3>
+
+               <br />
+
+               <p>Let's get you somewhere where you won't be lost:</p>
+               <a href="/home"><button>Go to Home</button></a>
+            </div>
+         </div>
+      </div>
+   </body>
+</html>
