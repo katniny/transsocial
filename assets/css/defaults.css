@@ -57,3 +57,8 @@ button.disabled {
 .dangerButton:hover {
    background: var(--error-text);
 }
+
+/* list */
+ul li {
+   margin-left: 15px;
+}

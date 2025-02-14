@@ -5,9 +5,14 @@
    color: var(--text);
 }
 
+html {
+   background: var(--background);
+}
+
 body {
    background: var(--background);
    zoom: var(--zoom-level);
+   display: none;
 }
 
 /* Scroll Bar */

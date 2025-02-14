@@ -36,6 +36,7 @@ async function loadAllScripts() {
       // continue
       await loadScript("/assets/js/versioning.js", false);
       await loadScript("/assets/js/pageLoader.js", false);
+      document.body.style.display = "block";
       
       // then wait for pathname, which is really quick so its fine
       await loadScript("/assets/js/pathName.js", false);
