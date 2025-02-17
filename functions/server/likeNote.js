@@ -77,6 +77,30 @@ app.post("/api/likeNote", async (req, res) => {
          const currentLikes = likesSnapshot.val() || 0;
          await noteRef.child("likes").set(currentLikes + 1);
 
+         // send notification
+         const noteSenderSnapshot = await noteRef.child("whoSentIt").once("value");
+         const whoSentIt = noteSenderSnapshot.val();
+
+         if (whoSentIt && whoSentIt !== userId) {
+            const notificationRef = admin.database().ref(`users/${whoSentIt}/notifications`);
+            const randomId = notificationRef.push().key;
+
+            const notificationData = {
+               type: "Love",
+               who: userId,
+               postId: noteId
+            };
+
+            await notificationRef.child(randomId).set(notificationData);
+
+            // increase unread notifications count
+            const unreadRef = admin.database().ref(`users/${whoSentIt}/notifications/unread`);
+            const unreadSnapshot = await unreadRef.once("value");
+            const unreadCount = unreadSnapshot.val() || 0;
+
+            await unreadRef.set(unreadCount + 1);
+         }
+
          return res.json({ success: true, message: "Note liked!" });
       }
    } catch (error) {
